@@ -155,7 +155,14 @@ details.more summary{cursor:pointer;font-size:14px;font-weight:700;list-style:no
 details.more summary::-webkit-details-marker{display:none}
 details.more summary::before{content:"+";display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--ink);font-size:14px;line-height:1}
 details.more[open] summary::before{content:"\2212"}
-details.more ul{margin:10px 0 0;padding-left:18px;font-size:14px;color:var(--ink-2);display:grid;gap:6px}
+details.more ul{margin:12px 0 0;padding:0;list-style:none;font-size:14px;color:var(--ink-2);display:grid;gap:12px}
+details.more li{position:relative;display:grid;gap:2px;padding-left:16px;min-width:0}
+details.more li::before{content:"";position:absolute;left:0;top:.6em;width:6px;height:6px;border-radius:50%;background:var(--red)}
+details.more a{color:var(--ink);font-weight:700;line-height:1.35;text-decoration:underline;text-decoration-color:rgba(230,0,0,.4);text-decoration-thickness:1.5px;text-underline-offset:3px;overflow-wrap:anywhere}
+details.more a::after{content:"\00a0\2197";color:var(--red);font-weight:700}
+details.more a:hover{color:var(--red);text-decoration-color:var(--red)}
+details.more a:focus-visible{outline:3px solid var(--red);outline-offset:2px;border-radius:3px}
+details.more .rd-m{font-size:12.5px;color:var(--muted);line-height:1.4}
 .travel{display:grid;gap:8px;padding-top:6px}
 .travel .lab{margin:0;font-size:14px;font-weight:700;color:var(--muted)}
 .travel .nm{margin:0;font-size:clamp(28px,3vw,40px);line-height:1.04;font-weight:800;letter-spacing:-.035em;opacity:.9}
@@ -441,7 +448,7 @@ window.__threeFallback=function(){var s=document.createElement("script");s.src="
 "use strict";
 /* ================================================================== content
    Five stops from the series roadmap in the Session 1 notebook and the topic map.
-   Figures are only those checked against a published source; see each stop's notes. */
+   Figures are only those checked against a published source; see each stop's Sources and reads. */
 var ST=[
  {chip:"How AI behaves",title:"How AI behaves",q:"Why does it fail, and how do I watch it fail?",
   ov:"A model predicts the next token, and we can only partly see why it picks the one it does. Its failures look exactly like its successes, so the first skill is learning to see them.",
@@ -453,7 +460,7 @@ var ST=[
   deliver:"A live lab: paste the same prompts into ChatGPT and Claude, score each answer, and watch the two disagree.",
   impact:"You discover the behaviour after you build. Reading the answer is not a check, because a wrong answer looks like a right one.",
   mod:"arc",
-  more:["OpenAI’s hallucination analysis, summarised in your Notion page and a Medium review.","Non Determinism in LLMs (Medium), which explains the causes using Thinking Machines Lab’s work.","Sycophancy in Large Language Models (a Second Me summary of a Substack post; check the original before quoting).","ARC-AGI-3 scores as reported by Decrypt on 26 March 2026."]},
+  more:[["Why language models hallucinate", "OpenAI · September 2025", "https://openai.com/index/why-language-models-hallucinate/"], ["Defeating Nondeterminism in LLM Inference", "Thinking Machines Lab · September 2025", "https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/"], ["Towards understanding sycophancy in language models", "Anthropic · October 2023", "https://www.anthropic.com/research/towards-understanding-sycophancy-in-language-models"], ["Sycophancy in Large Language Models: Causes and Mitigations", "Lars Malmqvist, arXiv · November 2024", "https://arxiv.org/abs/2411.15287"], ["Announcing ARC-AGI-3", "ARC Prize · March 2026", "https://arcprize.org/blog/arc-agi-3-launch"], ["Is AGI Here? Not Even Close, New AI Benchmark Suggests", "Decrypt · March 2026 · the scores shown above", "https://decrypt.co/362496/is-agi-here-not-even-close-ai-benchmark"]]},
  {chip:"Context & harness",title:"Context and harness",q:"How do I feed it and wrap it so it fails less?",
   ov:"Prompting is really response engineering: you shape what goes in because you care about what comes out. The harness is everything around the model, and it is now the part teams engineer.",
   topics:["Harness engineering","Prompts and context","Agent patterns","AI coding assistants"],
@@ -464,7 +471,7 @@ var ST=[
   deliver:"The same model in two columns, with and without a harness. Then one task with thin, stuffed and curated context, scored side by side.",
   impact:"Results come from the environment you build, which moves the work to places developers already own: docs, tests, linters and CI.",
   mod:"harness",
-  more:["OpenAI, Harness engineering: the team’s own account and figures.","Anthropic, Effective harnesses for long-running agents: the two failure patterns and the feature list with pass flags.","Harness Engineering: What Every AI Engineer Needs to Know in 2026 (Medium).","Your prompt and context notes in Obsidian and Notion."]},
+  more:[["Harness engineering: leveraging Codex in an agent-first world", "OpenAI · February 2026", "https://openai.com/index/harness-engineering/"], ["Effective harnesses for long-running agents", "Anthropic · November 2025", "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"], ["Effective context engineering for AI agents", "Anthropic · September 2025", "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"], ["Context Rot: How Increasing Input Tokens Impacts LLM Performance", "Chroma · July 2025", "https://www.trychroma.com/research/context-rot"]]},
  {chip:"Evals & verification",title:"Evals and verification",q:"How do I know it actually worked?",
   ov:"A demo proves little, and a benchmark proves less than it claims. Evals turn “it seemed fine” into a measured rate you can check every time something changes.",
   topics:["Evals and verification","Red teaming","Code, model and human graders","pass@k and pass^k","Observability"],
@@ -475,7 +482,7 @@ var ST=[
   deliver:"Run one prompt 20 times and plot the pass rate, then red-team a persona live.",
   impact:"Developers already distrust AI output. An eval suite is how a team earns that trust back, one measured rate at a time.",
   mod:"trust",
-  more:["Demystifying Evaluations for AI Agents (your notebook, built on Anthropic’s post).","Verification Engineering (Full Course), saved in Recall.","2025 Stack Overflow developer survey, as reported by TechRepublic.","The pass@k and pass^k bars are a worked illustration, not measured data."]},
+  more:[["Demystifying evals for AI agents", "Anthropic · January 2026", "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"], ["Verification Engineering (Full Course)", "The AI Blueprint · October 2026", "https://theblueprintai.substack.com/p/verification-engineering-full-course"], ["AI | 2025 Stack Overflow Developer Survey", "Stack Overflow · July 2025", "https://survey.stackoverflow.co/2025/ai"], ["Stack Overflow’s 2025 Developer Survey Reveals Trust in AI at an All Time Low", "Stack Overflow press release · July 2025", "https://stackoverflow.co/company/press/archive/stack-overflow-2025-developer-survey/"], ["τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains", "Yao et al., arXiv · June 2024 · where pass^k comes from", "https://arxiv.org/abs/2406.12045"]]},
  {chip:"Security & governance",title:"Security and governance",q:"Who is accountable when an agent acts?",
   ov:"The model is not the security boundary. Anything an agent reads can instruct it, so the walls go in code, and every agent needs someone who owns what it does.",
   topics:["Agent security","Governance and ownership","MCP vulnerabilities","Excessive agency"],
@@ -486,7 +493,7 @@ var ST=[
   deliver:"The email-leak demo before and after a code guard, then the lethal trifecta on one slide.",
   impact:"The damage is in what an agent does, not what it says: sent data, deleted files, spent budget. Decide who owns an agent before an incident, not after.",
   mod:"trifecta",
-  more:["MCP Vulnerabilities Every Developer Should Know and OWASP Top 10: Excessive AI Agency (Medium).","Understanding and Defending Against AI Goal Manipulation Risks (Obsidian).","Closing the Accountability Gap: A Guide to AI Governance (your notebook).","Your AI Agent Needs an ID Badge (Recall)."]},
+  more:[["MCP Vulnerabilities Every Developer Should Know", "Composio · August 2025", "https://composio.dev/content/mcp-vulnerabilities-every-developer-should-know"], ["LLM06:2025 Excessive Agency", "OWASP Gen AI Security Project", "https://genai.owasp.org/llmrisk/llm062025-excessive-agency/"], ["OWASP Top 10 for Agentic Applications for 2026", "OWASP Gen AI Security Project · December 2025 · see ASI01, Agent Goal Hijack", "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/"], ["The lethal trifecta for AI agents", "Simon Willison · June 2025", "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"], ["Your AI Agent Needs an ID Badge", "Ashu Kumar, The Agentic Stack · September 2026", "https://theagenticstack.substack.com/p/your-ai-agent-needs-an-id-badge"], ["Singapore Launches New Model AI Governance Framework for Agentic AI", "Singapore Ministry of Digital Development and Information · January 2026", "https://www.mddi.gov.sg/newsroom/singapore-launches-new-model-ai-governance-framework-for-agentic-ai--/"]]},
  {chip:"The developer’s new job",title:"The developer’s new job",q:"What changes for seniors, juniors and judgement?",
   ov:"The developer moves from author to reviewer, and the skill a reviewer needs is the one AI wears down. Feeling fast is not the same as being fast.",
   topics:["Skills and cognitive debt","Human agency and developer role","Production reality"],
@@ -497,7 +504,7 @@ var ST=[
   deliver:"Show a pull request with a subtle bug and let the room hunt for it, then put METR’s forecast next to its result.",
   impact:"Review becomes the main job. Teams that stop giving juniors hard problems lose their future seniors.",
   mod:"metr",
-  more:["METR’s randomised study, via IBM’s summary: 16 experienced developers, tools of early 2025.","MIT NANDA, The GenAI Divide 2025, via Fortune: the share counts pilots reaching rapid revenue growth.","Medium essays on ‘deformation’ and ‘seed corn’, and Second Me summaries on novice coders and cognitive offloading."]}
+  more:[["Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity", "METR · July 2025", "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/"], ["We are Changing our Developer Productivity Experiment Design", "METR · February 2026 · follow-up on newer tools", "https://metr.org/blog/2026-02-24-uplift-update/"], ["MIT report: 95% of generative AI pilots at companies are failing", "Fortune · August 2025 · on MIT NANDA’s The GenAI Divide", "https://fortune.com/2025/08/18/mit-report-95-percent-generative-ai-pilots-at-companies-failing-cfo/"], ["How AI assistance impacts the formation of coding skills", "Anthropic · January 2026", "https://www.anthropic.com/research/AI-assistance-coding-skills"], ["The Impact of Generative AI on Critical Thinking", "Microsoft Research · CHI 2025", "https://www.microsoft.com/en-us/research/publication/the-impact-of-generative-ai-on-critical-thinking-self-reported-reductions-in-cognitive-effort-and-confidence-effects-from-a-survey-of-knowledge-workers/"]]}
 ];
 var NST=ST.length;
 
@@ -574,8 +581,8 @@ function moduleHTML(st){
    '<p class="src">OpenAI’s own account of a product built with Codex agents over about five months. The figures are the team’s estimates.</p></div>';
   if(st.mod==="trust"){var at5=(1-Math.pow(.2,5))*100,ev5=Math.pow(.8,5)*100;
    return '<div class="mod rv" style="--i:4"><p class="m-h">Developers use it, and doubt it</p>'+
-   '<div class="nums"><div><b><span class="count" data-to="84" data-dec="0">0</span>%</b><span>use AI tools</span></div><div><b class="r"><span class="count" data-to="46" data-dec="0">0</span>%</b><span>don’t trust its accuracy, up from 31%</span></div><div><b><span class="count" data-to="66" data-dec="0">0</span>%</b><span>say “almost right” is the top frustration</span></div></div>'+
-   '<p class="src">2025 Stack Overflow developer survey, as reported by TechRepublic.</p>'+
+   '<div class="nums"><div><b><span class="count" data-to="84" data-dec="0">0</span>%</b><span>use or plan to use AI tools</span></div><div><b class="r"><span class="count" data-to="46" data-dec="0">0</span>%</b><span>don’t trust its accuracy, up from 31%</span></div><div><b><span class="count" data-to="66" data-dec="0">0</span>%</b><span>say “almost right” is the top frustration</span></div></div>'+
+   '<p class="src">2025 Stack Overflow Developer Survey.</p>'+
    '<p class="m-h" style="margin-top:16px">Worked once, or works every time?</p><div class="bars">'+
    bar("pass@5: at least one of 5 runs passes",at5,at5.toFixed(2),2,false)+bar("pass^5: all 5 runs pass",ev5,ev5.toFixed(1),1,true)+
    '</div><p class="src">Illustration for a task that passes 80% of the time per run. Same model, two very different promises.</p></div>'}
@@ -587,12 +594,12 @@ function moduleHTML(st){
    '<g font-family="Figtree,system-ui,sans-serif" font-size="14" font-weight="800" fill="#1A1A1A" text-anchor="middle"><text x="78" y="72">Private</text><text x="78" y="89">data</text><text x="222" y="72">Untrusted</text><text x="222" y="89">input</text><text x="150" y="210">A way out</text></g>'+
    '<circle cx="150" cy="120" r="7" fill="#E60000"/></svg>'+
    '<div><p style="margin:0 0 10px;font-size:15px;color:var(--ink-2)">An agent with all three can be told to leak. Remove any one and that attack stops.</p><p class="m-h" style="margin:0 0 6px">Four questions every agent needs answered</p><ol><li>Who owns it?</li><li>What can it touch?</li><li>How do we stop it?</li><li>How would we know?</li></ol></div></div>'+
-   '<p class="src">From MCP Vulnerabilities Every Developer Should Know (Medium) and the governance branch of your topic map.</p></div>';
+   '<p class="src">The lethal trifecta was named by Simon Willison in 2025.</p></div>';
   if(st.mod==="metr")return '<div class="mod rv" style="--i:4"><p class="m-h">Felt fast, measured slow</p><div class="div">'+
    drow("Forecast before the study","24% faster",24,false)+drow("Belief afterwards","about 20% faster",20,false)+drow("Measured","19% slower",19,true)+
    '</div><div class="dscale"><span>slower</span><span>faster</span></div>'+
-   '<p class="src">METR’s randomised study of 16 experienced developers using early-2025 AI tools, via IBM’s summary.</p>'+
-   '<div class="nums" style="grid-template-columns:minmax(0,1fr)"><div><b class="r"><span class="count" data-to="5" data-dec="0">0</span>%</b><span>About this share of generative AI pilots reach rapid revenue growth (MIT NANDA, 2025, via Fortune).</span></div></div></div>';
+   '<p class="src">METR’s randomised study of 16 experienced developers using early-2025 AI tools, published July 2025.</p>'+
+   '<div class="nums" style="grid-template-columns:minmax(0,1fr)"><div><b class="r"><span class="count" data-to="5" data-dec="0">0</span>%</b><span>About this share of generative AI pilots reach rapid revenue growth (MIT NANDA, The GenAI Divide, 2025).</span></div></div></div>';
   return ""}
 function stationHTML(k){var st=ST[k],n=0;function i(){return 'style="--i:'+(n++)+'"'}
   var h='<p class="kick rv" '+i()+'>Stop '+(k+1)+' of '+NST+'</p><h2 class="p-title rv" '+i()+'>'+esc(st.title)+'</h2><p class="p-q rv" '+i()+'>'+esc(st.q)+'</p>'+illoHTML(k,i())+'<p class="p-ov rv" '+i()+'>'+esc(st.ov)+'</p>';
@@ -600,7 +607,7 @@ function stationHTML(k){var st=ST[k],n=0;function i(){return 'style="--i:'+(n++)
   h+='<h3 class="p-h rv" '+i()+'>Top highlights</h3><ul class="hls">'+st.hl.map(function(x){return '<li class="rv" '+i()+'><div><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div></li>'}).join("")+'</ul>';
   h+='<h3 class="p-h rv" '+i()+'>Branches at this stop</h3>'+branchHTML(k,i());
   h+='<div class="duo rv" '+i()+'><div><h3 class="p-h">What you will see</h3><p>'+esc(st.deliver)+'</p></div><div><h3 class="p-h">Why it matters to developers</h3><p>'+esc(st.impact)+'</p></div></div>';
-  h+='<details class="more rv" '+i()+'><summary>Sources and cautions</summary><ul>'+st.more.map(function(m){return '<li>'+esc(m)+'</li>'}).join("")+'</ul></details>';
+  h+='<details class="more rv" '+i()+'><summary>Sources and reads</summary><ul>'+st.more.map(function(m){return '<li><a href="'+esc(m[2])+'" target="_blank" rel="noopener noreferrer">'+esc(m[0])+'</a><span class="rd-m">'+esc(m[1])+'</span></li>'}).join("")+'</ul></details>';
   return h}
 function finaleHTML(){var n=0;function i(){return 'style="--i:'+(n++)+'"'}
   return '<p class="kick rv" '+i()+'>Destination</p><h2 class="p-title rv" '+i()+'>The whole route</h2>'+routeIllo(i())+
