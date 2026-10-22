@@ -347,7 +347,8 @@ details.more .rd-m{font-size:12.5px;color:var(--muted);line-height:1.4}
 .mini{position:relative;height:28px;margin:14px 6px 4px}
 .mini::before{content:"";position:absolute;left:0;right:0;top:13px;height:2px;background:var(--silver);border-radius:2px}
 .mini i{position:absolute;top:8px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--white);border:2px solid var(--silver)}
-.mini i.done{border-color:var(--ink);background:var(--ink)}
+.mini em{position:absolute;left:0;top:13px;height:2px;width:0;background:var(--red);border-radius:2px}
+.mini i.done{border-color:var(--red);background:var(--red)}
 .mini i.to{border-color:var(--red)}
 .mini b{position:absolute;top:4px;width:30px;height:20px;margin-left:-15px;border-radius:6px;background:var(--red);box-shadow:0 6px 14px -6px rgba(230,0,0,.6)}
 .mini b::after{content:"";position:absolute;left:5px;right:5px;top:5px;height:5px;border-radius:2px;background:rgba(255,255,255,.75)}
@@ -693,7 +694,10 @@ function routeIllo(attr){var h='<figure class="illo rv" '+attr+'>'+svgOpen("il6"
   return h+'<circle class="endring" cx="340" cy="36" r="10" fill="none" stroke="#E60000" stroke-width="2"/><circle cx="340" cy="36" r="5.5" fill="#E60000"/></svg><figcaption>Five stops, one connected route.</figcaption></figure>'}
 function layoutIllos(root){[].forEach.call(root.querySelectorAll(".il6"),function(s){var p=s.querySelector(".route"),len=p.getTotalLength();p.style.setProperty("--len",len.toFixed(1));
   [].forEach.call(s.querySelectorAll(".stopd"),function(c){var pt=p.getPointAtLength(len*parseFloat(c.getAttribute("data-t")));c.setAttribute("cx",pt.x.toFixed(1));c.setAttribute("cy",pt.y.toFixed(1))})})}
-function miniRoute(k,fromPct){var h='<div class="mini" aria-hidden="true">';for(var j=0;j<=NST;j++){h+='<i class="'+(j<k&&j<=S.at?"done":"")+(j===k?" to":"")+'" style="left:'+(j/NST*100)+'%"></i>'}
+/* both steppers share one scale: the start at 0%, stops 1 to 5, the destination at 100% */
+function stopPct(k){return (k+1)/(NST+1)*100}
+function routePct(u){return clamp((u+1)/(NST+1),0,1)*100}
+function miniRoute(k,fromPct){var h='<div class="mini" aria-hidden="true"><em style="width:'+fromPct.toFixed(1)+'%"></em>';for(var j=0;j<=NST;j++){h+='<i class="'+(j<k&&j<=S.at?"done":"")+(j===k?" to":"")+'" style="left:'+stopPct(j).toFixed(3)+'%"></i>'}
   return h+'<b style="left:'+fromPct.toFixed(1)+'%"></b></div>'}
 
 /* what each branch chip opens: what the topic is about, and what the workshop will cover */
@@ -753,9 +757,9 @@ function travelTo(k){k=clamp(k,0,NST);var target=S.anim?S.anim.k:S.at;if(k===tar
   setStationLights(-1,k>S.at?S.at:k-1);
   if(R)R.setDestination(k===NST?"DESTINATION":"STOP "+(k+1));
   if(REDUCE){stage.classList.add("fading");setTimeout(function(){S.s=to;S.hb=S.heading;S.ov=0;S.anim=null;arrive(k);stage.classList.remove("fading")},250);return}
-  var dur=clamp(1400+dist*10,2600,6400),fromPct=clamp(uOf(from),0,NST)/NST*100;
+  var dur=clamp(1400+dist*10,2600,6400),fromPct=routePct(uOf(from));
   S.anim={from:from,to:to,t0:performance.now(),dur:dur,k:k,a:clamp(650/dur,.12,.3)};
-  showPanel(travelHTML(k,fromPct),false,function(){var m=panel.querySelector(".mini b");if(!m)return;void m.offsetWidth;m.style.transition="left "+Math.max(300,dur-260)+"ms cubic-bezier(.5,0,.3,1)";m.style.left=(k/NST*100)+"%"});updateChipStates();updateButtons()}
+  showPanel(travelHTML(k,fromPct),false);updateChipStates();updateButtons()}
 function arrive(k){S.at=k;S.anim=null;S.ever=true;updateChipStates();updateButtons();scrollChipIntoView(k);
   if(k===NST){setStationLights(99,NST);showPanel(finaleHTML(),true);S.mode="overview";
     setTimeout(function(){if(S.at===NST){finale.classList.add("show");S.finaleShown=true;frameFinale()}},REDUCE?0:1800);
@@ -1050,7 +1054,7 @@ document.addEventListener("keydown",function(e){var tg=e.target,tag=tg&&tg.tagNa
   else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();userAct();prev()}
   else if(e.key==="Home"){e.preventDefault();userAct();restart()}
   else if((e.key==="f"||e.key==="F")&&fsOk){toggleFs()}});
-var dots=[];for(var di=0;di<NST;di++){(function(k){var dd=document.createElement("button");dd.type="button";dd.className="cdot";dd.style.left=((k+1)*100/NST)+"%";dd.setAttribute("aria-label","Go to stop "+(k+1)+": "+ST[k].title);dd.title=ST[k].title;
+var dots=[];for(var di=0;di<=NST;di++){(function(k){var dd=document.createElement("button");dd.type="button";dd.className="cdot"+(k===NST?" end":"");dd.style.left=stopPct(k)+"%";dd.setAttribute("aria-label",k===NST?"Go to the destination":"Go to stop "+(k+1)+": "+ST[k].title);dd.title=k===NST?"Destination":ST[k].title;
   dd.addEventListener("click",function(){userAct();travelTo(k)});$("ctrack").appendChild(dd);dots.push(dd)})(di)}
 $("ctrack").removeAttribute("aria-hidden");
 
@@ -1072,7 +1076,9 @@ function frame(now){var dt=Math.min(.05,(now-last)/1000);last=now;
     if(showPins){for(var k=0;k<NST;k++){var w=R.stopWorld(k),q=R.project(w.x,w.y+2,w.z);pinEls[k].style.left=q.x+"px";pinEls[k].style.top=q.y+"px"}
       var dw=R.destWorld(),q2=R.project(dw.x,dw.y,dw.z);endPin.style.left=q2.x+"px";endPin.style.top=q2.y+"px"}}
   var u=uOf(S.s);updatePill(u);
-  var pct=Math.round(clamp((u+1)/NST,0,1)*100);if(pct!==lastPct){lastPct=pct;$("progNum").textContent=pct+"%";$("cfill").style.width=pct+"%";dots.forEach(function(d,k){d.classList.toggle("done",pct>=(k+1)*100/NST-.5)})}
+  var rp=routePct(u),pct=Math.round(rp);
+   /* the travel card's small route follows the same live position as the footer track */
+   if(S.anim){var mb=panel.querySelector(".mini b"),mf=panel.querySelector(".mini em");if(mb){mb.style.left=rp.toFixed(2)+"%";mf.style.width=rp.toFixed(2)+"%";[].forEach.call(panel.querySelectorAll(".mini i"),function(d,j){d.classList.toggle("done",rp>=stopPct(j)-.5)})}}if(pct!==lastPct){lastPct=pct;$("progNum").textContent=pct+"%";$("cfill").style.width=rp.toFixed(2)+"%";dots.forEach(function(d,k){d.classList.toggle("done",rp>=stopPct(k)-.5)})}
   var no=S.at===NST?99:clamp(Math.round(u),0,NST-1);if(no!==lastNo&&S.ever){lastNo=no;var sn=$("stno");
     if(no===99){sn.hidden=true;$("cstat").textContent="Destination"}else{sn.hidden=false;$("stnoB").textContent=String(no+1).padStart(2,"0");$("stnoS").textContent="of "+String(NST).padStart(2,"0");$("cstat").textContent="Stop "+(no+1)+" of "+NST}}
   requestAnimationFrame(frame)}
