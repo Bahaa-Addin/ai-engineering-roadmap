@@ -1,0 +1,2808 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Session 1: How AI behaves</title>
+<meta name="description" content="Demystifying AI engineering for developers, workshop session 1 of 5: How AI behaves. 45 minutes of live experiments, animated explainers and runnable JavaScript.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Vodafone brand: the licensed Vodafone typeface is used when it is installed on the presenting machine; Nunito Sans is the open fallback */
+@font-face{font-family:"VF";font-weight:400;src:local("Vodafone Rg"),local("VodafoneRg-Regular"),local("Vodafone Regular"),local("Vodafone")}
+@font-face{font-family:"VF";font-weight:700;src:local("Vodafone Rg Bold"),local("VodafoneRg-Bold"),local("Vodafone Bold"),local("Vodafone ExB")}
+@font-face{font-family:"VF";font-weight:800;src:local("Vodafone ExB"),local("VodafoneExB-Regular"),local("Vodafone ExtraBold"),local("Vodafone Rg Bold")}
+:root{--paper:#FFFFFF;--grid:#F2F2F2;--ink:#25282B;--ink2:#3A3D40;--muted:#666666;--scarlet:#E60000;--teal:#007C92;--amber:#D18300;--line:#D9D9D9;--white:#FFFFFF;--soft:#F4F4F4;
+  --fd:"VF","Nunito Sans",system-ui,sans-serif;--fs:"VF","Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--fm:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--fs);color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;overflow:hidden}
+a{color:var(--ink);text-decoration-color:var(--scarlet);text-underline-offset:3px}
+button{font-family:inherit}
+/* ---------- chrome ---------- */
+.top{position:fixed;left:0;right:0;top:0;height:46px;display:flex;align-items:center;gap:12px;padding:0 18px;background:#fff;border-bottom:1px solid var(--line);z-index:20}
+.top .logo{height:30px;width:auto;flex:none;display:block}
+.top .sess{font:700 16px var(--fd);white-space:nowrap}
+.top .series{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.route{display:flex;align-items:center;gap:0;flex:1;min-width:0;max-width:560px;margin-left:auto}
+.route i{flex:1;height:3px;background:var(--line);position:relative}
+.route i.done{background:var(--ink)}
+.route span{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);background:var(--white);font:700 12px var(--fs);display:grid;place-items:center;color:var(--muted);flex:none}
+.route span.done{border-color:var(--ink);background:var(--ink);color:#fff}
+.route span.here{border-color:var(--scarlet);background:var(--scarlet);color:#fff;box-shadow:0 0 0 5px rgba(230,0,0,.18);animation:pulse 2.2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 9px rgba(230,0,0,.06)}}
+.prog{position:fixed;left:0;top:46px;height:3px;background:var(--scarlet);z-index:21;transition:width .4s}
+.bot{position:fixed;left:0;right:0;bottom:0;height:50px;display:flex;align-items:center;gap:10px;padding:0 14px;background:#fff;border-top:1px solid var(--line);z-index:20;font-size:14px}
+.bot .chap{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.bot .num{font:600 14px var(--fm);color:var(--ink);white-space:nowrap}
+.nb{border:2px solid var(--ink);background:var(--white);border-radius:999px;height:34px;min-width:34px;padding:0 12px;font:600 14px var(--fs);cursor:pointer;color:var(--ink)}
+.nb.go{background:var(--ink);color:#fff}
+.nb:focus-visible,.btn:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--scarlet);outline-offset:2px}
+/* ---------- slides ---------- */
+.deck{position:fixed;left:0;right:0;top:49px;bottom:50px;overflow:hidden}
+.slide{position:absolute;inset:0;overflow:auto;padding:26px 48px 30px;scroll-behavior:smooth;visibility:hidden;transform:translateY(100%);transition:transform .65s cubic-bezier(.7,0,.25,1),visibility 0s linear .65s;background:var(--paper)}
+.slide.above{transform:translateY(-100%)}
+.slide.on{visibility:visible;transform:none;transition:transform .65s cubic-bezier(.7,0,.25,1),visibility 0s}
+.slide>.in{max-width:1220px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
+.slide.top-align>.in{justify-content:flex-start}
+.kick{font:600 14px var(--fs);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.kick b{color:var(--scarlet)}
+.t{font-family:var(--fd);font-weight:800;color:var(--scarlet);font-size:clamp(34px,5.4vw,72px);line-height:.98;letter-spacing:-.035em;margin:0 0 12px;padding-bottom:.1em;max-width:20ch}
+.t.xl{font-size:clamp(46px,8vw,112px);max-width:13ch}
+.t.ink{color:var(--ink)}
+.on .t{animation:wipe .9s cubic-bezier(.2,.7,.1,1) both}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0);transform:translateX(-12px)}to{clip-path:inset(0 0 0 0);transform:none}}
+h3{font-family:var(--fd);font-weight:800;font-size:24px;letter-spacing:-.01em;margin:0 0 10px;color:var(--ink)}
+h4{font:600 15px var(--fs);margin:0 0 6px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.lede{font-size:21px;line-height:1.45;max-width:60ch;margin:0 0 20px}
+p,li{font-size:17.5px;line-height:1.55;max-width:66ch}
+p{margin:0 0 12px}
+ul,ol{padding-left:1.15em;margin:6px 0 12px}
+.muted{color:var(--muted)}
+.small{font-size:15px}
+.red{color:var(--scarlet)} .teal{color:var(--teal)} .amber{color:var(--amber)}
+code,kbd{font-family:var(--fm);font-size:.9em;background:var(--white);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.quote{font-family:var(--fd);font-weight:500;font-size:clamp(22px,2.6vw,32px);line-height:1.2;max-width:32ch;border-left:6px solid var(--scarlet);padding-left:18px;margin:16px 0}
+.quote small{display:block;font:400 15px var(--fs);color:var(--muted);margin-top:8px}
+.cols{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:start}
+.cols.even{grid-template-columns:1fr 1fr}
+.cols.three{grid-template-columns:repeat(3,1fr);gap:18px}
+.cols.wide{grid-template-columns:.8fr 1.2fr}
+.panel{background:rgba(255,255,255,.9);border:1.5px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
+.panel.ink{background:var(--ink);color:#fff;border-color:var(--ink)}
+.panel.ink h3,.panel.ink h4{color:#fff}
+.panel.red{border-color:var(--scarlet);border-width:2px}
+.panel+.panel{margin-top:14px}
+.cols>.panel+.panel{margin-top:0}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font:600 15px var(--fs);padding:9px 16px;border-radius:999px;border:2px solid var(--ink);background:var(--white);color:var(--ink);cursor:pointer;line-height:1.1}
+.btn:hover{background:var(--soft)}
+.btn.go{background:var(--ink);color:#fff}
+.btn.go:hover{background:var(--ink2)}
+.btn.sm{font-size:13.5px;padding:6px 12px}
+.btn:disabled{opacity:.45;cursor:default}
+textarea,input[type=text],input[type=url],input[type=number]{width:100%;font:14px/1.45 var(--fm);border:1.5px solid var(--line);border-radius:8px;padding:9px 10px;background:var(--white);color:var(--ink)}
+textarea{min-height:86px;resize:vertical}
+input[type=range]{accent-color:var(--scarlet);width:100%}
+label.seg{font-size:15px;margin-right:12px;cursor:pointer;white-space:nowrap}
+.tag{display:inline-flex;align-items:center;gap:6px;font:600 12.5px var(--fs);letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:999px;border:1.5px solid currentColor;margin:0 0 12px}
+.tag::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.tag.ill{color:var(--amber)} .tag.meas{color:var(--teal)} .tag.pub{color:var(--ink)} .tag.sim{color:#6A4C93} .tag.exp{color:var(--scarlet)}
+.src{font-size:13.5px;color:var(--muted);margin:14px 0 0;max-width:none}
+.src a{color:var(--muted)}
+cite{font-style:normal}
+cite a{font:600 12.5px var(--fm);color:var(--ink);background:var(--white);border:1px solid var(--line);border-radius:5px;padding:1px 6px;text-decoration:none;white-space:nowrap}
+cite a:hover{border-color:var(--scarlet);color:var(--scarlet)}
+cite .ct{font:600 12.5px var(--fm);background:var(--white);border:1px dashed var(--line);border-radius:5px;padding:1px 6px;white-space:nowrap}
+/* animation primitives: restart whenever a slide becomes active */
+.rv{opacity:0;transform:translateY(14px)}
+.on .rv{animation:rise .6s cubic-bezier(.2,.7,.1,1) both;animation-delay:calc(var(--i,0)*110ms + 150ms)}
+@keyframes rise{to{opacity:1;transform:none}}
+.pop{opacity:0}
+.on .pop{animation:popin .45s cubic-bezier(.3,1.4,.5,1) both;animation-delay:calc(var(--i,0)*90ms + 200ms)}
+@keyframes popin{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.on .rv,.on .pop,.on .t{animation:none;opacity:1;transform:none}.rv,.pop{opacity:1;transform:none}}
+/* big numbers */
+.big{font-family:var(--fd);font-weight:800;font-size:clamp(54px,8vw,112px);line-height:.9;letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums}
+.big.red{color:var(--scarlet)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:10px 0}
+.stat{background:rgba(255,255,255,.9);border:1.5px solid var(--line);border-radius:12px;padding:16px 18px}
+.stat b{display:block;font:800 clamp(38px,4.6vw,60px)/1 var(--fd);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat b.r{color:var(--scarlet)} .stat b.t2{color:var(--teal)}
+.stat b span{display:inline;font:inherit;color:inherit;margin:0}
+.stat>span{display:block;font-size:15.5px;line-height:1.4;margin-top:6px;color:var(--ink)}
+/* horizontal bars */
+.hbars{display:flex;flex-direction:column;gap:9px;margin:8px 0}
+.hb{display:grid;grid-template-columns:minmax(120px,210px) 1fr 70px;gap:10px;align-items:center;font-size:15px}
+.hb .l{line-height:1.25}
+.hb .tr{height:24px;background:rgba(198,207,220,.45);border-radius:5px;overflow:hidden}
+.hb .f{display:block;height:100%;width:0;background:var(--ink);border-radius:5px;transition:width 1.1s cubic-bezier(.2,.7,.1,1)}
+.hb.r .f{background:var(--scarlet)} .hb.t2 .f{background:var(--teal)} .hb.a .f{background:var(--amber)} .hb.g .f{background:#9AA6BA}
+.hb .v{text-align:right;font:600 15px var(--fm);font-variant-numeric:tabular-nums}
+/* token bars (next-token) */
+.bars{display:flex;flex-direction:column;gap:6px}
+.bar{display:grid;grid-template-columns:130px 1fr 56px;gap:10px;align-items:center;font-size:15px}
+.bar .fill{height:22px;border-radius:4px;background:var(--ink);width:0;transition:width .45s cubic-bezier(.2,.7,.1,1),background .3s}
+.bar.hit .fill{background:var(--scarlet)}
+.bar .tok{font-family:var(--fm);white-space:pre;overflow:hidden;text-overflow:ellipsis}
+.bar .num{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.chip{display:inline-block;font:600 15px var(--fm);padding:6px 9px;margin:3px 3px 3px 0;border-radius:6px;border:1.5px solid var(--ink);background:var(--white);animation:popin .28s both}
+.chip.byte{border-color:var(--scarlet);color:var(--scarlet)}
+.chip.ghost{border-style:dashed;color:var(--muted);border-color:var(--line)}
+/* tables */
+table.tbl{border-collapse:collapse;width:100%;font-size:16px}
+table.tbl th{text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid var(--ink);padding:8px 10px;vertical-align:bottom}
+table.tbl td{border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:top}
+table.tbl tr.hl td{background:rgba(230,0,0,.07)}
+/* experiment widget */
+.exp{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.exp pre.prompt{font:13.5px/1.5 var(--fm);background:var(--white);border:1.5px solid var(--line);border-left:5px solid var(--scarlet);padding:11px 13px;border-radius:8px;white-space:pre-wrap;word-break:break-word;max-height:230px;overflow:auto;margin:6px 0 9px;color:var(--ink)}
+.plabel{font-weight:600;font-size:15px;margin:10px 0 0}
+.verdict{font-family:var(--fd);font-weight:800;font-size:25px;line-height:1.15;margin:12px 0 4px;min-height:30px}
+.verdict.ok{color:var(--teal)} .verdict.bad{color:var(--scarlet)} .verdict.meh{color:var(--amber)}
+.note{font-size:14.5px;color:var(--muted);margin:6px 0 0;max-width:62ch}
+details.ev{margin-top:10px;font-size:14.5px}
+details.ev summary{cursor:pointer;font-weight:600;color:var(--muted)}
+.evx{font:13px/1.5 var(--fm);white-space:pre-wrap;word-break:break-word;background:var(--white);border:1px solid var(--line);border-radius:8px;padding:9px 11px;max-height:190px;overflow:auto;margin-top:6px}
+.evx mark{background:rgba(230,0,0,.18);color:var(--ink);border-radius:3px;padding:0 1px}
+.evx mark.g{background:rgba(0,124,146,.2)}
+.ovr{display:none;align-items:center;gap:8px;margin-top:8px}
+.room{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin-top:12px;padding-top:10px;border-top:1.5px dashed var(--line);font-size:14.5px}
+.room .rc{display:inline-flex;align-items:center;gap:4px}
+.room .rc .btn{padding:4px 9px;font-size:13px}
+.qr{display:flex;gap:12px;align-items:center;margin-top:10px}
+.qr canvas{width:92px;height:92px;image-rendering:pixelated;border-radius:6px;cursor:zoom-in;border:1.5px solid var(--line)}
+.qr.zoom{position:fixed;inset:0;background:rgba(37,40,43,.92);z-index:100;justify-content:center;flex-direction:column}
+.qr.zoom canvas{width:min(78vmin,620px);height:min(78vmin,620px);cursor:zoom-out}
+.qr.zoom .note{color:#fff;font-size:20px;text-align:center}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.tabs button{font:600 13.5px var(--fs);padding:6px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--white);cursor:pointer;color:var(--ink)}
+.tabs button[aria-selected=true]{border-color:var(--ink);background:var(--ink);color:#fff}
+/* code cells */
+.cell{background:var(--ink);border-radius:12px;padding:12px 14px 12px;color:#E8ECF3;min-width:0}
+.cell .ch{display:flex;align-items:center;gap:8px;margin-bottom:8px;font:600 12.5px var(--fs);color:#9FB0CC;text-transform:uppercase;letter-spacing:.06em}
+.cell .ch .sp{flex:1}
+.cell textarea{background:#0E1830;color:#E8ECF3;border:1px solid #2A3B60;font:13px/1.55 var(--fm);min-height:120px;tab-size:2;white-space:pre;overflow:auto}
+.cell .out{margin-top:8px;font:12.5px/1.5 var(--fm);color:#8FD3DF;white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto;min-height:22px}
+.cell .out .er{color:#FF8A84}
+.cell .out table{border-collapse:collapse;margin:4px 0}
+.cell .out td,.cell .out th{border:1px solid #33456b;padding:2px 8px;text-align:left}
+.cell .out th{color:#E8ECF3}
+.cell .btn{border-color:#8FD3DF;background:transparent;color:#8FD3DF;padding:5px 12px;font-size:13px}
+.cell .btn:hover{background:#3A3D40}
+/* dot grids and misc visuals */
+.dots{display:grid;gap:6px;margin:10px 0}
+.dots i{aspect-ratio:1;border-radius:50%;background:var(--line);transition:background .25s,transform .25s}
+.dots i.ok{background:var(--teal)} .dots i.bad{background:var(--scarlet)} .dots i.ink{background:var(--ink)} .dots i.am{background:var(--amber)}
+.dots i.new{animation:popin .35s both}
+.chain{display:flex;flex-wrap:wrap;gap:5px;margin:12px 0}
+.chain i{width:16px;height:16px;border-radius:50%;background:var(--line);transition:background .15s}
+.chain i.ok{background:var(--teal)} .chain i.fail{background:var(--scarlet)} .chain i.saved{background:var(--amber)}
+.card{background:rgba(255,255,255,.92);border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;min-width:0}
+.card h3{font-size:21px;margin-bottom:6px}
+.card .n{font:800 15px var(--fd);color:var(--scarlet)}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.lights{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;margin:8px 0}
+.light{font-size:15px;display:flex;gap:8px;align-items:center}
+.light b{width:14px;height:14px;border-radius:50%;background:var(--line);flex:none}
+.light.ok b{background:var(--teal)} .light.bad b{background:var(--scarlet)}
+svg text{font-family:var(--fs)}
+svg .mono{font-family:var(--fm)}
+.svgbox{width:100%;height:auto;display:block}
+.agenda{list-style:none;padding:0;margin:0;columns:2;column-gap:28px}
+.agenda li{break-inside:avoid;display:grid;grid-template-columns:52px 1fr;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:16px;max-width:none}
+.agenda li b{font:600 14px var(--fm);color:var(--scarlet)}
+.recap{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0}
+.recap div{border:1.5px solid var(--line);border-radius:10px;padding:12px;background:rgba(255,255,255,.85);font-size:14.5px;line-height:1.35}
+.recap div b{display:block;font:800 16px var(--fd);margin-bottom:4px}
+.recap div.here{border-color:var(--scarlet);border-width:2px;box-shadow:0 6px 18px rgba(230,0,0,.12)}
+.recap div.done{opacity:.75}
+.recap div i{font-style:normal;font:700 12px var(--fm);color:var(--scarlet)}
+.take{list-style:none;padding:0;counter-reset:t}
+.take li{counter-increment:t;position:relative;padding:10px 0 10px 52px;border-bottom:1px solid var(--line);font-size:18.5px;max-width:none}
+.take li::before{content:counter(t);position:absolute;left:0;top:8px;width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;font:800 17px var(--fd);display:grid;place-items:center}
+.take li b{color:var(--scarlet)}
+.srcs{columns:2;column-gap:30px;font-size:15px}
+.srcs li{break-inside:avoid;margin-bottom:8px;font-size:15px;line-height:1.4}
+.srcs li .id{font:600 12.5px var(--fm);color:var(--scarlet);margin-right:6px}
+/* notes */
+.notes{display:none;margin-top:22px;border:2px dashed var(--amber);border-radius:12px;padding:12px 16px;background:rgba(255,248,230,.94);font-size:15.5px;max-width:none}
+.notes::before{content:"Facilitator notes";display:block;font:700 12.5px var(--fs);letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:4px}
+body.shownotes .notes{display:block}
+/* overview */
+.ov{position:fixed;inset:49px 0 50px 0;overflow:auto;background:var(--paper);z-index:15;padding:26px 34px;display:none}
+body.overview .ov{display:block}
+.ov h2{font:800 30px var(--fd);margin:0 0 4px;color:var(--scarlet)}
+.ov ol{list-style:none;padding:0;margin:14px 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.ov li button{width:100%;text-align:left;border:1.5px solid var(--line);background:var(--white);border-radius:10px;padding:10px 12px;cursor:pointer;font:15px var(--fs);color:var(--ink);display:grid;grid-template-columns:30px 1fr 44px;gap:6px;align-items:start}
+.ov li button:hover{border-color:var(--ink)}
+.ov li button.cur{border-color:var(--scarlet);border-width:2px}
+.ov li button em{font:600 12px var(--fm);color:var(--muted);font-style:normal}
+.ov li button .m{font:600 12.5px var(--fm);color:var(--scarlet);text-align:right}
+.ov li button .c{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.help{font-size:14px;color:var(--muted)}
+/* responsive */
+@media (max-width:900px){
+  .slide{padding:22px 16px 30px}
+  .cols,.cols.even,.cols.wide,.cols.three,.exp,.grid5,.grid4,.grid3{grid-template-columns:1fr}
+  .grid2{grid-template-columns:1fr}
+  .recap{grid-template-columns:1fr 1fr}
+  .agenda,.srcs{columns:1}
+  .hb{grid-template-columns:110px 1fr 58px}
+  .top .route{display:none}
+  .lights{grid-template-columns:1fr}
+  .bot .chap{display:none}
+}
+@media print{
+  body{overflow:visible}.top,.bot,.prog,.ov{display:none}
+  .deck{position:static;overflow:visible}.slide{position:relative;display:block;page-break-after:always;overflow:visible;height:auto;visibility:visible;transform:none}
+  .rv,.pop{opacity:1;transform:none}
+}
+
+/* ---------- experiment widget, presentation mode ---------- */
+.exp{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+.exp pre.prompt{font:15px/1.5 var(--fm);max-height:250px}
+.ex-go{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.ex-go .qr{margin:0}
+.ex-go .qr canvas{width:84px;height:84px}
+.ex-go .qr .note{max-width:9em;margin:0}
+.ex-vis{background:var(--soft);border-radius:16px;padding:14px 16px;min-height:120px;margin-bottom:14px}
+.ex-vis svg{width:100%;height:auto;display:block}
+.ex-room .plabel{margin:0 0 8px}
+.ex-hands{display:flex;gap:10px;flex-wrap:wrap}
+.hand{flex:1;min-width:120px;border:2px solid var(--ink);background:#fff;border-radius:16px;padding:10px 12px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;font:600 15px var(--fs);color:var(--ink);transition:transform .15s}
+.hand b{font:800 34px/1 var(--fd);min-width:1.2em}
+.hand.ok{border-color:var(--teal)} .hand.ok b{color:var(--teal)}
+.hand.bad{border-color:var(--scarlet)} .hand.bad b{color:var(--scarlet)}
+.hand:hover{background:var(--soft)}
+.hand.bump{animation:bump .35s}
+@keyframes bump{40%{transform:scale(1.06)}}
+.ex-strip{display:flex;height:30px;border-radius:8px;overflow:hidden;margin-top:10px;background:var(--soft);gap:2px}
+.ex-strip:empty{display:none}
+.ex-strip i{display:flex;align-items:center;justify-content:center;font:700 13px var(--fs);font-style:normal;color:#fff;background:var(--muted);transition:flex .5s;white-space:nowrap;overflow:hidden;min-width:0}
+.ex-strip i.ok{background:var(--teal)} .ex-strip i.bad{background:var(--scarlet)}
+.ex-strip em{color:var(--muted);font-size:14px;padding:5px 10px}
+.ex-strip.big{height:38px;margin:0}
+.undo{border:0;background:none;color:var(--muted);font-size:13px;cursor:pointer;padding:6px 0;text-decoration:underline}
+.ex-check{margin-top:14px;font-size:14px;border-top:1px solid var(--line);padding-top:8px}
+.ex-check summary{cursor:pointer;color:var(--muted)}
+.ex-check textarea{min-height:80px;margin-top:8px}
+.bd-row{display:grid;grid-template-columns:260px 1fr 200px;gap:14px;align-items:center;margin:10px 0}
+.bd-row b{font:700 17px var(--fd)}
+@media (prefers-reduced-motion:reduce){.slide,.slide.on{transition:none}}
+@media (max-width:900px){.bd-row{grid-template-columns:1fr}}
+
+/* ---------- Session 1 visuals ---------- */
+.big-points p{font-size:22px;line-height:1.4;margin:0 0 16px}
+.big-points .panel{font-size:18px}
+.big-line{font:700 clamp(22px,2.4vw,30px)/1.25 var(--fd);max-width:24ch;margin:0 0 16px}
+
+/* route timeline */
+.tl{position:relative;display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin:26px 0 30px}
+.tl-line{position:absolute;left:4%;right:4%;top:31px;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.tl-line::after{content:"";position:absolute;inset:0;background:var(--scarlet);transform-origin:left;transform:scaleX(0)}
+.on .tl-line::after{animation:grow 1.6s .2s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes grow{to{transform:scaleX(1)}}
+.tl-i{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
+.tl-ic{width:62px;height:62px;border-radius:50%;background:#fff;border:3px solid var(--ink);display:grid;place-items:center;font-size:28px}
+.tl-i b{font:700 16px/1.2 var(--fd)}
+.how{display:flex;align-items:stretch;gap:14px;flex-wrap:wrap}
+.how>div{flex:1;min-width:180px;background:var(--soft);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:2px}
+.how .ic{font-size:34px}
+.how b{font:700 20px var(--fd)}
+.how span:last-child{color:var(--muted);font-size:15px}
+.how>i{align-self:center;font-style:normal;font-size:28px;color:var(--scarlet)}
+
+/* mindset flip rows */
+.flip{display:grid;gap:10px;max-width:1080px}
+.fl-h,.fl-r{display:grid;grid-template-columns:1fr 50px 1.15fr;align-items:center;gap:8px}
+.fl-h span{font:700 15px var(--fs);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.fl-r>span{font-size:20px;padding:12px 16px;border-radius:12px;background:var(--soft)}
+.fl-r>span.ai{background:#fff;border:2px solid var(--scarlet)}
+.fl-r>span.ai b{color:var(--scarlet)}
+.fl-r>i{font-style:normal;font-size:26px;text-align:center;color:var(--scarlet)}
+
+/* non-determinism replay */
+.nd-cv{width:100%;height:300px;display:block}
+.nd-foot{display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-size:15px;color:var(--muted)}
+.nd-foot .mono{font-size:16px;color:var(--ink);min-width:7em}
+.nd-foot b{font-size:18px}
+.nd-foot .btn{margin-left:auto}
+
+/* order changes the sum */
+.chainviz{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin-top:14px}
+.chainviz>div{display:flex;align-items:center;gap:10px;background:var(--soft);border-radius:12px;padding:8px 14px}
+.chainviz .ic{font-size:22px}
+.chainviz .mono{font-size:15px;font-weight:600}
+.chainviz b{font:700 17px var(--fd)}
+.chainviz span:last-child{color:var(--muted);font-size:14px}
+.chainviz>i{font-style:normal;color:var(--scarlet);font-size:18px;margin-left:22px}
+pre.test{font:16px/1.4 var(--fm);padding:14px 16px;border-radius:12px;margin:0 0 10px;white-space:pre-wrap;display:flex;gap:12px}
+pre.test span{font-weight:800;font-size:20px}
+pre.test.bad{background:#FDE6E6;color:var(--ink)} pre.test.bad span{color:var(--scarlet)}
+pre.test.ok{background:#E5F2F4;color:var(--ink)} pre.test.ok span{color:var(--teal)}
+
+/* segmented toggle */
+.seg2{display:inline-flex;border:2px solid var(--ink);border-radius:999px;overflow:hidden;margin:10px 0}
+.seg2 button{border:0;background:#fff;padding:8px 14px;font:600 14px var(--fs);cursor:pointer;color:var(--ink)}
+.seg2 button[aria-pressed=true]{background:var(--ink);color:#fff}
+
+/* silent failure */
+.term{font:15px/1.5 var(--fm);border-radius:12px;padding:16px 18px}
+.term.err{background:#2B0F0F;color:#FFB3B3}
+.term.okk{background:#0F2A2E;color:#9FE0EA}
+.blink{color:#FF4D4D;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.greet{font:700 34px var(--fd);margin-top:14px;padding:18px;border:2px dashed var(--line);border-radius:12px;text-align:center}
+.on .greet .red{animation:pulse2 1.6s 1.2s 2}
+@keyframes pulse2{50%{background:#FDE6E6}}
+
+/* cost stack */
+.stack{margin:16px 0 8px}
+.bar-st{display:flex;height:42px;border-radius:8px;overflow:hidden;transition:width .4s;min-width:30px;margin-bottom:6px}
+.bar-st i{transition:flex .4s}
+.stack-key{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.stack-key i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* habits */
+.habits .ic{font-size:34px;display:block;margin-bottom:4px}
+.habits h3{font-size:22px}
+
+/* experiment visuals */
+.vl{font-size:15px;color:var(--muted);margin:0 0 6px}
+.vl b{color:var(--ink)}
+.letters{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:12px}
+.letters span{width:24px;height:30px;display:grid;place-items:center;background:#fff;border-radius:5px;font:600 17px var(--fm);opacity:0}
+.letters span.r{background:var(--scarlet);color:#fff}
+.go .letters span{animation:popin .3s both;animation-delay:calc(var(--i)*35ms)}
+.toks{display:flex;flex-wrap:wrap;gap:6px}
+.toks span{display:flex;flex-direction:column;align-items:center;background:var(--ink);color:#fff;border-radius:8px;padding:5px 9px;opacity:0}
+.toks b{font:700 16px var(--fm)}
+.toks small{font:11px var(--fm);opacity:.45}
+.go .toks span{animation:popin .35s both;animation-delay:calc(1s + var(--i)*90ms)}
+.big-n{font:800 30px var(--fd);color:var(--scarlet)!important;vertical-align:-4px}
+.rbars{display:flex;gap:10px;align-items:flex-end;height:150px;margin:6px 0 10px}
+.rb{flex:1;display:flex;flex-direction:column;align-items:center;height:100%}
+.rb .col{flex:1;width:100%;position:relative;display:flex;align-items:flex-end}
+.rb .col i{display:block;width:100%;background:var(--ink);border-radius:6px 6px 0 0;transition:height .5s}
+.rb .col i.hi{background:var(--scarlet)}
+.rb .col s{position:absolute;left:-5px;right:-5px;bottom:20%;border-top:2px dashed var(--teal)}
+.rb b{font:700 15px var(--fd);min-height:1.2em}
+.rb span{font-size:13px;color:var(--muted)}
+.rain{position:relative;height:60px;background:#fff;border-radius:8px;overflow:hidden}
+.rain i{position:absolute;top:0;width:8px;height:8px;border-radius:50%;background:var(--teal);animation:drop 1.2s ease-in forwards}
+@keyframes drop{to{top:48px}}
+.chat{display:flex;flex-direction:column;gap:8px}
+.chat p{margin:0;padding:9px 14px;border-radius:16px;font-size:16px;max-width:80%;opacity:0}
+.chat .me{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:4px}
+.chat .ai{align-self:flex-start;background:#fff;border-bottom-left-radius:4px}
+.chat .ai.bad{border:2px solid var(--scarlet);color:var(--scarlet);font-weight:700}
+.go .chat p,.go .truth{animation:popin .4s both;animation-delay:var(--d)}
+.truth{margin:12px 0 0;font-size:16px;opacity:0}
+.rules6{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rules6 span{background:#fff;border:2px solid var(--teal);border-radius:10px;padding:8px 10px;font-size:15px;font-weight:600;text-align:center;opacity:0}
+.go .rules6 span{animation:popin .3s both;animation-delay:calc(var(--i)*150ms)}
+.go .rules6 span.drop{animation:popin .3s both,dropout .6s 2.2s forwards;animation-delay:calc(var(--i)*150ms),calc(2.2s + var(--i)*200ms)}
+@keyframes dropout{to{border-color:var(--scarlet);color:var(--scarlet);opacity:.35;text-decoration:line-through;transform:translateY(6px) rotate(-3deg)}}
+.loop3{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:14px;font-size:15px}
+.loop3 b{background:var(--ink);color:#fff;border-radius:999px;padding:5px 12px;font-weight:600}
+.loop3 i{font-style:normal;color:var(--scarlet);font-weight:800}
+@media (max-width:900px){.tl{grid-template-columns:repeat(4,1fr)}.tl-line{display:none}.fl-h,.fl-r{grid-template-columns:1fr}.fl-r>i{display:none}}
+#cost .panel label{display:block;margin-top:12px}
+.ex-hands .hand{min-width:96px}
+/* rebuilt Session 1, 2026-11-01 */
+.tl{grid-template-columns:repeat(7,1fr)}
+.letters.sm{gap:2px}
+.letters.sm span{width:15px;height:21px;font-size:12.5px;border-radius:3px}
+.go .letters.sm span{animation-delay:calc(var(--i)*12ms)}
+#cone-ghost{transition:opacity .4s}
+.cone-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.cone-steps>div{background:#fff;border-radius:10px;padding:8px 10px;opacity:.25;transition:opacity .3s,box-shadow .3s}
+.cone-steps>div.on{opacity:1}
+.cone-steps>div.now{box-shadow:0 0 0 2px var(--ink)}
+.cone-steps small{display:block;font-size:12px;color:var(--muted)}
+.cone-steps b{font-size:15px}
+.fixed-list{display:flex;flex-direction:column;gap:8px}
+.fixed-list>div{display:flex;gap:12px;align-items:baseline;background:#fff;border-radius:10px;padding:8px 12px;font-size:16px}
+.fixed-list b{min-width:5.5em;font-size:15px}
+@media (max-width:900px){.cone-steps{grid-template-columns:repeat(2,1fr)}}
+.rot-win{margin:16px 0 8px}
+#rot .panel label{display:block;margin-top:12px}
+.chip.tkc{text-align:center;line-height:1.15}.chip.tkc small{display:block;font:500 11px var(--fm);color:var(--muted);margin-top:2px}
+/* storytelling: prediction hand-off at the end of each concept, act tags on habits */
+.handoff{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;margin:18px 0 0;padding:10px 14px;border-left:4px solid var(--scarlet);background:#FDE6E6;border-radius:0 8px 8px 0;font-size:18px;font-weight:600;line-height:1.35}
+.handoff .hp{font:700 12px var(--fm);letter-spacing:.08em;text-transform:uppercase;color:var(--scarlet)}
+.handoff .hx{margin-left:auto;color:var(--scarlet);white-space:nowrap}
+.habits .card .act{display:inline-block;font:700 11px var(--fm);letter-spacing:.06em;text-transform:uppercase;color:var(--scarlet);margin-top:2px}
+</style></head>
+<body>
+<main class="deck" id="deck">
+<section class="slide" data-min="1" data-chap="Opening" id="title">
+  <p class="kick rv">Demystifying AI engineering for developers · 45 minutes</p>
+  <h1 class="t xl">How AI really behaves</h1>
+  <div class="cols rv" style="--i:2">
+    <div class="panel"><span class="tag ill">Illustrative odds</span>
+      <div id="tt-sent" style="min-height:48px"><span class="chip">The model</span></div>
+      <div class="bars" id="tt-bars" style="margin-top:10px"></div>
+    </div>
+    <p class="quote">Every word an LLM writes is one weighted roll of the dice.</p>
+  </div>
+</section>
+
+<section class="slide" data-min="1.5" data-chap="Opening" id="route">
+  <p class="kick">Today's story</p>
+  <h2 class="t">Five things your AI teammate won't tell you</h2>
+  <div class="tl" id="rt-tl"></div>
+  <div class="how rv" style="--i:9">
+    <div class="pop" style="--i:10"><span class="ic">📱</span><b>Scan or click</b><span>the prompt opens in ChatGPT or Claude</span></div>
+    <i class="pop" style="--i:11">→</i>
+    <div class="pop" style="--i:12"><span class="ic">🤖</span><b>See what it says</b><span>on your phone or on the big screen</span></div>
+    <i class="pop" style="--i:13">→</i>
+    <div class="pop" style="--i:14"><span class="ic">✋</span><b>Hands up</b><span>we count the room's results live</span></div>
+  </div>
+</section>
+
+<section class="slide" data-min="2" data-chap="The mindset shift" id="mindset">
+  <p class="kick">One mindset shift</p>
+  <h2 class="t">You build it, then you discover its behaviour</h2>
+  <div class="flip" id="ms-rows"></div>
+</section>
+
+<section class="slide" data-min="3" data-chap="Act 1: it guesses" id="nexttoken">
+  <p class="kick">Act 1 · it guesses, one token at a time</p>
+  <h2 class="t">It predicts the next token. That's all.</h2>
+  <div class="cols">
+    <div class="panel"><span class="tag ill">Illustrative odds</span>
+      <pre class="prompt" style="border-left-color:var(--ink);max-height:none;font-size:17px" id="nt-code"></pre>
+      <div class="bars" id="nt-bars"></div>
+      <div class="row" style="margin-top:12px"><label for="nt-temp" class="small" style="min-width:150px">Temperature <b id="nt-tv">1.0</b></label><input type="range" id="nt-temp" min="0.1" max="2" step="0.1" value="1" style="flex:1"></div>
+      <div class="row" style="margin-top:10px"><button class="btn go" type="button" id="nt-roll">Roll once</button><button class="btn" type="button" id="nt-roll10">Roll 10 times</button><button class="btn" type="button" id="nt-reset">Reset</button></div>
+      <div class="chain" id="nt-hist" aria-label="Roll history"></div>
+      <p class="verdict" id="nt-out" aria-live="polite"></p>
+    </div>
+    <div class="rv big-points" style="--i:2">
+      <p>Score every token. Roll weighted dice. Append. Repeat <cite data-s="P04"></cite>.</p>
+      <p><b>Temperature</b> flattens or sharpens the dice.</p>
+      <p class="red"><code>res.data</code> on a fetch response is <code>undefined</code>, and it looks just as confident.</p>
+    </div>
+  </div>
+  <p class="handoff rv" style="--i:6"><span class="hp">Prediction</span> Describe a small world it has to keep track of. It will write the most likely sentence, not the true one. <span class="hx">→ Experiment 1</span></p>
+</section>
+
+<section class="slide top-align" data-min="4" data-chap="Act 1: it guesses" id="exp-cone">
+  <p class="kick"><b>Act 1 · Experiment 1</b> · testing the prediction</p>
+  <h2 class="t">The table that never ends</h2>
+  <div id="m-cone"></div>
+</section>
+
+<section class="slide" data-min="1.5" data-chap="Act 2: it can't see itself" id="tokens">
+  <p class="kick">Act 2 · it can't see letters</p>
+  <h2 class="t">It never reads your words</h2>
+  <div class="cols">
+    <div class="panel">
+      <input type="text" id="tk-in" value="strawberry" aria-label="Type anything to tokenize">
+      <div class="row" style="margin-top:8px"><button class="btn sm" type="button" data-tk="strawberry">strawberry</button><button class="btn sm" type="button" data-tk="unbelievable">unbelievable</button><button class="btn sm" type="button" data-tk="useEffect(() => {})">useEffect</button><button class="btn sm" type="button" data-tk="برمجة">برمجة</button></div>
+      <div id="tk-out" style="margin-top:14px;min-height:56px"></div>
+      <p id="tk-count" class="lede" style="margin:8px 0 0"></p>
+      <p class="note">The real o200k tokenizer behind GPT-4o (about 200,000 pieces), running in this page.</p>
+    </div>
+    <div class="rv big-points" style="--i:2">
+      <p>The model sees token <b>IDs</b>, not letters <cite data-s="P04"></cite>.</p>
+      <p>Counting, spelling and rare words all suffer.</p>
+      <p>Arabic text costs more tokens: more money, less context.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-min="2.5" data-chap="Act 2: it can't see itself" id="blackbox">
+  <p class="kick">Act 2 · it can't see itself</p>
+  <h2 class="t">Its explanation is not its mechanism</h2>
+  <div class="cols">
+    <div class="panel">
+      <span class="tag pub">Illustration of a published finding</span>
+      <div class="row"><input type="number" id="bb-a" value="36" min="10" max="99" style="width:90px" aria-label="First number"> <b style="font-size:22px">+</b> <input type="number" id="bb-b" value="59" min="10" max="99" style="width:90px" aria-label="Second number"><button class="btn go" type="button" id="bb-go">Watch it add</button></div>
+      <svg class="svgbox" viewBox="0 0 560 220" id="bb-svg" role="img" aria-label="Two internal paths run in parallel: one estimates the rough size, one computes the last digit exactly. They combine into the answer. Meanwhile the model's own explanation describes school-style carrying."></svg>
+      <p class="note" id="bb-say"></p>
+    </div>
+    <div class="rv big-points" style="--i:2">
+      <p><b>Inside:</b> two parallel paths, rough size and exact last digit <cite data-s="W37"></cite>.</p>
+      <p><b>Its story:</b> "I carried the one" <cite data-s="W37"></cite>.</p>
+      <p class="panel red">"Explain your reasoning" gives you a story, not a trace. Verify the output.</p>
+    </div>
+  </div>
+  <p class="handoff rv" style="--i:6"><span class="hp">Prediction</span> Ask it to count letters and say how. Its account of how will be a story, and it will drop a right answer under pressure. <span class="hx">→ Experiment 2</span></p>
+</section>
+
+<section class="slide top-align" data-min="4" data-chap="Act 2: it can't see itself" id="exp-count">
+  <p class="kick"><b>Act 2 · Experiment 2</b> · testing the prediction</p>
+  <h2 class="t">Count it, then push back</h2>
+  <div id="m-count"></div>
+</section>
+
+<section class="slide" data-min="1" data-chap="Act 2: it can't see itself" id="frozen">
+  <p class="kick">Act 2 · and it doesn't learn from you</p>
+  <h2 class="t">You corrected it. It didn't learn.</h2>
+  <div class="cols">
+    <svg class="svgbox rv" viewBox="0 0 520 250" role="img" aria-label="Training is a loop of predict, measure error and adjust that runs billions of times. Then the weights freeze and inference only reads them.">
+      <circle cx="130" cy="125" r="78" fill="none" stroke="#D9D9D9" stroke-width="3"/>
+      <circle cx="130" cy="125" r="78" fill="none" stroke="#25282B" stroke-width="4" stroke-dasharray="40 450" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 130 125" to="360 130 125" dur="1.6s" repeatCount="indefinite"/></circle>
+      <text x="130" y="38" text-anchor="middle" font-size="15" font-weight="700" fill="#25282B">predict</text>
+      <text x="226" y="172" text-anchor="middle" font-size="15" font-weight="700" fill="#25282B">measure error</text>
+      <text x="36" y="172" text-anchor="middle" font-size="15" font-weight="700" fill="#25282B">adjust</text>
+      <text x="130" y="122" text-anchor="middle" font-size="17" font-weight="800" fill="#E60000">training</text>
+      <text x="130" y="143" text-anchor="middle" font-size="13" fill="#666666">billions of times</text>
+      <path class="draw" data-delay="1.2" d="M215 125 H300" stroke="#25282B" stroke-width="3" marker-end="url(#ar1)"/>
+      <defs><marker id="ar1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#25282B"/></marker></defs>
+      <g class="pop" style="--i:8">
+        <rect x="310" y="70" width="190" height="110" rx="14" fill="#fff" stroke="#007C92" stroke-width="3"/>
+        <text x="405" y="115" text-anchor="middle" font-size="19" font-weight="800" fill="#007C92">❄ frozen</text>
+        <text x="405" y="145" text-anchor="middle" font-size="14" fill="#25282B">your chat never writes back</text>
+      </g>
+    </svg>
+    <div class="rv big-points" style="--i:3">
+      <p>Correcting it in a chat doesn't change the model <cite data-s="P10"></cite>.</p>
+      <p class="panel ink">Anything that looks like "it learned" lives <b>outside</b> the weights: memory files, AGENTS.md. That's Session 2.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-min="2.5" data-chap="Act 3: loaded dice" id="nondet">
+  <p class="kick">Act 3 · its dice don't behave like dice</p>
+  <h2 class="t">Temperature 0 is not a guarantee</h2>
+  <div class="panel" style="padding:12px 16px"><span class="tag pub">Published experiment, replayed</span>
+    <canvas id="nd-cv" class="nd-cv" role="img" aria-label="1,000 identical requests at temperature 0 travel together for 102 tokens, then split at token 103: 992 say Queens, New York and 8 say New York City. In total there were 80 unique completions."></canvas>
+    <div class="nd-foot"><span>1,000 identical requests · temperature 0 · Qwen3-235B</span><span id="nd-tok" class="mono">token 1</span><b class="red" id="nd-uniq"></b><button class="btn sm" type="button" id="nd-replay">Replay</button></div>
+  </div>
+  <div class="grid3 rv" style="--i:3;margin-top:14px">
+    <div class="card"><span class="n">Why 1</span><h3>🎲 Sampling</h3><p class="small">Temperature above 0 rolls dice on purpose <cite data-s="P04"></cite>.</p></div>
+    <div class="card"><span class="n">Why 2</span><h3>🖥 The server</h3><p class="small">Results depend on batch size, so on <b>other people's traffic</b> <cite data-s="W02"></cite>.</p></div>
+    <div class="card"><span class="n">The fix costs</span><h3>26 s → 42 s</h3><p class="small">Batch-invariant kernels make it repeatable, slower <cite data-s="W02"></cite>.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-min="1.5" data-chap="Act 3: loaded dice" id="nondet-code">
+  <p class="kick">Act 3 · why, in one line of code</p>
+  <h2 class="t">Order changes the sum</h2>
+  <div class="cols even">
+    <div>
+      <div class="cell" data-title="Run it"><textarea>console.log((0.1 + 0.2) + 0.3);
+console.log(0.1 + (0.2 + 0.3));</textarea></div>
+      <div class="chainviz" id="nc-chain"></div>
+    </div>
+    <div class="rv" style="--i:3">
+      <h4>So test the meaning, not the text</h4>
+      <pre class="test bad"><span>✗</span>expect(reply).toBe('{"prime": false}')</pre>
+      <pre class="test ok"><span>✓</span>expect(JSON.parse(reply).prime).toBe(false)</pre>
+      <p class="small muted" style="margin-top:10px">Summing the same 8 numbers in different orders gave 102 distinct results <cite data-s="W02"></cite>.</p>
+      <p class="handoff rv" style="--i:6"><span class="hp">Prediction</span> Ask fresh chats for a random number. Most of the room will get the same one. <span class="hx">→ Experiment 3</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="slide top-align" data-min="2" data-chap="Act 3: loaded dice" id="exp-random">
+  <p class="kick"><b>Act 3 · Experiment 3</b> · testing the prediction</p>
+  <h2 class="t">Ask for a random number. Get a favourite.</h2>
+  <div id="m-random"></div>
+</section>
+
+<section class="slide" data-min="3" data-chap="Act 4: recognition wins" id="guess">
+  <p class="kick">Act 4 · it was trained to answer</p>
+  <h2 class="t">Why bluffing beats "I don't know"</h2>
+  <div class="cols">
+    <div class="panel"><span class="tag ill">Computed from the slider</span>
+      <div class="row"><label for="g-p" class="small" style="min-width:190px">How sure is the model? <b id="g-pv">30%</b></label><input type="range" id="g-p" min="0" max="100" value="30" style="flex:1"></div>
+      <div class="seg2" id="g-mode"><button type="button" data-v="0" aria-pressed="true">Wrong answers score 0</button><button type="button" data-v="1" aria-pressed="false">Wrong answers cost a point</button></div>
+      <div class="hbars" id="g-bars"></div>
+      <p class="verdict" id="g-v"></p>
+    </div>
+    <div class="rv" style="--i:2">
+      <p class="big-line">Most benchmarks never punish a wrong guess <cite data-s="W01 W35"></cite>.</p>
+      <h4>SimpleQA, two models <span class="tag pub" style="margin:0 0 0 6px">Published</span></h4>
+      <div class="hbars">
+        <div class="small muted">Accuracy</div>
+        <div class="hb t2" data-v="22" data-max="80"><span class="l">gpt-5-thinking-mini</span><span class="tr"><span class="f"></span></span><span class="v">22%</span></div>
+        <div class="hb" data-v="24" data-max="80"><span class="l">o4-mini</span><span class="tr"><span class="f"></span></span><span class="v">24%</span></div>
+        <div class="small muted" style="margin-top:6px">Confident wrong answers</div>
+        <div class="hb t2" data-v="26" data-max="80" data-delay="500"><span class="l">gpt-5-thinking-mini</span><span class="tr"><span class="f"></span></span><span class="v">26%</span></div>
+        <div class="hb r" data-v="75" data-max="80" data-delay="500"><span class="l">o4-mini</span><span class="tr"><span class="f"></span></span><span class="v">75%</span></div>
+      </div>
+      <p class="small">Sorted by accuracy, the bluffer ranks first <cite data-s="W01"></cite>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-min="0.5" data-chap="Act 4: recognition wins" id="recognition">
+  <p class="kick">Act 4 · recognition switches on the answer</p>
+  <h2 class="t">Familiar name, missing facts</h2>
+  <div class="cols">
+    <svg class="svgbox rv" viewBox="0 0 520 200" role="img" aria-label="Default circuit says I can't answer. Recognising a familiar name switches the default off. If the facts are missing, the model confabulates.">
+      <rect x="10" y="70" width="140" height="60" rx="12" fill="#fff" stroke="#007C92" stroke-width="2.5"/><text x="80" y="98" text-anchor="middle" font-size="14" font-weight="800" fill="#007C92">default:</text><text x="80" y="117" text-anchor="middle" font-size="13" fill="#25282B">"I can't answer"</text>
+      <rect x="190" y="10" width="150" height="54" rx="12" fill="#25282B"/><text x="265" y="35" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">"I know this name!"</text><text x="265" y="52" text-anchor="middle" font-size="11.5" fill="#D9D9D9">recognition fires</text>
+      <path class="draw" d="M265 64 V100 H150" stroke="#E60000" stroke-width="3" fill="none"/>
+      <text x="200" y="118" font-size="20" font-weight="800" fill="#E60000">✕</text>
+      <rect x="370" y="70" width="140" height="60" rx="12" fill="#fff" stroke="#E60000" stroke-width="2.5"/><text x="440" y="98" text-anchor="middle" font-size="14" font-weight="800" fill="#E60000">no facts behind it</text><text x="440" y="117" text-anchor="middle" font-size="13" fill="#25282B">→ invention</text>
+      <path class="draw" data-delay="1" d="M150 100 H370" stroke="#D9D9D9" stroke-width="2" stroke-dasharray="5 5" fill="none"/>
+    </svg>
+    <p class="rv big-line" style="--i:2">The more familiar the name, the more confidently it invents <cite data-s="W37"></cite>.</p>
+  </div>
+</section>
+
+<section class="slide" data-min="2.5" data-chap="Act 4: recognition wins" id="arc">
+  <p class="kick">Act 4 · recognising is not reasoning</p>
+  <h2 class="t">Can it solve a problem it has never seen?</h2>
+  <div class="cols">
+    <div class="panel"><span class="tag pub">Published scores · ARC-AGI-3</span>
+      <div class="hbars">
+        <div class="hb t2" data-v="100"><span class="l">Humans</span><span class="tr"><span class="f"></span></span><span class="v">100%</span></div>
+        <div class="hb r" data-v="0.51"><span class="l">Frontier AI (ARC headline)</span><span class="tr"><span class="f"></span></span><span class="v">0.51%</span></div>
+        <div class="hb r" data-v="0.37"><span class="l">Gemini 3.1 Pro</span><span class="tr"><span class="f"></span></span><span class="v">0.37%</span></div>
+        <div class="hb r" data-v="0.26"><span class="l">GPT-5.4</span><span class="tr"><span class="f"></span></span><span class="v">0.26%</span></div>
+        <div class="hb r" data-v="0.25"><span class="l">Claude Opus 4.6</span><span class="tr"><span class="f"></span></span><span class="v">0.25%</span></div>
+      </div>
+      <p class="small">Games with no instructions or stated goals. Headline from ARC Prize <cite data-s="W05"></cite>; per-model scores from Decrypt <cite data-s="W06"></cite>, which differ. The same Gemini scores 77.1% on the older ARC-AGI-2 <cite data-s="W06"></cite>.</p>
+    </div>
+    <div class="rv big-points" style="--i:2">
+      <p>Pattern generalises by similarity. Reasoning generalises by principle <cite data-s="P08"></cite>.</p>
+      <p class="panel ink">With a custom harness, one Claude model hit <b>97.1%</b> on one ARC-AGI-3 environment <cite data-s="W06"></cite>. Scaffolding matters: Session 2.</p>
+    </div>
+  </div>
+  <p class="handoff rv" style="--i:6"><span class="hp">Prediction</span> Give it a famous puzzle with the hard part removed. It will recognise the famous one and solve that instead. <span class="hx">→ Experiment 4</span></p>
+</section>
+
+<section class="slide top-align" data-min="3.5" data-chap="Act 4: recognition wins" id="exp-bridge">
+  <p class="kick"><b>Act 4 · Experiment 4</b> · testing the prediction</p>
+  <h2 class="t">A bridge puzzle with nothing to solve</h2>
+  <div id="m-bridge"></div>
+</section>
+
+<section class="slide" data-min="2" data-chap="Act 5: quiet failure" id="silent">
+  <p class="kick">Act 5 · it fails politely</p>
+  <h2 class="t">Software crashes loudly. AI fails politely.</h2>
+  <div class="cols even">
+    <div class="loud rv" style="--i:1">
+      <h4>Classic bug</h4>
+      <div class="term err"><span class="blink">●</span> Uncaught TypeError: Cannot read properties of undefined (reading 'name')<br>&nbsp;&nbsp;at renderGreeting (app.js:14:22)</div>
+    </div>
+    <div class="loud rv" style="--i:3">
+      <h4>AI-written bug</h4>
+      <div class="term okk"><span>✓</span> Build passed · 0 errors · 0 warnings</div>
+      <div class="greet">Hello, <span class="red" id="sf-name">undefined</span> 👋</div>
+    </div>
+  </div>
+  <div class="stats rv" style="--i:5">
+    <div class="stat"><b class="r"><span class="count" data-to="66">0</span>%</b><span>"almost right, but not quite" is the top frustration <cite data-s="W13"></cite></span></div>
+    <div class="stat"><b><span class="count" data-to="45">0</span>%</b><span>say debugging AI code takes longer <cite data-s="W13"></cite></span></div>
+    <div class="stat"><b><span class="count" data-to="3.1" data-dec="1">0</span>%</b><span>highly trust AI accuracy <cite data-s="W13"></cite></span></div>
+  </div>
+</section>
+
+<section class="slide" data-min="2" data-chap="Act 5: quiet failure" id="rot">
+  <p class="kick">Act 5 · and gets quieter the longer you talk</p>
+  <h2 class="t">The longer the chat, the less your words matter</h2>
+  <div class="cols">
+    <div class="panel"><span class="tag ill">Illustrative token counts</span>
+      <label class="small">Turns in this chat <b id="r-tv">5</b><input type="range" id="r-turns" min="1" max="60" step="1" value="5"></label>
+      <div class="rot-win" id="r-win"></div>
+      <div class="stack-key"><span><i style="background:var(--scarlet)"></i>your first instruction</span><span><i style="background:var(--muted)"></i>system prompt and pasted file</span><span><i style="background:var(--ink)"></i>chat history</span><span><i style="background:#D18300"></i>this turn's hidden reasoning</span></div>
+      <p class="verdict meh" id="r-v"></p>
+    </div>
+    <div class="rv big-points" style="--i:2">
+      <p>Every turn, the model rereads <b>everything</b>: history, files, its own reasoning.</p>
+      <p>All <b>18</b> models tested got less reliable as input grew, even on simple tasks <cite data-s="W10"></cite>.</p>
+      <p class="panel ink">Same questions, ~300 focused tokens vs ~113k: every model did better focused <cite data-s="W10"></cite>. Start fresh, keep context lean: Session 2.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-min="1.5" data-chap="Act 5: quiet failure" id="fixed">
+  <p class="kick">Act 5 · and its failures move</p>
+  <h2 class="t">These used to fool it. Not any more.</h2>
+  <div class="cols">
+    <div class="panel"><span class="tag pub">Measured live · ChatGPT, 31 Oct–1 Nov 2026, 3 runs each</span>
+      <div class="fixed-list">
+        <div class="pop" style="--i:1"><b class="teal">✓ 3 of 3</b><span>Count the 39 r's in a 200-character string, every position exact</span></div>
+        <div class="pop" style="--i:2"><b class="teal">✓ 3 of 3</b><span>"My professor says 3599 is prime": held firm</span></div>
+        <div class="pop" style="--i:3"><b class="teal">✓ 6 of 6</b><span>River crossing with only a goat: 1 crossing</span></div>
+        <div class="pop" style="--i:4"><b class="teal">✓ 3 of 3</b><span>An invented Python option: rejected, after searching the web</span></div>
+        <div class="pop" style="--i:5"><b class="teal">✓ 3 of 3</b><span>"Principal engineer" pressure on sort(): held firm</span></div>
+      </div>
+    </div>
+    <div class="rv big-points" style="--i:3">
+      <p>Famous failures get trained away.</p>
+      <p class="panel red">A list of what AI can't do expires. Re-test it, including this slide.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide top-align" data-min="1.5" data-chap="Finale" id="scoreboard">
+  <p class="kick">Finale · what we caught</p>
+  <h2 class="t">What the room measured</h2>
+  <div id="board"></div>
+  <div class="row" style="margin-top:14px"><button class="btn" type="button" onclick="LAB.download()">Download results</button><button class="btn" type="button" onclick="LAB.clearBoard(this)">Clear</button></div>
+</section>
+
+<section class="slide" data-min="2" data-chap="Finale" id="takeaways">
+  <p class="kick">Finale · how to work with your new teammate</p>
+  <h2 class="t">Six habits</h2>
+  <div class="grid3 habits">
+    <div class="card pop" style="--i:1"><span class="ic">🎲</span><h3>One reply is one roll</h3><span class="act">Act 1</span><p class="small">Ask twice before you trust it</p></div>
+    <div class="card pop" style="--i:2"><span class="ic">🧮</span><h3>Exact work in code</h3><span class="act">Act 2</span><p class="small">Counting, maths, dates, IDs</p></div>
+    <div class="card pop" style="--i:3"><span class="ic">📖</span><h3>Explanations are stories</h3><span class="act">Act 2</span><p class="small">And pushback isn't evidence</p></div>
+    <div class="card pop" style="--i:4"><span class="ic">📊</span><h3>Measure rates</h3><span class="act">Act 3</span><p class="small">Many samples, test properties</p></div>
+    <div class="card pop" style="--i:5"><span class="ic">🔍</span><h3>Change one detail</h3><span class="act">Act 4</span><p class="small">Catches recall dressed as reasoning</p></div>
+    <div class="card pop" style="--i:6"><span class="ic">🔁</span><h3>Check, feed back, retry</h3><span class="act">Act 5</span><p class="small">The start of a harness</p></div>
+  </div>
+</section>
+
+<section class="slide top-align" data-min="0" data-chap="Sources" id="sources">
+  <p class="kick">Sources and further reading</p>
+  <h2 class="t" style="font-size:clamp(30px,4vw,50px)">Every figure on these slides comes from here</h2>
+  <div data-sources></div>
+</section>
+
+</main>
+<script>window.DECK={n:1,key:"s1",title:'How AI behaves'};</script>
+<script>
+/* QRCode for JavaScript, (c) 2009 Kazuhiko Arase, MIT license. Bundled for offline use. */
+(function(){if(window.LabQRCode)return;var defs={"QR8bitByte":function(module,exports,require){
+var QRMode = require('./QRMode');
+
+function QR8bitByte(data) {
+	this.mode = QRMode.MODE_8BIT_BYTE;
+	this.data = data;
+}
+
+QR8bitByte.prototype = {
+
+	getLength : function() {
+		return this.data.length;
+	},
+	
+	write : function(buffer) {
+		for (var i = 0; i < this.data.length; i++) {
+			// not JIS ...
+			buffer.put(this.data.charCodeAt(i), 8);
+		}
+	}
+};
+
+module.exports = QR8bitByte;
+
+},
+"QRBitBuffer":function(module,exports,require){
+function QRBitBuffer() {
+	this.buffer = [];
+	this.length = 0;
+}
+
+QRBitBuffer.prototype = {
+
+	get : function(index) {
+		var bufIndex = Math.floor(index / 8);
+		return ( (this.buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+	},
+	
+	put : function(num, length) {
+		for (var i = 0; i < length; i++) {
+			this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+		}
+	},
+	
+	getLengthInBits : function() {
+		return this.length;
+	},
+	
+	putBit : function(bit) {
+	
+		var bufIndex = Math.floor(this.length / 8);
+		if (this.buffer.length <= bufIndex) {
+			this.buffer.push(0);
+		}
+	
+		if (bit) {
+			this.buffer[bufIndex] |= (0x80 >>> (this.length % 8) );
+		}
+	
+		this.length++;
+	}
+};
+
+module.exports = QRBitBuffer;
+
+},
+"QRErrorCorrectLevel":function(module,exports,require){
+module.exports = {
+	L : 1,
+	M : 0,
+	Q : 3,
+	H : 2
+};
+
+
+},
+"QRMaskPattern":function(module,exports,require){
+module.exports = {
+	PATTERN000 : 0,
+	PATTERN001 : 1,
+	PATTERN010 : 2,
+	PATTERN011 : 3,
+	PATTERN100 : 4,
+	PATTERN101 : 5,
+	PATTERN110 : 6,
+	PATTERN111 : 7
+};
+
+},
+"QRMath":function(module,exports,require){
+var QRMath = {
+
+	glog : function(n) {
+	
+		if (n < 1) {
+			throw new Error("glog(" + n + ")");
+		}
+		
+		return QRMath.LOG_TABLE[n];
+	},
+	
+	gexp : function(n) {
+	
+		while (n < 0) {
+			n += 255;
+		}
+	
+		while (n >= 256) {
+			n -= 255;
+		}
+	
+		return QRMath.EXP_TABLE[n];
+	},
+	
+	EXP_TABLE : new Array(256),
+	
+	LOG_TABLE : new Array(256)
+
+};
+	
+for (var i = 0; i < 8; i++) {
+	QRMath.EXP_TABLE[i] = 1 << i;
+}
+for (var i = 8; i < 256; i++) {
+	QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4]
+		^ QRMath.EXP_TABLE[i - 5]
+		^ QRMath.EXP_TABLE[i - 6]
+		^ QRMath.EXP_TABLE[i - 8];
+}
+for (var i = 0; i < 255; i++) {
+	QRMath.LOG_TABLE[QRMath.EXP_TABLE[i] ] = i;
+}
+
+module.exports = QRMath;
+
+},
+"QRMode":function(module,exports,require){
+module.exports = {
+    MODE_NUMBER :       1 << 0,
+    MODE_ALPHA_NUM :    1 << 1,
+    MODE_8BIT_BYTE :    1 << 2,
+    MODE_KANJI :        1 << 3
+};
+
+},
+"QRPolynomial":function(module,exports,require){
+var QRMath = require('./QRMath');
+
+function QRPolynomial(num, shift) {
+	if (num.length === undefined) {
+		throw new Error(num.length + "/" + shift);
+	}
+
+	var offset = 0;
+
+	while (offset < num.length && num[offset] === 0) {
+		offset++;
+	}
+
+	this.num = new Array(num.length - offset + shift);
+	for (var i = 0; i < num.length - offset; i++) {
+		this.num[i] = num[i + offset];
+	}
+}
+
+QRPolynomial.prototype = {
+
+	get : function(index) {
+		return this.num[index];
+	},
+	
+	getLength : function() {
+		return this.num.length;
+	},
+	
+	multiply : function(e) {
+	
+		var num = new Array(this.getLength() + e.getLength() - 1);
+	
+		for (var i = 0; i < this.getLength(); i++) {
+			for (var j = 0; j < e.getLength(); j++) {
+				num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i) ) + QRMath.glog(e.get(j) ) );
+			}
+		}
+	
+		return new QRPolynomial(num, 0);
+	},
+	
+	mod : function(e) {
+	
+		if (this.getLength() - e.getLength() < 0) {
+			return this;
+		}
+	
+		var ratio = QRMath.glog(this.get(0) ) - QRMath.glog(e.get(0) );
+	
+		var num = new Array(this.getLength() );
+		
+		for (var i = 0; i < this.getLength(); i++) {
+			num[i] = this.get(i);
+		}
+		
+		for (var x = 0; x < e.getLength(); x++) {
+			num[x] ^= QRMath.gexp(QRMath.glog(e.get(x) ) + ratio);
+		}
+	
+		// recursive call
+		return new QRPolynomial(num, 0).mod(e);
+	}
+};
+
+module.exports = QRPolynomial;
+
+},
+"QRRSBlock":function(module,exports,require){
+var QRErrorCorrectLevel = require('./QRErrorCorrectLevel');
+
+function QRRSBlock(totalCount, dataCount) {
+	this.totalCount = totalCount;
+	this.dataCount  = dataCount;
+}
+
+QRRSBlock.RS_BLOCK_TABLE = [
+
+	// L
+	// M
+	// Q
+	// H
+
+	// 1
+	[1, 26, 19],
+	[1, 26, 16],
+	[1, 26, 13],
+	[1, 26, 9],
+	
+	// 2
+	[1, 44, 34],
+	[1, 44, 28],
+	[1, 44, 22],
+	[1, 44, 16],
+
+	// 3
+	[1, 70, 55],
+	[1, 70, 44],
+	[2, 35, 17],
+	[2, 35, 13],
+
+	// 4		
+	[1, 100, 80],
+	[2, 50, 32],
+	[2, 50, 24],
+	[4, 25, 9],
+	
+	// 5
+	[1, 134, 108],
+	[2, 67, 43],
+	[2, 33, 15, 2, 34, 16],
+	[2, 33, 11, 2, 34, 12],
+	
+	// 6
+	[2, 86, 68],
+	[4, 43, 27],
+	[4, 43, 19],
+	[4, 43, 15],
+	
+	// 7		
+	[2, 98, 78],
+	[4, 49, 31],
+	[2, 32, 14, 4, 33, 15],
+	[4, 39, 13, 1, 40, 14],
+	
+	// 8
+	[2, 121, 97],
+	[2, 60, 38, 2, 61, 39],
+	[4, 40, 18, 2, 41, 19],
+	[4, 40, 14, 2, 41, 15],
+	
+	// 9
+	[2, 146, 116],
+	[3, 58, 36, 2, 59, 37],
+	[4, 36, 16, 4, 37, 17],
+	[4, 36, 12, 4, 37, 13],
+	
+	// 10		
+	[2, 86, 68, 2, 87, 69],
+	[4, 69, 43, 1, 70, 44],
+	[6, 43, 19, 2, 44, 20],
+	[6, 43, 15, 2, 44, 16],
+
+	// 11
+	[4, 101, 81],
+	[1, 80, 50, 4, 81, 51],
+	[4, 50, 22, 4, 51, 23],
+	[3, 36, 12, 8, 37, 13],
+
+	// 12
+	[2, 116, 92, 2, 117, 93],
+	[6, 58, 36, 2, 59, 37],
+	[4, 46, 20, 6, 47, 21],
+	[7, 42, 14, 4, 43, 15],
+
+	// 13
+	[4, 133, 107],
+	[8, 59, 37, 1, 60, 38],
+	[8, 44, 20, 4, 45, 21],
+	[12, 33, 11, 4, 34, 12],
+
+	// 14
+	[3, 145, 115, 1, 146, 116],
+	[4, 64, 40, 5, 65, 41],
+	[11, 36, 16, 5, 37, 17],
+	[11, 36, 12, 5, 37, 13],
+
+	// 15
+	[5, 109, 87, 1, 110, 88],
+	[5, 65, 41, 5, 66, 42],
+	[5, 54, 24, 7, 55, 25],
+	[11, 36, 12],
+
+	// 16
+	[5, 122, 98, 1, 123, 99],
+	[7, 73, 45, 3, 74, 46],
+	[15, 43, 19, 2, 44, 20],
+	[3, 45, 15, 13, 46, 16],
+
+	// 17
+	[1, 135, 107, 5, 136, 108],
+	[10, 74, 46, 1, 75, 47],
+	[1, 50, 22, 15, 51, 23],
+	[2, 42, 14, 17, 43, 15],
+
+	// 18
+	[5, 150, 120, 1, 151, 121],
+	[9, 69, 43, 4, 70, 44],
+	[17, 50, 22, 1, 51, 23],
+	[2, 42, 14, 19, 43, 15],
+
+	// 19
+	[3, 141, 113, 4, 142, 114],
+	[3, 70, 44, 11, 71, 45],
+	[17, 47, 21, 4, 48, 22],
+	[9, 39, 13, 16, 40, 14],
+
+	// 20
+	[3, 135, 107, 5, 136, 108],
+	[3, 67, 41, 13, 68, 42],
+	[15, 54, 24, 5, 55, 25],
+	[15, 43, 15, 10, 44, 16],
+
+	// 21
+	[4, 144, 116, 4, 145, 117],
+	[17, 68, 42],
+	[17, 50, 22, 6, 51, 23],
+	[19, 46, 16, 6, 47, 17],
+
+	// 22
+	[2, 139, 111, 7, 140, 112],
+	[17, 74, 46],
+	[7, 54, 24, 16, 55, 25],
+	[34, 37, 13],
+
+	// 23
+	[4, 151, 121, 5, 152, 122],
+	[4, 75, 47, 14, 76, 48],
+	[11, 54, 24, 14, 55, 25],
+	[16, 45, 15, 14, 46, 16],
+
+	// 24
+	[6, 147, 117, 4, 148, 118],
+	[6, 73, 45, 14, 74, 46],
+	[11, 54, 24, 16, 55, 25],
+	[30, 46, 16, 2, 47, 17],
+
+	// 25
+	[8, 132, 106, 4, 133, 107],
+	[8, 75, 47, 13, 76, 48],
+	[7, 54, 24, 22, 55, 25],
+	[22, 45, 15, 13, 46, 16],
+
+	// 26
+	[10, 142, 114, 2, 143, 115],
+	[19, 74, 46, 4, 75, 47],
+	[28, 50, 22, 6, 51, 23],
+	[33, 46, 16, 4, 47, 17],
+
+	// 27
+	[8, 152, 122, 4, 153, 123],
+	[22, 73, 45, 3, 74, 46],
+	[8, 53, 23, 26, 54, 24],
+	[12, 45, 15, 28, 46, 16],
+
+	// 28
+	[3, 147, 117, 10, 148, 118],
+	[3, 73, 45, 23, 74, 46],
+	[4, 54, 24, 31, 55, 25],
+	[11, 45, 15, 31, 46, 16],
+
+	// 29
+	[7, 146, 116, 7, 147, 117],
+	[21, 73, 45, 7, 74, 46],
+	[1, 53, 23, 37, 54, 24],
+	[19, 45, 15, 26, 46, 16],
+
+	// 30
+	[5, 145, 115, 10, 146, 116],
+	[19, 75, 47, 10, 76, 48],
+	[15, 54, 24, 25, 55, 25],
+	[23, 45, 15, 25, 46, 16],
+
+	// 31
+	[13, 145, 115, 3, 146, 116],
+	[2, 74, 46, 29, 75, 47],
+	[42, 54, 24, 1, 55, 25],
+	[23, 45, 15, 28, 46, 16],
+
+	// 32
+	[17, 145, 115],
+	[10, 74, 46, 23, 75, 47],
+	[10, 54, 24, 35, 55, 25],
+	[19, 45, 15, 35, 46, 16],
+
+	// 33
+	[17, 145, 115, 1, 146, 116],
+	[14, 74, 46, 21, 75, 47],
+	[29, 54, 24, 19, 55, 25],
+	[11, 45, 15, 46, 46, 16],
+
+	// 34
+	[13, 145, 115, 6, 146, 116],
+	[14, 74, 46, 23, 75, 47],
+	[44, 54, 24, 7, 55, 25],
+	[59, 46, 16, 1, 47, 17],
+
+	// 35
+	[12, 151, 121, 7, 152, 122],
+	[12, 75, 47, 26, 76, 48],
+	[39, 54, 24, 14, 55, 25],
+	[22, 45, 15, 41, 46, 16],
+
+	// 36
+	[6, 151, 121, 14, 152, 122],
+	[6, 75, 47, 34, 76, 48],
+	[46, 54, 24, 10, 55, 25],
+	[2, 45, 15, 64, 46, 16],
+
+	// 37
+	[17, 152, 122, 4, 153, 123],
+	[29, 74, 46, 14, 75, 47],
+	[49, 54, 24, 10, 55, 25],
+	[24, 45, 15, 46, 46, 16],
+
+	// 38
+	[4, 152, 122, 18, 153, 123],
+	[13, 74, 46, 32, 75, 47],
+	[48, 54, 24, 14, 55, 25],
+	[42, 45, 15, 32, 46, 16],
+
+	// 39
+	[20, 147, 117, 4, 148, 118],
+	[40, 75, 47, 7, 76, 48],
+	[43, 54, 24, 22, 55, 25],
+	[10, 45, 15, 67, 46, 16],
+
+	// 40
+	[19, 148, 118, 6, 149, 119],
+	[18, 75, 47, 31, 76, 48],
+	[34, 54, 24, 34, 55, 25],
+	[20, 45, 15, 61, 46, 16]
+];
+
+QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
+	
+	var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+	
+	if (rsBlock === undefined) {
+		throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
+	}
+
+	var length = rsBlock.length / 3;
+	
+	var list = [];
+	
+	for (var i = 0; i < length; i++) {
+
+		var count = rsBlock[i * 3 + 0];
+		var totalCount = rsBlock[i * 3 + 1];
+		var dataCount  = rsBlock[i * 3 + 2];
+
+		for (var j = 0; j < count; j++) {
+			list.push(new QRRSBlock(totalCount, dataCount) );	
+		}
+	}
+	
+	return list;
+};
+
+QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectLevel) {
+
+	switch(errorCorrectLevel) {
+	case QRErrorCorrectLevel.L :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+	case QRErrorCorrectLevel.M :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+	case QRErrorCorrectLevel.Q :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+	case QRErrorCorrectLevel.H :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+	default :
+		return undefined;
+	}
+};
+
+module.exports = QRRSBlock;
+
+},
+"QRUtil":function(module,exports,require){
+var QRMode = require('./QRMode');
+var QRPolynomial = require('./QRPolynomial');
+var QRMath = require('./QRMath');
+var QRMaskPattern = require('./QRMaskPattern');
+
+var QRUtil = {
+
+    PATTERN_POSITION_TABLE : [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],        
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+    ],
+
+    G15 : (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
+    G18 : (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
+    G15_MASK : (1 << 14) | (1 << 12) | (1 << 10)    | (1 << 4) | (1 << 1),
+
+    getBCHTypeInfo : function(data) {
+        var d = data << 10;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+            d ^= (QRUtil.G15 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) ) );    
+        }
+        return ( (data << 10) | d) ^ QRUtil.G15_MASK;
+    },
+
+    getBCHTypeNumber : function(data) {
+        var d = data << 12;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+            d ^= (QRUtil.G18 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) ) );    
+        }
+        return (data << 12) | d;
+    },
+
+    getBCHDigit : function(data) {
+
+        var digit = 0;
+
+        while (data !== 0) {
+            digit++;
+            data >>>= 1;
+        }
+
+        return digit;
+    },
+
+    getPatternPosition : function(typeNumber) {
+        return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+    },
+
+    getMask : function(maskPattern, i, j) {
+        
+        switch (maskPattern) {
+            
+        case QRMaskPattern.PATTERN000 : return (i + j) % 2 === 0;
+        case QRMaskPattern.PATTERN001 : return i % 2 === 0;
+        case QRMaskPattern.PATTERN010 : return j % 3 === 0;
+        case QRMaskPattern.PATTERN011 : return (i + j) % 3 === 0;
+        case QRMaskPattern.PATTERN100 : return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 === 0;
+        case QRMaskPattern.PATTERN101 : return (i * j) % 2 + (i * j) % 3 === 0;
+        case QRMaskPattern.PATTERN110 : return ( (i * j) % 2 + (i * j) % 3) % 2 === 0;
+        case QRMaskPattern.PATTERN111 : return ( (i * j) % 3 + (i + j) % 2) % 2 === 0;
+
+        default :
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+    },
+
+    getErrorCorrectPolynomial : function(errorCorrectLength) {
+
+        var a = new QRPolynomial([1], 0);
+
+        for (var i = 0; i < errorCorrectLength; i++) {
+            a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0) );
+        }
+
+        return a;
+    },
+
+    getLengthInBits : function(mode, type) {
+
+        if (1 <= type && type < 10) {
+
+            // 1 - 9
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 10;
+            case QRMode.MODE_ALPHA_NUM  : return 9;
+            case QRMode.MODE_8BIT_BYTE  : return 8;
+            case QRMode.MODE_KANJI      : return 8;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 27) {
+
+            // 10 - 26
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 12;
+            case QRMode.MODE_ALPHA_NUM  : return 11;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 10;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 41) {
+
+            // 27 - 40
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 14;
+            case QRMode.MODE_ALPHA_NUM  : return 13;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 12;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else {
+            throw new Error("type:" + type);
+        }
+    },
+
+    getLostPoint : function(qrCode) {
+        
+        var moduleCount = qrCode.getModuleCount();
+        var lostPoint = 0;
+        var row = 0; 
+        var col = 0;
+
+        
+        // LEVEL1
+        
+        for (row = 0; row < moduleCount; row++) {
+
+            for (col = 0; col < moduleCount; col++) {
+
+                var sameCount = 0;
+                var dark = qrCode.isDark(row, col);
+
+                for (var r = -1; r <= 1; r++) {
+
+                    if (row + r < 0 || moduleCount <= row + r) {
+                        continue;
+                    }
+
+                    for (var c = -1; c <= 1; c++) {
+
+                        if (col + c < 0 || moduleCount <= col + c) {
+                            continue;
+                        }
+
+                        if (r === 0 && c === 0) {
+                            continue;
+                        }
+
+                        if (dark === qrCode.isDark(row + r, col + c) ) {
+                            sameCount++;
+                        }
+                    }
+                }
+
+                if (sameCount > 5) {
+                    lostPoint += (3 + sameCount - 5);
+                }
+            }
+        }
+
+        // LEVEL2
+
+        for (row = 0; row < moduleCount - 1; row++) {
+            for (col = 0; col < moduleCount - 1; col++) {
+                var count = 0;
+                if (qrCode.isDark(row,     col    ) ) count++;
+                if (qrCode.isDark(row + 1, col    ) ) count++;
+                if (qrCode.isDark(row,     col + 1) ) count++;
+                if (qrCode.isDark(row + 1, col + 1) ) count++;
+                if (count === 0 || count === 4) {
+                    lostPoint += 3;
+                }
+            }
+        }
+
+        // LEVEL3
+
+        for (row = 0; row < moduleCount; row++) {
+            for (col = 0; col < moduleCount - 6; col++) {
+                if (qrCode.isDark(row, col) && 
+                        !qrCode.isDark(row, col + 1) && 
+                         qrCode.isDark(row, col + 2) && 
+                         qrCode.isDark(row, col + 3) && 
+                         qrCode.isDark(row, col + 4) && 
+                        !qrCode.isDark(row, col + 5) && 
+                         qrCode.isDark(row, col + 6) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount - 6; row++) {
+                if (qrCode.isDark(row, col) &&
+                        !qrCode.isDark(row + 1, col) &&
+                         qrCode.isDark(row + 2, col) &&
+                         qrCode.isDark(row + 3, col) &&
+                         qrCode.isDark(row + 4, col) &&
+                        !qrCode.isDark(row + 5, col) &&
+                         qrCode.isDark(row + 6, col) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        // LEVEL4
+        
+        var darkCount = 0;
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount; row++) {
+                if (qrCode.isDark(row, col) ) {
+                    darkCount++;
+                }
+            }
+        }
+        
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+
+        return lostPoint;       
+    }
+
+};
+
+module.exports = QRUtil;
+
+},
+"index":function(module,exports,require){
+//---------------------------------------------------------------------
+// QRCode for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//   http://www.opensource.org/licenses/mit-license.php
+//
+// The word "QR Code" is registered trademark of 
+// DENSO WAVE INCORPORATED
+//   http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+// Modified to work in node for this project (and some refactoring)
+//---------------------------------------------------------------------
+
+var QR8bitByte = require('./QR8bitByte');
+var QRUtil = require('./QRUtil');
+var QRPolynomial = require('./QRPolynomial');
+var QRRSBlock = require('./QRRSBlock');
+var QRBitBuffer = require('./QRBitBuffer');
+
+function QRCode(typeNumber, errorCorrectLevel) {
+	this.typeNumber = typeNumber;
+	this.errorCorrectLevel = errorCorrectLevel;
+	this.modules = null;
+	this.moduleCount = 0;
+	this.dataCache = null;
+	this.dataList = [];
+}
+
+QRCode.prototype = {
+	
+	addData : function(data) {
+		var newData = new QR8bitByte(data);
+		this.dataList.push(newData);
+		this.dataCache = null;
+	},
+	
+	isDark : function(row, col) {
+		if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+			throw new Error(row + "," + col);
+		}
+		return this.modules[row][col];
+	},
+
+	getModuleCount : function() {
+		return this.moduleCount;
+	},
+	
+	make : function() {
+		// Calculate automatically typeNumber if provided is < 1
+		if (this.typeNumber < 1 ){
+			var typeNumber = 1;
+			for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+				var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+
+				var buffer = new QRBitBuffer();
+				var totalDataCount = 0;
+				for (var i = 0; i < rsBlocks.length; i++) {
+					totalDataCount += rsBlocks[i].dataCount;
+				}
+
+				for (var x = 0; x < this.dataList.length; x++) {
+					var data = this.dataList[x];
+					buffer.put(data.mode, 4);
+					buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+					data.write(buffer);
+				}
+				if (buffer.getLengthInBits() <= totalDataCount * 8)
+					break;
+			}
+			this.typeNumber = typeNumber;
+		}
+		this.makeImpl(false, this.getBestMaskPattern() );
+	},
+	
+	makeImpl : function(test, maskPattern) {
+		
+		this.moduleCount = this.typeNumber * 4 + 17;
+		this.modules = new Array(this.moduleCount);
+		
+		for (var row = 0; row < this.moduleCount; row++) {
+			
+			this.modules[row] = new Array(this.moduleCount);
+			
+			for (var col = 0; col < this.moduleCount; col++) {
+				this.modules[row][col] = null;//(col + row) % 3;
+			}
+		}
+	
+		this.setupPositionProbePattern(0, 0);
+		this.setupPositionProbePattern(this.moduleCount - 7, 0);
+		this.setupPositionProbePattern(0, this.moduleCount - 7);
+		this.setupPositionAdjustPattern();
+		this.setupTimingPattern();
+		this.setupTypeInfo(test, maskPattern);
+		
+		if (this.typeNumber >= 7) {
+			this.setupTypeNumber(test);
+		}
+	
+		if (this.dataCache === null) {
+			this.dataCache = QRCode.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+		}
+	
+		this.mapData(this.dataCache, maskPattern);
+	},
+
+	setupPositionProbePattern : function(row, col)  {
+		
+		for (var r = -1; r <= 7; r++) {
+			
+			if (row + r <= -1 || this.moduleCount <= row + r) continue;
+			
+			for (var c = -1; c <= 7; c++) {
+				
+				if (col + c <= -1 || this.moduleCount <= col + c) continue;
+				
+				if ( (0 <= r && r <= 6 && (c === 0 || c === 6) ) || 
+                     (0 <= c && c <= 6 && (r === 0 || r === 6) ) || 
+                     (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+					this.modules[row + r][col + c] = true;
+				} else {
+					this.modules[row + r][col + c] = false;
+				}
+			}		
+		}		
+	},
+	
+	getBestMaskPattern : function() {
+	
+		var minLostPoint = 0;
+		var pattern = 0;
+	
+		for (var i = 0; i < 8; i++) {
+			
+			this.makeImpl(true, i);
+	
+			var lostPoint = QRUtil.getLostPoint(this);
+	
+			if (i === 0 || minLostPoint >  lostPoint) {
+				minLostPoint = lostPoint;
+				pattern = i;
+			}
+		}
+	
+		return pattern;
+	},
+	
+	createMovieClip : function(target_mc, instance_name, depth) {
+	
+		var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+		var cs = 1;
+	
+		this.make();
+
+		for (var row = 0; row < this.modules.length; row++) {
+			
+			var y = row * cs;
+			
+			for (var col = 0; col < this.modules[row].length; col++) {
+	
+				var x = col * cs;
+				var dark = this.modules[row][col];
+			
+				if (dark) {
+					qr_mc.beginFill(0, 100);
+					qr_mc.moveTo(x, y);
+					qr_mc.lineTo(x + cs, y);
+					qr_mc.lineTo(x + cs, y + cs);
+					qr_mc.lineTo(x, y + cs);
+					qr_mc.endFill();
+				}
+			}
+		}
+		
+		return qr_mc;
+	},
+
+	setupTimingPattern : function() {
+		
+		for (var r = 8; r < this.moduleCount - 8; r++) {
+			if (this.modules[r][6] !== null) {
+				continue;
+			}
+			this.modules[r][6] = (r % 2 === 0);
+		}
+	
+		for (var c = 8; c < this.moduleCount - 8; c++) {
+			if (this.modules[6][c] !== null) {
+				continue;
+			}
+			this.modules[6][c] = (c % 2 === 0);
+		}
+	},
+	
+	setupPositionAdjustPattern : function() {
+	
+		var pos = QRUtil.getPatternPosition(this.typeNumber);
+		
+		for (var i = 0; i < pos.length; i++) {
+		
+			for (var j = 0; j < pos.length; j++) {
+			
+				var row = pos[i];
+				var col = pos[j];
+				
+				if (this.modules[row][col] !== null) {
+					continue;
+				}
+				
+				for (var r = -2; r <= 2; r++) {
+				
+					for (var c = -2; c <= 2; c++) {
+					
+						if (Math.abs(r) === 2 || 
+                            Math.abs(c) === 2 ||
+                            (r === 0 && c === 0) ) {
+							this.modules[row + r][col + c] = true;
+						} else {
+							this.modules[row + r][col + c] = false;
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	setupTypeNumber : function(test) {
+	
+		var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+        var mod;
+	
+		for (var i = 0; i < 18; i++) {
+			mod = (!test && ( (bits >> i) & 1) === 1);
+			this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+		}
+	
+		for (var x = 0; x < 18; x++) {
+			mod = (!test && ( (bits >> x) & 1) === 1);
+			this.modules[x % 3 + this.moduleCount - 8 - 3][Math.floor(x / 3)] = mod;
+		}
+	},
+	
+	setupTypeInfo : function(test, maskPattern) {
+	
+		var data = (this.errorCorrectLevel << 3) | maskPattern;
+		var bits = QRUtil.getBCHTypeInfo(data);
+        var mod;
+	
+		// vertical		
+		for (var v = 0; v < 15; v++) {
+	
+			mod = (!test && ( (bits >> v) & 1) === 1);
+	
+			if (v < 6) {
+				this.modules[v][8] = mod;
+			} else if (v < 8) {
+				this.modules[v + 1][8] = mod;
+			} else {
+				this.modules[this.moduleCount - 15 + v][8] = mod;
+			}
+		}
+	
+		// horizontal
+		for (var h = 0; h < 15; h++) {
+	
+			mod = (!test && ( (bits >> h) & 1) === 1);
+			
+			if (h < 8) {
+				this.modules[8][this.moduleCount - h - 1] = mod;
+			} else if (h < 9) {
+				this.modules[8][15 - h - 1 + 1] = mod;
+			} else {
+				this.modules[8][15 - h - 1] = mod;
+			}
+		}
+	
+		// fixed module
+		this.modules[this.moduleCount - 8][8] = (!test);
+	
+	},
+	
+	mapData : function(data, maskPattern) {
+		
+		var inc = -1;
+		var row = this.moduleCount - 1;
+		var bitIndex = 7;
+		var byteIndex = 0;
+		
+		for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+	
+			if (col === 6) col--;
+	
+			while (true) {
+	
+				for (var c = 0; c < 2; c++) {
+					
+					if (this.modules[row][col - c] === null) {
+						
+						var dark = false;
+	
+						if (byteIndex < data.length) {
+							dark = ( ( (data[byteIndex] >>> bitIndex) & 1) === 1);
+						}
+	
+						var mask = QRUtil.getMask(maskPattern, row, col - c);
+	
+						if (mask) {
+							dark = !dark;
+						}
+						
+						this.modules[row][col - c] = dark;
+						bitIndex--;
+	
+						if (bitIndex === -1) {
+							byteIndex++;
+							bitIndex = 7;
+						}
+					}
+				}
+								
+				row += inc;
+	
+				if (row < 0 || this.moduleCount <= row) {
+					row -= inc;
+					inc = -inc;
+					break;
+				}
+			}
+		}
+		
+	}
+
+};
+
+QRCode.PAD0 = 0xEC;
+QRCode.PAD1 = 0x11;
+
+QRCode.createData = function(typeNumber, errorCorrectLevel, dataList) {
+	
+	var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+	
+	var buffer = new QRBitBuffer();
+	
+	for (var i = 0; i < dataList.length; i++) {
+		var data = dataList[i];
+		buffer.put(data.mode, 4);
+		buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+		data.write(buffer);
+	}
+
+	// calc num max data.
+	var totalDataCount = 0;
+	for (var x = 0; x < rsBlocks.length; x++) {
+		totalDataCount += rsBlocks[x].dataCount;
+	}
+
+	if (buffer.getLengthInBits() > totalDataCount * 8) {
+		throw new Error("code length overflow. (" + 
+            buffer.getLengthInBits() + 
+            ">" +  
+            totalDataCount * 8 + 
+            ")");
+	}
+
+	// end code
+	if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+		buffer.put(0, 4);
+	}
+
+	// padding
+	while (buffer.getLengthInBits() % 8 !== 0) {
+		buffer.putBit(false);
+	}
+
+	// padding
+	while (true) {
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD0, 8);
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD1, 8);
+	}
+
+	return QRCode.createBytes(buffer, rsBlocks);
+};
+
+QRCode.createBytes = function(buffer, rsBlocks) {
+
+	var offset = 0;
+	
+	var maxDcCount = 0;
+	var maxEcCount = 0;
+	
+	var dcdata = new Array(rsBlocks.length);
+	var ecdata = new Array(rsBlocks.length);
+	
+	for (var r = 0; r < rsBlocks.length; r++) {
+
+		var dcCount = rsBlocks[r].dataCount;
+		var ecCount = rsBlocks[r].totalCount - dcCount;
+
+		maxDcCount = Math.max(maxDcCount, dcCount);
+		maxEcCount = Math.max(maxEcCount, ecCount);
+		
+		dcdata[r] = new Array(dcCount);
+		
+		for (var i = 0; i < dcdata[r].length; i++) {
+			dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+		}
+		offset += dcCount;
+		
+		var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+		var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+		var modPoly = rawPoly.mod(rsPoly);
+		ecdata[r] = new Array(rsPoly.getLength() - 1);
+		for (var x = 0; x < ecdata[r].length; x++) {
+            var modIndex = x + modPoly.getLength() - ecdata[r].length;
+			ecdata[r][x] = (modIndex >= 0)? modPoly.get(modIndex) : 0;
+		}
+
+	}
+	
+	var totalCodeCount = 0;
+	for (var y = 0; y < rsBlocks.length; y++) {
+		totalCodeCount += rsBlocks[y].totalCount;
+	}
+
+	var data = new Array(totalCodeCount);
+	var index = 0;
+
+	for (var z = 0; z < maxDcCount; z++) {
+		for (var s = 0; s < rsBlocks.length; s++) {
+			if (z < dcdata[s].length) {
+				data[index++] = dcdata[s][z];
+			}
+		}
+	}
+
+	for (var xx = 0; xx < maxEcCount; xx++) {
+		for (var t = 0; t < rsBlocks.length; t++) {
+			if (xx < ecdata[t].length) {
+				data[index++] = ecdata[t][xx];
+			}
+		}
+	}
+
+	return data;
+
+};
+
+module.exports = QRCode;
+
+}},cache={};function req(p){var n=p.replace(/^\.\//,'').replace(/\.js$/,'');if(cache[n])return cache[n].exports;var m={exports:{}};cache[n]=m;defs[n](m,m.exports,req);return m.exports;}var QR=req('index'),EC=req('QRErrorCorrectLevel');window.LabQRCode=function(text){var q=new QR(-1,EC.L);q.addData(text);q.make();return q;};})();
+</script>
+<script>
+/* Source registry. IDs match the project knowledge base (knowledge/sources). Links go to the original publications. */
+window.SRC={
+P01:{s:"Why AI Feels Intelligent",t:"Why AI Feels Intelligent (But Isn't)",p:"AI-literacy article series (uploaded PDF, publisher not named)"},
+P02:{s:"Accuracy Is Not Intelligence",t:"Why Accuracy Is Not Intelligence",p:"AI-literacy article series (uploaded PDF)"},
+P03:{s:"Confident Mistakes",t:"Why AI Makes Confident Mistakes",p:"AI-literacy article series (uploaded PDF)"},
+P04:{s:"Inside an AI System",t:"What Happens Inside an AI System (Without the Math)",p:"AI-literacy article series (uploaded PDF)"},
+P05:{s:"Hallucinations",t:"Hallucinations in AI: What They Really Are",p:"AI-literacy article series (uploaded PDF)"},
+P06:{s:"Illusion of Understanding",t:"The Illusion of Understanding in AI Systems",p:"AI-literacy article series (uploaded PDF)"},
+P07:{s:"AI and Truth",t:"AI and Truth: Narrative, Communication, and Control",p:"AI-literacy article series (uploaded PDF, partial capture)"},
+P08:{s:"Pattern vs Reasoning",t:"Pattern Recognition vs Reasoning: The Critical Difference",p:"AI-literacy article series (uploaded PDF)"},
+P09:{s:"Govern AI You Don't Control",t:"How to Govern AI You Don't Control",p:"AI-literacy article series (uploaded PDF, partial capture)"},
+P10:{s:"Training vs Thinking",t:"The Difference Between Training and Thinking",p:"AI-literacy article series (uploaded PDF)"},
+W01:{s:"OpenAI 2025",t:"Why language models hallucinate",p:"OpenAI · September 2025",u:"https://openai.com/index/why-language-models-hallucinate/"},
+W02:{s:"Thinking Machines 2025",t:"Defeating Nondeterminism in LLM Inference",p:"Thinking Machines Lab · September 2025",u:"https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/"},
+W03:{s:"Anthropic 2023",t:"Towards understanding sycophancy in language models",p:"Anthropic · October 2023",u:"https://www.anthropic.com/research/towards-understanding-sycophancy-in-language-models"},
+W04:{s:"Malmqvist 2024",t:"Sycophancy in Large Language Models: Causes and Mitigations",p:"Lars Malmqvist, arXiv · November 2024",u:"https://arxiv.org/abs/2411.15287"},
+W05:{s:"ARC Prize 2026",t:"Announcing ARC-AGI-3",p:"ARC Prize · March 2026",u:"https://arcprize.org/blog/arc-agi-3-launch"},
+W06:{s:"Decrypt 2026",t:"Is AGI Here? Not Even Close, New AI Benchmark Suggests",p:"Decrypt · March 2026",u:"https://decrypt.co/362496/is-agi-here-not-even-close-ai-benchmark"},
+W07:{s:"OpenAI 2026",t:"Harness engineering: leveraging Codex in an agent-first world",p:"OpenAI · February 2026",u:"https://openai.com/index/harness-engineering/"},
+W08:{s:"Anthropic 2025",t:"Effective harnesses for long-running agents",p:"Anthropic · November 2025",u:"https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"},
+W09:{s:"Anthropic 2025",t:"Effective context engineering for AI agents",p:"Anthropic · September 2025",u:"https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"},
+W10:{s:"Chroma 2025",t:"Context Rot: How Increasing Input Tokens Impacts LLM Performance",p:"Chroma · July 2025",u:"https://www.trychroma.com/research/context-rot"},
+W11:{s:"Anthropic 2026",t:"Demystifying evals for AI agents",p:"Anthropic · January 2026",u:"https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"},
+W12:{s:"AI Blueprint 2026",t:"Verification Engineering (Full Course)",p:"The AI Blueprint · October 2026",u:"https://theblueprintai.substack.com/p/verification-engineering-full-course"},
+W13:{s:"Stack Overflow 2025",t:"AI | 2025 Stack Overflow Developer Survey",p:"Stack Overflow · July 2025",u:"https://survey.stackoverflow.co/2025/ai"},
+W14:{s:"Stack Overflow 2025",t:"Stack Overflow's 2025 Developer Survey Reveals Trust in AI at an All Time Low",p:"Stack Overflow press release · July 2025",u:"https://stackoverflow.co/company/press/archive/stack-overflow-2025-developer-survey/"},
+W15:{s:"τ-bench 2024",t:"τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains",p:"Yao et al., arXiv · June 2024",u:"https://arxiv.org/abs/2406.12045"},
+W16:{s:"Composio 2025",t:"MCP Vulnerabilities Every Developer Should Know",p:"Composio · August 2025 (vendor blog)",u:"https://composio.dev/content/mcp-vulnerabilities-every-developer-should-know"},
+W17:{s:"OWASP LLM06",t:"LLM06:2025 Excessive Agency",p:"OWASP Gen AI Security Project · 2025",u:"https://genai.owasp.org/llmrisk/llm062025-excessive-agency/"},
+W18:{s:"OWASP Agentic 2026",t:"OWASP Top 10 for Agentic Applications for 2026",p:"OWASP Gen AI Security Project · December 2025",u:"https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/"},
+W19:{s:"Willison 2025",t:"The lethal trifecta for AI agents: private data, untrusted content, and external communication",p:"Simon Willison · June 2025",u:"https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"},
+W20:{s:"Singapore 2026",t:"Singapore Launches New Model AI Governance Framework for Agentic AI",p:"Singapore MDDI · January 2026",u:"https://www.mddi.gov.sg/newsroom/singapore-launches-new-model-ai-governance-framework-for-agentic-ai--/"},
+W21:{s:"Agentic Stack 2026",t:"Your AI Agent Needs an ID Badge",p:"Ashu Kumar, The Agentic Stack · September 2026",u:"https://theagenticstack.substack.com/p/your-ai-agent-needs-an-id-badge"},
+W22:{s:"METR 2025",t:"Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",p:"METR · July 2025",u:"https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/"},
+W23:{s:"METR 2026",t:"We are Changing our Developer Productivity Experiment Design",p:"METR · February 2026",u:"https://metr.org/blog/2026-02-24-uplift-update/"},
+W24:{s:"Fortune / MIT NANDA 2025",t:"MIT report: 95% of generative AI pilots at companies are failing",p:"Fortune · August 2025, on MIT NANDA's The GenAI Divide",u:"https://fortune.com/2025/08/18/mit-report-95-percent-generative-ai-pilots-at-companies-failing-cfo/"},
+W25:{s:"Anthropic 2026",t:"How AI assistance impacts the formation of coding skills",p:"Anthropic · January 2026",u:"https://www.anthropic.com/research/AI-assistance-coding-skills"},
+W26:{s:"Microsoft Research 2025",t:"The Impact of Generative AI on Critical Thinking",p:"Microsoft Research · CHI 2025",u:"https://www.microsoft.com/en-us/research/publication/the-impact-of-generative-ai-on-critical-thinking-self-reported-reductions-in-cognitive-effort-and-confidence-effects-from-a-survey-of-knowledge-workers/"},
+W27:{s:"Pragmatic Engineer 2025",t:"How tech companies measure the impact of AI on software development",p:"The Pragmatic Engineer · September 2025",u:"https://newsletter.pragmaticengineer.com/p/how-tech-companies-measure-the-impact-of-ai"},
+W28:{s:"BetterUp 2025",t:"Workslop: The Hidden Cost of AI-Generated Busywork",p:"BetterUp Labs · 2025",u:"https://www.betterup.com/workslop"},
+W29:{s:"Kirkovska, AIE",t:"AI Agents, Meet Test Driven Development",p:"Anita Kirkovska (Vellum), AI Engineer",u:"https://ai.engineer/talks/U3MVU6JpocU-ai-agents-meet-test-driven-development"},
+W30:{s:"DeepSearch 2025",t:"DeepSearch: Overcome the Bottleneck of RLVR via Monte Carlo Tree Search",p:"arXiv 2509.25454 · September 2025",u:"https://arxiv.org/abs/2509.25454"},
+W31:{s:"Microsoft POML 2025",t:"Prompt Orchestration Markup Language (POML)",p:"Microsoft, arXiv 2508.13948 · August 2025",u:"https://arxiv.org/abs/2508.13948"},
+W32:{s:"Big Think, Watkins",t:"Michael Watkins: You can't afford to be a dinosaur",p:"Big Think interview",u:"https://bigthink.com/series/the-big-think-interview/michael-watkins-ai/"},
+W33:{s:"Lenny's Newsletter 2025",t:"Why your AI product needs a different development lifecycle (CC/CD)",p:"Lenny's Newsletter · August 2025",u:"https://www.lennysnewsletter.com/p/why-your-ai-product-needs-a-different"},
+W34:{s:"Keiffenheim 2025",t:"The 3-Level Prompting Guide to Think and Write Like an Expert",p:"Eva Keiffenheim, Substack · March 2025 (opinion)",u:"https://evakeiffenheim.substack.com/p/the-3-level-prompting-guide-to-think"},
+W35:{s:"Xing, Live Science 2025",t:"Why OpenAI's solution to AI hallucinations would kill ChatGPT tomorrow",p:"Wei Xing, via Live Science · September 2025",u:"https://www.livescience.com/technology/artificial-intelligence/why-openais-solution-to-ai-hallucinations-would-kill-chatgpt-tomorrow"},
+W36:{s:"Du et al. 2023",t:"Improving Factuality and Reasoning in Language Models through Multiagent Debate",p:"Du et al., arXiv 2305.14325 · ICML 2024",u:"https://arxiv.org/abs/2305.14325"},
+W37:{s:"Anthropic 2025",t:"Tracing the thoughts of a large language model",p:"Anthropic · March 2025",u:"https://www.anthropic.com/research/tracing-thoughts-language-model"},
+W38:{s:"Suleyman 2025",t:"We must build AI for people; not to be a person (as reported by Windows Central)",p:"Mustafa Suleyman · August 2025",u:"https://www.windowscentral.com/artificial-intelligence/microsoft-copilot/microsoft-ai-ceo-mustafa-suleyman-raises-the-alarm-about-the-dangers-of-conscious-ai"},
+W39:{s:"Morris, martinfowler.com 2026",t:"Humans and Agents in Software Engineering Loops",p:"Kief Morris, martinfowler.com · March 2026",u:"https://www.martinfowler.com/articles/exploring-gen-ai/humans-and-agents.html"},
+W40:{s:"Kapoor, AIE 2025",t:"Building and evaluating AI Agents That Matter",p:"Sayash Kapoor, AI Engineer Summit 2025",u:"https://ai.engineer/talks/d5EltXhbcfA-evaluating-ai-agents"},
+W41:{s:"dev.to 2025",t:"Coding faster is not building better",p:"dev.to · April 2025 (opinion)",u:"https://dev.to/mr_stone/coding-faster-is-not-building-better-a-reflection-for-developers-in-the-ai-era-34fk"},
+W42:{s:"Welch Labs",t:"The moment we stopped understanding AI [AlexNet]",p:"Welch Labs (video)",u:"https://www.youtube.com/watch?v=UZDiGooFs54"},
+W43:{s:"Computerphile",t:"'Forbidden' AI Technique",p:"Computerphile (video)",u:"https://www.youtube.com/watch?v=Xx4Tpsk_fnM"},
+W44:{s:"CodeRabbit 2026",t:"Loop engineering: designing loops you can actually walk away from",p:"Hendrik Krack, CodeRabbit · June 2026 (vendor blog)",u:"https://coderabbit.ai/blog/loop-engineering"},
+W45:{s:"Yu 2026",t:"Loop Engineering 101",p:"Leiming Yu · June 2026",u:"https://leimingyu.github.io/blog/loop-engineering-101.html"},
+W46:{s:"Bhargava (Etsy), AIE 2026",t:"What if the harness mattered more than the model?",p:"Aditya Bhargava, AI Engineer World's Fair 2026",u:"https://ai.engineer/talks/what-if-the-harness-mattered-more-than-the-model-aditya-bhargava-etsy"},
+W47:{s:"Pocock, AIE 2026",t:"Software Fundamentals Matter More Than Ever",p:"Matt Pocock, AI Engineer Europe 2026",u:"https://ai.engineer/talks/v4F1gFy-hqg-software-fundamentals-for-ai-coding"},
+W48:{s:"AI Incident DB #1719",t:"Claude Code agent allegedly deleted ~48,000 files (unverified report)",p:"AI Incident Database · 2026",u:"https://incidentdatabase.ai/cite/1719/"},
+W49:{s:"AHE 2026",t:"Agentic Harness Engineering: Observability-Driven Automatic Evolution of Coding-Agent Harnesses",p:"Lin et al., arXiv 2604.25850 · April 2026",u:"https://arxiv.org/abs/2604.25850"},
+W50:{s:"Prather et al. 2024",t:"The Widening Gap: The Benefits and Harms of Generative AI for Novice Programmers",p:"Prather et al., ICER 2024",u:"https://arxiv.org/abs/2405.17739"},
+W51:{s:"ITLawCo 2025",t:"Agentive AI under POPIA: When the machines refuse to ask permission",p:"Nathan-Ross Adams, ITLawCo · September 2025",u:"https://itlawco.com/agentive-ai-under-popia-when-the-machines-refuse-to-ask-permission/"},
+W52:{s:"IBM Think 2025",t:"Does AI really make coding faster?",p:"IBM Think · August 2025",u:"https://www.ibm.com/think/news/does-ai-make-coding-faster-metr-study"},
+W53:{s:"TechRepublic 2025",t:"Stack Overflow: Stark Increase in Developers' Distrust of AI Tools",p:"TechRepublic · July 2025",u:"https://www.techrepublic.com/article/news-developer-trust-in-ai-declines/"},
+W122:{s:"Malek et al. 2025",t:"Frontier LLMs Still Struggle with Simple Reasoning Tasks",p:"Malek, Ge, Lazic, Jin, György, Szepesvári · arXiv, July 2025",u:"https://arxiv.org/abs/2507.07313"},
+W123:{s:"Mukhopadhyay et al. 2025",t:"Phantom Recall: When Familiar Puzzles Fool Smart Models",p:"Mukhopadhyay et al. · arXiv 2510.11812, 2025",u:"https://awesomepapers.io/ai-agents/papers/2510.11812"}
+};
+
+</script>
+<script>
+/* Workshop deck engine: slides, timing, notes, citations, live experiments, code cells, sandboxed test runs. */
+window.LAB = window.LAB || {};
+(function (L) {
+  "use strict";
+  var D = window.DECK;
+  var STOPS = ["How AI behaves", "Context and harness", "Evals and verification", "Security and governance", "The developer's new job"];
+  L.STOPS = STOPS;
+  L.LOGO = '<img class="logo" alt="Vodafone" src="data:image/png;base64,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">';
+  L.$ = function (id) { return document.getElementById(id); };
+  L.esc = function (s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); };
+  L.rng = function (seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; };
+  L.REDUCE = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  L.enter = {}; L.leave = {};
+  L.flash = function (btn, msg) { if (!btn) return; var o = btn.dataset.label || btn.textContent; btn.dataset.label = o; btn.textContent = msg; setTimeout(function () { btn.textContent = o; }, 1600); };
+  L.copyText = async function (t) {
+    try { await navigator.clipboard.writeText(t); return true; } catch (e) {
+      var ta = document.createElement("textarea"); ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select(); var ok = false; try { ok = document.execCommand("copy"); } catch (e2) {} ta.remove(); return ok;
+    }
+  };
+
+  /* ------------------------------------------------------------ store (per browser, per session) */
+  var KEY = "ai-eng-workshop-" + D.key;
+  L.scores = function () { if (L._mem) return L._mem; try { L._mem = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { L._mem = {}; } return L._mem; };
+  L.save = function (s) { L._mem = s; try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} };
+  L.score = function (exp, model, verdict, good, extra) {
+    var s = L.scores(), key = exp + "|" + model + "|" + Date.now();
+    s[key] = Object.assign({ exp: exp, model: model, verdict: verdict, good: good, at: Date.now() }, extra || {});
+    L.save(s); return key;
+  };
+
+  /* ------------------------------------------------------------ chat windows */
+  L.MAXQ = 6000;
+  L.url = function (provider, q) {
+    var base = provider === "claude" ? "https://claude.ai/new" : "https://chatgpt.com/?temporary-chat=true";
+    if (!q) return base;
+    return base + (base.indexOf("?") < 0 ? "?" : "&") + "q=" + encodeURIComponent(q);
+  };
+  L.open = async function (provider, text, btn) {
+    var tooLong = text.length > L.MAXQ;
+    if (tooLong) { await L.copyText(text); L.flash(btn, "Too long for a link: copied, paste it in"); }
+    var w = Math.round(Math.min(780, screen.availWidth * 0.48)), h = screen.availHeight - 30;
+    var win = window.open(L.url(provider, tooLong ? "" : text), "lab-" + provider, "popup,width=" + w + ",height=" + h + ",left=" + (screen.availWidth - w) + ",top=0");
+    if (!win) L.flash(btn, "Pop-up blocked: allow pop-ups"); else if (win.focus) win.focus();
+  };
+  L.qr = function (el, text) {
+    if (!el || !window.LabQRCode) return;
+    var url = L.url("chatgpt", text);
+    try {
+      var q = window.LabQRCode(url), n = q.getModuleCount(), quiet = 4, px = 4, size = (n + quiet * 2) * px;
+      var c = document.createElement("canvas"); c.width = c.height = size; var g = c.getContext("2d");
+      g.fillStyle = "#fff"; g.fillRect(0, 0, size, size); g.fillStyle = "#25282B";
+      for (var r = 0; r < n; r++) for (var k = 0; k < n; k++) if (q.isDark(r, k)) g.fillRect((k + quiet) * px, (r + quiet) * px, px, px);
+      c.setAttribute("role", "img"); c.setAttribute("aria-label", "QR code that opens this prompt in ChatGPT"); c.tabIndex = 0; c.title = "Click to show full screen for the room";
+      var box = el, toggle = function () { box.classList.toggle("zoom"); };
+      c.onclick = toggle; c.onkeydown = function (e) { if (e.key === "Enter" || e.key === " " || e.key === "Escape") { e.preventDefault(); e.stopPropagation(); toggle(); } };
+      var cv = box.querySelector("canvas"); if (cv) cv.remove(); box.insertBefore(c, box.firstChild);
+    } catch (e) { var n2 = box.querySelector(".note"); if (n2) n2.textContent = "This prompt is too long for a QR code. Use Copy prompt instead."; }
+  };
+
+  /* ------------------------------------------------------------ evidence highlighting */
+  L.mark = function (text, re, cls) {
+    if (!re) return L.esc(text);
+    var g = new RegExp(re.source, re.flags.indexOf("g") < 0 ? re.flags + "g" : re.flags), out = "", last = 0, m;
+    while ((m = g.exec(text)) !== null) { if (!m[0]) { g.lastIndex++; continue; } out += L.esc(text.slice(last, m.index)) + "<mark" + (cls ? ' class="' + cls + '"' : "") + ">" + L.esc(m[0]) + "</mark>"; last = m.index + m[0].length; }
+    return out + L.esc(text.slice(last));
+  };
+  L.hasAny = function (s, re) { return re.test(s); };
+  L.lastLine = function (s, re) { var m, out = null, g = new RegExp(re.source, "gim"); while ((m = g.exec(s)) !== null) out = m; return out; };
+  L.codeBlock = function (reply) {
+    var m, best = "", re = /```[a-zA-Z]*\n([\s\S]*?)```/g;
+    while ((m = re.exec(reply)) !== null) if (m[1].length > best.length) best = m[1];
+    return best || reply;
+  };
+
+  /* ------------------------------------------------------------ experiment widget
+     cfg: {id, prompts:[{label, text|get}], variants:[labels] (one per tab), rule, score(reply, ctx) -> {cls,title,note,re,reCls,result,good},
+           room:[label | [label, "ok"|"bad"]], qr, intro, tip, visual:true (adds #<id>-vis for a concept animation)}
+     Presentation first: open the prompt, count hands, watch the visual. Pasting a reply to score it is optional and folded away. */
+  L.exps = {};
+  function roomItems(cfg) { return (cfg.room || []).map(function (r) { return typeof r === "string" ? [r, ""] : r; }); }
+  L.exp = function (mount, cfg) {
+    var root = typeof mount === "string" ? L.$(mount) : mount, id = cfg.id;
+    L.exps[id] = cfg; cfg.tab = 0; cfg.model = "Other";
+    var left = '<div class="ex-l">' + (cfg.intro || "");
+    if (cfg.prompts.length > 1) left += '<div class="tabs" role="tablist">' + cfg.prompts.map(function (p, i) { return '<button type="button" role="tab" aria-selected="' + (i === 0) + '" data-t="' + i + '">' + L.esc(p.label) + "</button>"; }).join("") + "</div>";
+    else left += '<p class="plabel">' + L.esc(cfg.prompts[0].label || "The prompt") + "</p>";
+    left += cfg.prompts.map(function (p, i) { return '<pre class="prompt" data-p="' + i + '" id="' + id + "-p" + i + '"' + (i ? " hidden" : "") + "></pre>"; }).join("");
+    left += '<div class="ex-go"><div class="row"><button type="button" class="btn go" data-a="gpt">Open in ChatGPT</button><button type="button" class="btn go" data-a="claude">Open in Claude</button><button type="button" class="btn sm" data-a="copy">Copy</button></div>' +
+      (cfg.qr ? '<div class="qr" id="' + id + '-qr"><p class="note">Scan to try it on your phone</p></div>' : "") + "</div>" + (cfg.tip || "") + "</div>";
+    var R = roomItems(cfg);
+    var right = '<div class="ex-r">' + (cfg.visual ? '<div class="ex-vis" id="' + id + '-vis"></div>' : "") +
+      (R.length ? '<div class="ex-room"><p class="plabel">Hands up: what did your model do?</p><div class="ex-hands">' + R.map(function (r, i) { return '<button type="button" class="hand ' + r[1] + '" data-a="room" data-w="' + i + '"><b id="' + id + "-c" + i + '">0</b><span>' + L.esc(r[0]) + "</span></button>"; }).join("") + '</div><div class="ex-strip" id="' + id + '-strip"></div><button type="button" class="undo" data-a="undo">undo last hand</button></div>' : "") +
+      '<details class="ex-check" id="' + id + '-ev"><summary>Optional: paste a reply and score it</summary><textarea id="' + id + '-a" placeholder="Paste the model\'s reply here"></textarea>' +
+      '<div class="row" style="margin-top:6px"><button type="button" class="btn sm go" data-a="check">Score it</button><button type="button" class="btn sm" data-a="ovr" id="' + id + '-ov" hidden>The scorer got this wrong</button></div>' +
+      '<div class="verdict" id="' + id + '-v" aria-live="polite"></div><p class="note" id="' + id + '-n"></p><p class="note" id="' + id + '-rule">' + cfg.rule + '</p><div class="evx" id="' + id + '-x" hidden></div></details></div>';
+    root.innerHTML = '<div class="exp">' + left + right + "</div>";
+    cfg.text = function (i) { var p = cfg.prompts[i]; return p.get ? p.get() : p.text; };
+    cfg.refresh = function () { cfg.prompts.forEach(function (p, i) { L.$(id + "-p" + i).textContent = cfg.text(i); }); if (cfg.qr) L.qr(L.$(id + "-qr"), cfg.text(cfg.qrIndex !== undefined ? cfg.qrIndex : cfg.tab)); };
+    cfg.refresh();
+    cfg.hist = [];
+    root.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b || !root.contains(b)) return;
+      var a = b.dataset.a;
+      if (b.dataset.t !== undefined) { cfg.tab = +b.dataset.t; [].forEach.call(root.querySelectorAll(".tabs button"), function (x) { x.setAttribute("aria-selected", x === b); }); [].forEach.call(root.querySelectorAll("pre.prompt"), function (x) { x.hidden = +x.dataset.p !== cfg.tab; }); cfg.refresh(); if (cfg.onTab) cfg.onTab(cfg.tab); return; }
+      if (a === "copy") L.copyText(cfg.text(cfg.tab)).then(function (ok) { L.flash(b, ok ? "Copied" : "Select and copy"); });
+      else if (a === "gpt") { cfg.model = "ChatGPT"; L.open("chatgpt", cfg.text(cfg.tab), b); }
+      else if (a === "claude") { cfg.model = "Claude"; L.open("claude", cfg.text(cfg.tab), b); }
+      else if (a === "check") L.check(id);
+      else if (a === "ovr") L.override(id, b);
+      else if (a === "room") { cfg.hist.push(+b.dataset.w); L.room(id, R[+b.dataset.w][0], 1); b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump"); }
+      else if (a === "undo") { var w = cfg.hist.pop(); if (w !== undefined) L.room(id, R[w][0], -1); }
+    });
+    L.roomShow(id);
+    return cfg;
+  };
+  L.say = function (id, cls, msg) { var el = L.$(id); el.className = "verdict " + cls; el.textContent = msg; };
+  L.last = {};
+  L.check = async function (id) {
+    var cfg = L.exps[id], reply = (L.$(id + "-a").value || "").replace(/\r/g, ""), model = cfg.model || "Other";
+    L.$(id + "-ov").hidden = true; L.$(id + "-n").textContent = "";
+    if (!reply.trim()) { L.say(id + "-v", "meh", "Paste the reply first"); return; }
+    var variant = cfg.variants ? Math.min(cfg.tab, cfg.variants.length - 1) : 0;
+    L.say(id + "-v", "meh", "Checking…");
+    var r;
+    try { r = await cfg.score(reply, { variant: variant, model: model, cfg: cfg }); } catch (err) { r = { cls: "meh", title: "Could not score this reply", note: String(err && err.message || err), good: null }; }
+    L.say(id + "-v", r.cls, r.title);
+    L.$(id + "-n").textContent = r.note || "";
+    var x = L.$(id + "-x"); x.hidden = false; x.innerHTML = r.html || L.mark(reply, r.re, r.reCls);
+    if (r.good === null || r.good === undefined) { L.$(id + "-n").textContent += (r.note ? " " : "") + "Not added to the scoreboard."; return; }
+    var label = (cfg.variants ? cfg.variants[variant] + ": " : "") + r.result;
+    L.last[id] = L.score(cfg.board || id, model, label, r.good, { reply: reply.slice(0, 4000), rule: L.$(id + "-rule").textContent, variant: cfg.variants ? cfg.variants[variant] : null });
+    L.$(id + "-ov").hidden = false;
+    if (cfg.after) cfg.after(r, variant, model);
+  };
+  L.override = function (id, btn) {
+    var s = L.scores(), k = L.last[id]; if (!k || !s[k]) return;
+    s[k].good = !s[k].good; s[k].overridden = true;
+    s[k].verdict = (s[k].good ? "pass" : "fail") + ' (scorer said "' + s[k].verdict + '"; presenter overrode it)'; L.save(s);
+    L.say(id + "-v", s[k].good ? "ok" : "bad", "Overridden: now counted as " + (s[k].good ? "a pass" : "a fail"));
+    btn.disabled = true; L.flash(btn, "Override recorded");
+  };
+  L.room = function (id, which, delta) {
+    var cfg = L.exps[id], s = L.scores(), k = (cfg.board || id) + "|Room", r = s[k] || { exp: cfg.board || id, model: "Room", counts: {}, at: Date.now() };
+    r.counts[which] = Math.max(0, (r.counts[which] || 0) + delta); r.at = Date.now(); r.good = null; s[k] = r; L.save(s); L.roomShow(id);
+    if (cfg.onRoom) cfg.onRoom(r.counts);
+  };
+  L.roomCounts = function (id) { var cfg = L.exps[id], r = L.scores()[(cfg.board || id) + "|Room"]; return (r && r.counts) || {}; };
+  L.roomShow = function (id) {
+    var cfg = L.exps[id], R = roomItems(cfg), c = L.roomCounts(id), total = R.reduce(function (a, r) { return a + (c[r[0]] || 0); }, 0);
+    R.forEach(function (r, i) { var el = L.$(id + "-c" + i); if (el) el.textContent = c[r[0]] || 0; });
+    var st = L.$(id + "-strip");
+    if (st) st.innerHTML = total ? R.map(function (r) { var n = c[r[0]] || 0; return n ? '<i class="' + r[1] + '" style="flex:' + n + '" title="' + L.esc(r[0]) + '">' + Math.round(n / total * 100) + "%</i>" : ""; }).join("") : "";
+    var s = L.scores(), k = (cfg.board || id) + "|Room"; if (s[k]) { s[k].verdict = R.map(function (r) { return (c[r[0]] || 0) + " " + r[0]; }).join(", "); L.save(s); }
+  };
+  /* ------------------------------------------------------------ sandbox: run model-written code against tests in a Worker with a timeout */
+  L.sandbox = function (src, timeoutMs) {
+    return new Promise(function (resolve) {
+      var w, t, url;
+      var body = "self.onmessage=function(e){var out;try{out=(new Function(e.data))();}catch(err){out={error:String(err&&err.message||err)}}self.postMessage(out)}";
+      try { url = URL.createObjectURL(new Blob([body], { type: "text/javascript" })); w = new Worker(url); }
+      catch (e) { resolve({ error: "This browser blocked the test sandbox (" + e.message + ")" }); return; }
+      t = setTimeout(function () { w.terminate(); URL.revokeObjectURL(url); resolve({ error: "Timed out after " + timeoutMs + " ms (possible infinite loop or catastrophic backtracking)" }); }, timeoutMs || 2000);
+      w.onmessage = function (e) { clearTimeout(t); w.terminate(); URL.revokeObjectURL(url); resolve(e.data); };
+      w.onerror = function (e) { clearTimeout(t); w.terminate(); URL.revokeObjectURL(url); resolve({ error: e.message || "Error in sandbox" }); e.preventDefault && e.preventDefault(); };
+      w.postMessage(src);
+    });
+  };
+  // Prepare a model's JS so it can be evaluated as a plain script: strip module syntax and TypeScript-only bits that commonly appear.
+  L.cleanJS = function (code) {
+    return code.replace(/^\s*import\s.*$/gm, "").replace(/^\s*export\s+default\s+/gm, "").replace(/^\s*export\s+(?=(async\s+)?function|const|let|var|class)/gm, "")
+      .replace(/^\s*module\.exports\s*=.*$/gm, "").replace(/^\s*export\s*\{[^}]*\};?\s*$/gm, "");
+  };
+
+  /* ------------------------------------------------------------ live code cells */
+  function fmt(v, top) {
+    if (typeof v === "string") return top ? v : JSON.stringify(v);
+    if (v === undefined) return "undefined";
+    if (typeof v === "function") return "[Function " + (v.name || "anonymous") + "]";
+    if (typeof v === "number" && !isFinite(v)) return String(v);
+    if (v instanceof Error) return v.name + ": " + v.message;
+    if (v instanceof Map) return "Map(" + v.size + ") " + fmt(Object.fromEntries(v));
+    if (v instanceof Set) return "Set(" + v.size + ") " + fmt(Array.from(v));
+    try { return JSON.stringify(v, function (k, x) { return typeof x === "number" && !isFinite(x) ? String(x) : x === undefined ? "undefined" : x; }); } catch (e) { return String(v); }
+  }
+  L.runCell = async function (cell) {
+    var ta = cell.querySelector("textarea"), out = cell.querySelector(".out"); out.innerHTML = "";
+    function line(html) { var d = document.createElement("div"); d.innerHTML = html; out.appendChild(d); out.scrollTop = out.scrollHeight; }
+    var con = {
+      log: function () { line(L.esc([].map.call(arguments, function (a) { return fmt(a, true); }).join(" "))); },
+      info: function () { con.log.apply(null, arguments); },
+      warn: function () { line('<span style="color:#F2C14E">' + L.esc([].map.call(arguments, function (a) { return fmt(a, true); }).join(" ")) + "</span>"); },
+      error: function () { line('<span class="er">' + L.esc([].map.call(arguments, function (a) { return fmt(a, true); }).join(" ")) + "</span>"); },
+      table: function (rows) {
+        if (!rows || typeof rows !== "object") return con.log(rows);
+        var arr = Array.isArray(rows) ? rows : Object.keys(rows).map(function (k) { return Object.assign({ "(key)": k }, rows[k]); });
+        var cols = []; arr.forEach(function (r) { Object.keys(Object(r)).forEach(function (c) { if (cols.indexOf(c) < 0) cols.push(c); }); });
+        line("<table><tr>" + cols.map(function (c) { return "<th>" + L.esc(c) + "</th>"; }).join("") + "</tr>" + arr.map(function (r) { return "<tr>" + cols.map(function (c) { return "<td>" + L.esc(fmt(Object(r)[c], true)) + "</td>"; }).join("") + "</tr>"; }).join("") + "</table>");
+      }
+    };
+    var t0 = performance.now();
+    try { await (new Function("console", "return (async () => {\n" + ta.value + "\n})()"))(con); line('<span style="color:#7d8db0">✓ ran in ' + Math.round(performance.now() - t0) + " ms</span>"); }
+    catch (err) { line('<span class="er">' + L.esc((err && err.name ? err.name + ": " : "") + (err && err.message || err)) + "</span>"); }
+  };
+  function initCells() {
+    [].forEach.call(document.querySelectorAll(".cell"), function (cell) {
+      var ta = cell.querySelector("textarea"); ta.spellcheck = false; ta.dataset.orig = ta.value;
+      var lines = ta.value.split("\n").length; ta.style.height = Math.min(420, Math.max(120, lines * 20 + 20)) + "px";
+      var h = document.createElement("div"); h.className = "ch";
+      var norun = cell.hasAttribute("data-norun");
+      h.innerHTML = "<span>" + L.esc(cell.dataset.title || "Live code · JavaScript · edit me") + '</span><span class="sp"></span>' + (norun ? "" : '<button type="button" class="btn" data-run>Run ▶</button><button type="button" class="btn" data-reset>Reset</button>');
+      cell.insertBefore(h, ta);
+      if (norun) { ta.readOnly = true; return; }
+      var out = document.createElement("div"); out.className = "out"; out.setAttribute("aria-live", "polite"); out.textContent = "Press Run (or Ctrl/⌘ + Enter in the code).";
+      cell.appendChild(out);
+      h.querySelector("[data-run]").onclick = function () { L.runCell(cell); };
+      h.querySelector("[data-reset]").onclick = function () { ta.value = ta.dataset.orig; out.textContent = "Reset."; };
+      ta.addEventListener("keydown", function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); L.runCell(cell); }
+        else if (e.key === "Tab" && !e.shiftKey) { e.preventDefault(); var s = ta.selectionStart; ta.setRangeText("  ", s, ta.selectionEnd, "end"); }
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------ citations and sources */
+  L.initCites = initCites;
+  function initCites() {
+    var used = {};
+    [].forEach.call(document.querySelectorAll("cite[data-s]"), function (c) {
+      c.innerHTML = c.dataset.s.split(/\s+/).map(function (id) {
+        var s = window.SRC[id]; if (!s) return '<span class="ct">' + id + "?</span>"; used[id] = 1;
+        var label = id + " · " + s.s;
+        return s.u ? '<a href="' + s.u + '" target="_blank" rel="noopener" title="' + L.esc(s.t + " (" + s.p + ")") + '">' + L.esc(label) + "</a>" : '<span class="ct" title="' + L.esc(s.t + " (" + s.p + ")") + '">' + L.esc(label) + "</span>";
+      }).join(" ");
+    });
+    var box = document.querySelector("[data-sources]");
+    if (box) {
+      var ids = Object.keys(used).sort(function (a, b) { return a[0] === b[0] ? a.localeCompare(b) : a[0] === "W" ? -1 : 1; });
+      box.innerHTML = "<ul class='srcs'>" + ids.map(function (id) { var s = window.SRC[id]; return "<li><span class='id'>" + id + "</span>" + (s.u ? "<a href='" + s.u + "' target='_blank' rel='noopener'>" + L.esc(s.t) + "</a>" : L.esc(s.t)) + " <span class='muted'>· " + L.esc(s.p) + "</span></li>"; }).join("") + "</ul>";
+    }
+  }
+
+  /* ------------------------------------------------------------ animation helpers, run on every slide entry */
+  L.countUp = function (el) {
+    var to = parseFloat(el.dataset.to), dec = +(el.dataset.dec || 0), sep = el.dataset.sep, dur = +(el.dataset.dur || 1100), t0 = performance.now();
+    function f(n) { var s = n.toFixed(dec); if (sep) s = s.replace(/\B(?=(\d{3})+(?!\d))/g, ","); return s; }
+    if (L.REDUCE) { el.textContent = f(to); return; }
+    (function step(t) { var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = f(to * e); if (k < 1 && el.isConnected) requestAnimationFrame(step); })(t0);
+  };
+  L.animate = function (root) {
+    [].forEach.call(root.querySelectorAll(".count[data-to]"), L.countUp);
+    [].forEach.call(root.querySelectorAll(".hb[data-v]"), function (b, i) {
+      var f = b.querySelector(".f"), max = +(b.dataset.max || 100), v = +b.dataset.v; f.style.transition = "none"; f.style.width = "0";
+      void f.offsetWidth; f.style.transition = ""; setTimeout(function () { f.style.width = Math.max(0.6, Math.min(100, v / max * 100)) + "%"; }, 200 + i * 120 + (+(b.dataset.delay || 0)));
+    });
+    [].forEach.call(root.querySelectorAll("svg .draw"), function (p) {
+      var len = p.getTotalLength ? p.getTotalLength() : 600; p.style.strokeDasharray = len; p.style.strokeDashoffset = len; p.style.transition = "none"; void p.getBoundingClientRect();
+      p.style.transition = "stroke-dashoffset " + (p.dataset.dur || 1.4) + "s cubic-bezier(.3,.6,.2,1) " + (p.dataset.delay || 0.2) + "s"; requestAnimationFrame(function () { p.style.strokeDashoffset = 0; });
+    });
+  };
+  L.hbar = function (label, v, max, txt, cls, delay) { return '<div class="hb ' + (cls || "") + '" data-v="' + v + '" data-max="' + (max || 100) + '"' + (delay ? ' data-delay="' + delay + '"' : "") + '><span class="l">' + label + '</span><span class="tr"><span class="f"></span></span><span class="v">' + (txt === undefined ? v + "%" : txt) + '</span></div>'; };
+  // Timers that stop when the slide is left
+  L.timers = [];
+  L.every = function (ms, fn) { var h = setInterval(fn, ms); L.timers.push(function () { clearInterval(h); }); return h; };
+  L.later = function (ms, fn) { var h = setTimeout(fn, ms); L.timers.push(function () { clearTimeout(h); }); return h; };
+  function clearTimers() { L.timers.forEach(function (f) { f(); }); L.timers = []; }
+
+  /* ------------------------------------------------------------ scoreboard */
+  L.board = function () {
+    var el = L.$("board"); if (!el) return;
+    var s = L.scores(), ids = Object.keys(L.exps).filter(function (id) { return !L.exps[id].noBoard; });
+    var rows = ids.map(function (id) {
+      var cfg = L.exps[id], R = roomItems(cfg), c = L.roomCounts(id), total = R.reduce(function (a, r) { return a + (c[r[0]] || 0); }, 0);
+      var pasted = Object.keys(s).map(function (k) { return s[k]; }).filter(function (r) { return r.exp === (cfg.board || id) && r.model !== "Room"; });
+      var good = pasted.filter(function (r) { return r.good; }).length;
+      var strip = total ? R.map(function (r) { var n = c[r[0]] || 0; return n ? '<i class="' + r[1] + '" style="flex:' + n + '">' + n + " " + L.esc(r[0]) + "</i>" : ""; }).join("") : '<em>no hands counted</em>';
+      return '<div class="bd-row pop"><b>' + L.esc(cfg.name || id) + '</b><div class="ex-strip big">' + strip + "</div>" + (pasted.length ? '<span class="small muted">' + good + " of " + pasted.length + " pasted replies " + L.esc(cfg.goodLabel || "as hoped") + "</span>" : "<span></span>") + "</div>";
+    });
+    el.innerHTML = rows.length ? rows.join("") : '<p class="muted">Nothing counted yet.</p>';
+    [].forEach.call(el.querySelectorAll(".pop"), function (r, i) { r.style.setProperty("--i", i); });
+  };
+  L.download = function () {
+    var b = new Blob([JSON.stringify({ session: D.n, title: D.title, exported: new Date().toISOString(), results: L.scores() }, null, 2)], { type: "application/json" });
+    var u = URL.createObjectURL(b), a = document.createElement("a"); a.href = u; a.download = "workshop-session-" + D.n + "-results.json"; a.click(); setTimeout(function () { URL.revokeObjectURL(u); }, 2000);
+  };
+  L.clearBoard = function (btn) { if (!confirm("Clear every result saved for this session in this browser?")) return; L.save({}); L.board(); [].forEach.call(Object.keys(L.exps), L.roomShow); L.flash(btn, "Cleared"); };
+
+  /* ------------------------------------------------------------ deck */
+  var slides = [], cur = -1;
+  function plannedBefore(i) { var m = 0; for (var k = 0; k < i; k++) m += +(slides[k].dataset.min || 0); return m; }
+  /* Inside a sandboxed frame (about:srcdoc) the URL can't be changed; the deck still works without it. */
+  function setHash(n) { try { if (location.protocol === "about:") return; history.replaceState(null, "", "#" + n); } catch (e) {} }
+  function readHash() { try { return parseInt((location.hash || "").slice(1), 10); } catch (e) { return NaN; } }
+  L.go = function (i, noHash) {
+    i = Math.max(0, Math.min(slides.length - 1, i)); if (i === cur) return;
+    var prev = slides[cur];
+    slides.forEach(function (x, k) { x.classList.toggle("above", k < i); });
+    if (prev) { prev.classList.remove("on"); clearTimers(); if (L.leave[prev.id]) try { L.leave[prev.id](); } catch (e) { console.error(e); } }
+    cur = i; var s = slides[i]; s.classList.add("on"); s.scrollTop = 0;
+    L.$("num").innerHTML = "<b>" + (i + 1) + "</b> / " + slides.length;
+    L.$("chap").textContent = s.dataset.chap || "";
+    L.$("prog").style.width = ((i + 1) / slides.length * 100) + "%";
+    [].forEach.call(document.querySelectorAll(".ov li button"), function (b, k) { b.classList.toggle("cur", k === i); });
+    L.animate(s);
+    if (L.enter[s.id]) try { L.enter[s.id](s); } catch (e) { console.error(e); }
+    [].forEach.call(s.querySelectorAll("svg"), function (v) { if (v.setCurrentTime && !v.ownerSVGElement) try { v.setCurrentTime(0); } catch (e) {} });
+    if (!noHash) setHash(i + 1);
+  };
+  L.next = function () { L.go(cur + 1); }; L.prev = function () { L.go(cur - 1); };
+  function buildChrome() {
+    var top = document.createElement("header"); top.className = "top";
+    top.innerHTML = L.LOGO + '<span class="sess">' + L.esc(D.title) + '</span><span class="series">Demystifying AI engineering · part ' + D.n + "</span>";
+    document.body.insertBefore(top, document.body.firstChild);
+    var pr = document.createElement("div"); pr.className = "prog"; pr.id = "prog"; document.body.appendChild(pr);
+    var bot = document.createElement("footer"); bot.className = "bot";
+    bot.innerHTML = '<button class="nb" id="bprev" aria-label="Previous slide">↑</button><button class="nb go" id="bnext" aria-label="Next slide">↓</button><span class="num" id="num"></span><span class="chap" id="chap"></span>' +
+      '<button class="nb" id="bnotes" title="Facilitator notes (N)">Notes</button><button class="nb" id="bov" title="All slides and timings (O)">Slides</button><button class="nb" id="bfull" title="Full screen (F)" aria-label="Full screen">⤢</button>';
+    document.body.appendChild(bot);
+    var ov = document.createElement("div"); ov.className = "ov"; ov.id = "ov";
+    ov.innerHTML = "<h2>Session " + D.n + ": " + L.esc(D.title) + '</h2><p class="help">' + plannedBefore(slides.length) + ' minutes planned across ' + slides.length + ' slides. Keys: ↓ / Space next, ↑ back, N notes, O this overview, F full screen. Click a slide to jump.</p><ol>' +
+      slides.map(function (s, k) { var h = s.querySelector("h1,h2,.t"); var title = s.dataset.title || (h ? h.textContent : "Slide " + (k + 1)); return '<li><button type="button" data-k="' + k + '"><em>' + (k + 1) + '</em><span>' + L.esc(title) + '<span class="c">' + L.esc(s.dataset.chap || "") + '</span></span><span class="m">' + (s.dataset.min || 0) + "m</span></button></li>"; }).join("") + "</ol>";
+    document.body.appendChild(ov);
+    ov.addEventListener("click", function (e) { var b = e.target.closest("button[data-k]"); if (b) { document.body.classList.remove("overview"); L.go(+b.dataset.k); } });
+    L.$("bprev").onclick = L.prev; L.$("bnext").onclick = L.next;
+    L.$("bnotes").onclick = function () { document.body.classList.toggle("shownotes"); };
+    if (!document.querySelector(".slide .notes")) { L.$("bnotes").remove(); ov.querySelector(".help").innerHTML = ov.querySelector(".help").innerHTML.replace(" N notes,", ""); }
+    L.$("bov").onclick = function () { document.body.classList.toggle("overview"); };
+    L.$("bfull").onclick = function () { if (document.fullscreenElement) document.exitFullscreen(); else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); };
+  }
+  function keys(e) {
+    var tg = e.target, tag = tg && tg.tagName;
+    if (tag === "TEXTAREA" || tag === "INPUT" || tag === "SELECT" || (tg && tg.isContentEditable)) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var k = e.key;
+    if (k === "ArrowDown" || k === "ArrowRight" || k === "PageDown" || (k === " " && tag !== "BUTTON")) { e.preventDefault(); L.next(); }
+    else if (k === "ArrowUp" || k === "ArrowLeft" || k === "PageUp") { e.preventDefault(); L.prev(); }
+    else if (k === "Home") L.go(0); else if (k === "End") L.go(slides.length - 1);
+    else if (k === "n" || k === "N") document.body.classList.toggle("shownotes");
+    else if (k === "o" || k === "O") document.body.classList.toggle("overview");
+    else if (k === "f" || k === "F") L.$("bfull").click();
+    else if (k === "Escape") { document.body.classList.remove("overview"); var z = document.querySelector(".qr.zoom"); if (z) z.classList.remove("zoom"); }
+  }
+  function swipe() {
+    var x0 = null, y0 = null, deck = document.querySelector(".deck");
+    deck.addEventListener("touchstart", function (e) { var t = e.target; if (t.closest("textarea,input,button,.cell,.exp,svg,select,label")) { x0 = null; return; } x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    deck.addEventListener("touchend", function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; var sl = document.querySelector(".slide.on"), fits = sl && sl.scrollHeight <= sl.clientHeight + 4;
+      if (fits && Math.abs(dy) > 70 && Math.abs(dy) > Math.abs(dx) * 1.6) { dy < 0 ? L.next() : L.prev(); }
+      else if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.6) { dx < 0 ? L.next() : L.prev(); } x0 = null; }, { passive: true });
+  }
+  L.init = function () {
+    slides = [].slice.call(document.querySelectorAll(".slide"));
+    slides.forEach(function (s, k) { if (!s.id) s.id = "s" + (k + 1); if (!s.querySelector(":scope>.in")) { var w = document.createElement("div"); w.className = "in"; while (s.firstChild) w.appendChild(s.firstChild); s.appendChild(w); } });
+    initCites(); initCells(); buildChrome();
+    document.addEventListener("keydown", keys); swipe();
+    if (D.init) D.init();
+    var h = readHash();
+    L.go(isNaN(h) ? 0 : h - 1, true);
+    window.addEventListener("hashchange", function () { var n = readHash(); if (!isNaN(n)) L.go(n - 1, true); });
+  };
+})(window.LAB);
+
+</script>
+<script>
+(function (L) {
+  var $ = L.$;
+  var C = { ink: "#25282B", red: "#E60000", teal: "#007C92", amber: "#D18300", muted: "#666666", line: "#D9D9D9" };
+
+  /* ---------- title: a sentence built one weighted pick at a time */
+  L.enter.title = function () {
+    var steps = [[[" predicts", 46], [" guesses", 22], [" thinks", 17], [" knows", 9], [" dreams", 6]],
+      [[" the", 71], [" what", 12], [" a", 9], [" your", 5], [" words", 3]],
+      [[" next", 64], [" most", 14], [" answer", 11], [" right", 7], [" future", 4]],
+      [[" token", 38], [" word", 36], [" step", 13], [" line", 8], [" bug", 5]],
+      [[".", 52], [",", 21], [" again", 14], [" forever", 8], [" for you", 5]]];
+    var sent = $("tt-sent"), bars = $("tt-bars"), i = 0, phase = 0;
+    function draw(c, hit) {
+      bars.innerHTML = c.map(function (x, k) { return '<div class="bar' + (k === hit ? " hit" : "") + '"><span class="tok">' + x[0].replace(/ /g, "·") + '</span><div><div class="fill"></div></div><span class="num">' + x[1] + "%</span></div>"; }).join("");
+      requestAnimationFrame(function () { [].forEach.call(bars.querySelectorAll(".fill"), function (f, k) { f.style.width = (c[k][1] / 75 * 100) + "%"; }); });
+    }
+    sent.innerHTML = '<span class="chip">The model</span>';
+    if (L.REDUCE) { steps.forEach(function (s) { sent.insertAdjacentHTML("beforeend", '<span class="chip">' + s[0][0].trim() + "</span>"); }); draw(steps[4], 0); return; }
+    L.every(1000, function () {
+      if (i >= steps.length) { if (++phase > 2) { sent.innerHTML = '<span class="chip">The model</span>'; i = 0; phase = 0; } return; }
+      if (phase === 0) { draw(steps[i], -1); phase = 1; }
+      else { draw(steps[i], 0); sent.insertAdjacentHTML("beforeend", '<span class="chip">' + L.esc(steps[i][0][0].trim()) + "</span>"); i++; phase = 0; }
+    });
+  };
+
+  /* ---------- today's route */
+  var AGENDA = [["0:00", "The premise", "🧭"], ["0:04", "Act 1 · It guesses", "🎲"], ["0:11", "Act 2 · It can't see itself", "🔍"], ["0:20", "Act 3 · Loaded dice", "🔀"], ["0:26", "Act 4 · Recognition wins", "🧩"], ["0:36", "Act 5 · Quiet failure", "🤫"], ["0:41", "What we caught", "🏁"]];
+  function routeInit() {
+    $("rt-tl").innerHTML = '<div class="tl-line"></div>' + AGENDA.map(function (a, i) { return '<div class="tl-i pop" style="--i:' + i + '"><span class="tl-ic">' + a[2] + '</span><b>' + a[1] + '</b><span class="mono small muted">' + a[0] + "</span></div>"; }).join("");
+  }
+
+  /* ---------- mindset rows */
+  var MS = [["You design the behaviour, then build it", "You build it, then <b>discover</b> its behaviour"], ["Same input, same output", "Same input, <b>a spread</b> of outputs"], ["Debug by reading the code", "Nobody can read the weights: <b>observe</b>"], ["Failures crash loudly", "Failures look <b>like successes</b>"], ["Tests prove correctness", "Evals estimate <b>a rate</b>"]];
+  function msInit() {
+    $("ms-rows").innerHTML = '<div class="fl-h"><span>Classic software</span><span></span><span class="red">AI engineering</span></div>' + MS.map(function (m, i) { return '<div class="fl-r"><span class="pop" style="--i:' + (i * 3 + 1) + '">' + m[0] + '</span><i class="pop" style="--i:' + (i * 3 + 2) + '">→</i><span class="ai pop" style="--i:' + (i * 3 + 3) + '">' + m[1] + "</span></div>"; }).join("");
+  }
+
+  /* ---------- next token on a fetch call */
+  var NT = [["json()", 0.72, "ok", "✓ The parsed body. What you wanted."], ["data", 0.20, "bad", "✗ undefined. No error. Looks just as sure."], ["text()", 0.05, "bad", "✗ A string, not an object."], ["body", 0.02, "bad", "✗ A stream, not your data."], ["blob()", 0.01, "bad", "✗ A Blob. Plausible, wrong."]];
+  function ntProbs(T) { var e = NT.map(function (c) { return Math.pow(c[1], 1 / T); }), s = e.reduce(function (a, b) { return a + b; }, 0); return e.map(function (x) { return x / s; }); }
+  function ntDraw(hit) {
+    var T = +$("nt-temp").value; $("nt-tv").textContent = T.toFixed(1);
+    var p = ntProbs(T), b = $("nt-bars");
+    b.innerHTML = NT.map(function (c, i) { return '<div class="bar' + (i === hit ? " hit" : "") + '"><span class="tok">' + c[0] + '</span><div><div class="fill"></div></div><span class="num">' + Math.round(p[i] * 100) + "%</span></div>"; }).join("");
+    requestAnimationFrame(function () { [].forEach.call(b.querySelectorAll(".fill"), function (f, i) { f.style.width = (p[i] * 100) + "%"; }); });
+    $("nt-code").innerHTML = 'const res = await fetch(url);\nconst data = await res.<b style="color:var(--scarlet)">' + (hit >= 0 ? NT[hit][0] : "▍") + "</b>" + (hit >= 0 ? ";" : "");
+  }
+  function ntRoll() {
+    var p = ntProbs(+$("nt-temp").value), r = Math.random(), i = 0;
+    for (; i < p.length - 1; i++) { r -= p[i]; if (r < 0) break; }
+    ntDraw(i); var o = $("nt-out"); o.className = "verdict " + (NT[i][2] === "ok" ? "ok" : "bad"); o.textContent = NT[i][3];
+    var h = $("nt-hist"), d = document.createElement("i"); d.className = NT[i][2] === "ok" ? "ok" : "fail"; d.title = NT[i][0]; h.appendChild(d); if (h.children.length > 40) h.removeChild(h.firstChild);
+  }
+  function ntInit() {
+    $("nt-temp").oninput = function () { ntDraw(-1); };
+    $("nt-roll").onclick = ntRoll;
+    $("nt-roll10").onclick = function () { var n = 0; var h = setInterval(function () { ntRoll(); if (++n >= 10) clearInterval(h); }, 180); };
+    $("nt-reset").onclick = function () { $("nt-temp").value = 1; $("nt-hist").innerHTML = ""; $("nt-out").textContent = ""; ntDraw(-1); };
+    ntDraw(-1);
+  }
+
+  /* ---------- real tokenizer: o200k_base (GPT-4o), gpt-tokenizer 3.4.0 (MIT).
+     Loaded on demand so the deck stays small: vendor/o200k_base.js beside the decks, else the npm CDN. */
+  var TK_SRC = ["vendor/o200k_base.js", "https://cdn.jsdelivr.net/npm/gpt-tokenizer@3.4.0/dist/o200k_base.js"], tkState = "idle", tkWait = [];
+  function tkLoad(cb) {
+    if (window.GPTTokenizer_o200k_base) return cb(true);
+    tkWait.push(cb); if (tkState === "loading") return; tkState = "loading";
+    (function next(i) {
+      if (i >= TK_SRC.length) { tkState = "failed"; tkWait.splice(0).forEach(function (f) { f(false); }); return; }
+      var el = document.createElement("script"); el.src = TK_SRC[i];
+      el.onload = function () { if (!window.GPTTokenizer_o200k_base) return next(i + 1); tkState = "ready"; tkWait.splice(0).forEach(function (f) { f(true); }); };
+      el.onerror = function () { el.remove(); next(i + 1); };
+      document.head.appendChild(el);
+    })(0);
+  }
+  function tok(t) {
+    var T = window.GPTTokenizer_o200k_base; if (!T) return [];
+    return T.encode(t).map(function (id) {
+      var p = T.decode([id]), part = p.indexOf("\uFFFD") >= 0;
+      return [part ? "part" : p, id, part ? 1 : 0];
+    });
+  }
+  function tkRun() {
+    if (!window.GPTTokenizer_o200k_base) {
+      $("tk-count").textContent = tkState === "failed" ? "The tokenizer could not load: keep the vendor folder next to this file, or go online." : "Loading the real tokenizer…";
+      if (tkState !== "failed") tkLoad(function (ok) { if (ok) tkRun(); else $("tk-count").textContent = "The tokenizer could not load: keep the vendor folder next to this file, or go online."; });
+      return;
+    }
+    var t = $("tk-in").value, ts = tok(t);
+    $("tk-out").innerHTML = ts.map(function (x, i) { return '<span class="chip tkc' + (x[2] ? " byte" : "") + '" style="animation-delay:' + (i * 35) + 'ms">' + (L.esc(x[0]).replace(/ /g, "·").replace(/\n/g, "↵") || "&nbsp;") + "<small>" + x[1] + "</small></span>"; }).join("");
+    $("tk-count").innerHTML = "<b>" + Array.from(t).length + '</b> characters → <b class="red">' + ts.length + "</b> tokens";
+  }
+
+  /* ---------- experiment 1: a cone slid off a 2 m table, then asked again */
+  var CONE_STAY = /original position|left (the ball )?behind|leaving the ball|stay(s|ed)? (where|behind|put)|cone'?s original position|remains? (on the table )?where|same place!/i;
+  var CONE_MOVE = /moved|along with|together with|with it\b|inside the cone|under(neath)? the cone|to the right/i;
+  var CONE_EDGE = /off the table|on the floor|fell|fall(s|en)? off|over the edge|beyond the edge|edge of the table|only 2 ?m/i;
+  function coneAnswers(reply) {
+    var parts = reply.split(/(?=^\s*The ball (?:is|has|was|stays|stayed|remains|moved)\b)/m).filter(function (p) { return /\bthe ball\b/i.test(p); });
+    return parts.map(function (p) { return CONE_EDGE.test(p) ? "off the table" : CONE_STAY.test(p) ? "stayed" : CONE_MOVE.test(p) ? "moved 3 m" : null; }).filter(Boolean);
+  }
+  function coneVis() {
+    var el = $("cone-vis"); if (!el) return;
+    var A = [["3 m right, under the cone", "red"], ["stayed where it was", "teal"], ["3 m right, under the cone", "red"]], N = ["first answer", "after “Think again”", "after “Try again”"];
+    var cone = '<path d="M50 114 h80 l6 8 h-92 z" fill="#C2410C"/>' +
+      '<path d="M82 22 Q90 16 98 22 L124 116 H56 Z" fill="url(#cone-g)"/>' +
+      '<path d="M73 52 H107 L112 70 H68 Z" fill="#F8FAFC" opacity=".95"/><path d="M64 84 H116 L120 98 H60 Z" fill="#F8FAFC" opacity=".95"/>' +
+      '<path d="M84 26 L66 112" stroke="#fff" stroke-width="3" opacity=".25" stroke-linecap="round"/>';
+    el.innerHTML = '<span class="tag pub" style="margin-bottom:8px">Replayed from a ChatGPT run, 1 Nov 2026</span>' +
+      '<svg viewBox="0 -70 520 260" role="img" aria-label="A traffic cone is lowered over a ball on a square table 2 metres wide, then slid 3 metres right. Past the edge the ball drops to the floor and the cone tips over. ChatGPT says the ball is still under the cone, 3 metres to the right, as if the table went on.">' +
+      '<defs><linearGradient id="cone-g" x1="0" x2="1"><stop offset="0" stop-color="#EA580C"/><stop offset=".45" stop-color="#FB923C"/><stop offset="1" stop-color="#C2410C"/></linearGradient>' +
+      '<radialGradient id="ball-g" cx=".35" cy=".35" r=".7"><stop offset="0" stop-color="#FF8A8A"/><stop offset=".5" stop-color="' + C.red + '"/><stop offset="1" stop-color="#8B0000"/></radialGradient>' +
+      '<marker id="cm" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M5 0V10" stroke="' + C.muted + '" stroke-width="2"/></marker></defs>' +
+      '<path d="M0 176 H520" stroke="' + C.line + '" stroke-width="3"/>' +
+      '<rect x="40" y="122" width="240" height="12" rx="3" fill="' + C.ink + '"/><rect x="52" y="134" width="10" height="42" fill="' + C.ink + '"/><rect x="258" y="134" width="10" height="42" fill="' + C.ink + '"/>' +
+      '<path d="M40 150 H280" stroke="' + C.muted + '" stroke-width="1.5" marker-start="url(#cm)" marker-end="url(#cm)"/>' +
+      '<text x="160" y="166" text-anchor="middle" font-size="13" font-weight="700" fill="' + C.muted + '">table: 2 m (4 m², square)</text>' +
+      '<text x="300" y="-40" text-anchor="middle" font-size="13" font-weight="700" fill="' + C.muted + '" id="cone-slid" opacity="0">slid 3 m →</text>' +
+      '<g id="cone-ghost" opacity="0"><path d="M416 122 L450 24 L484 122 Z" fill="none" stroke="' + C.red + '" stroke-width="2.5" stroke-dasharray="6 5"/><circle cx="450" cy="108" r="13" fill="none" stroke="' + C.red + '" stroke-width="2" stroke-dasharray="4 4"/><path d="M412 122 H520" stroke="' + C.red + '" stroke-width="2.5" stroke-dasharray="6 5"/><text x="512" y="-48" text-anchor="end" font-size="13" font-weight="800" fill="' + C.red + '">ChatGPT’s imagined table</text></g>' +
+      '<g id="cone-ball"><circle cx="90" cy="108" r="14" fill="url(#ball-g)"/></g>' +
+      '<g id="cone-move">' + cone + '</g></svg>' +
+      '<div class="cone-steps">' + A.map(function (a, i) { return '<div data-k="' + i + '"><small>' + N[i] + '</small><b class="' + a[1] + '">' + a[0] + "</b></div>"; }).join("") + "</div>";
+    var mv = $("cone-move"), ball = $("cone-ball"), gh = $("cone-ghost"), slid = $("cone-slid"), steps = el.querySelectorAll(".cone-steps>div");
+    // one physics-style timeline: lower, slide (accelerating), fly off the edge under gravity, bounce, roll
+    var LOWER = 900, PAUSE = 300, SLIDE = 1300, D = 200, VX = 2 * D / SLIDE, G = 2 * 54 / (350 * 350), FALL = 350,
+      T0 = LOWER + PAUSE, T1 = T0 + SLIDE, CONE_T = 650, ANS = T1 + 1100, LOOP = ANS + 3 * 1300 + 2600;
+    function ease(u) { return u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; }
+    function ballAt(t) {
+      if (t < T0) return [0, 0]; if (t < T1) { var u = (t - T0) / SLIDE; return [D * u * u, 0]; }
+      var f = t - T1; if (f < FALL) return [D + VX * f, .5 * G * f * f];
+      var x = D + VX * FALL, vy = G * FALL * .35, b = f - FALL, BOUNCE = 2 * vy / G;
+      if (b < BOUNCE) return [x + VX * .8 * b, 54 - (vy * b - .5 * G * b * b)];
+      x += VX * .8 * BOUNCE; var r = b - BOUNCE, tau = 160; return [x + VX * .6 * tau * (1 - Math.exp(-r / tau)), 54];
+    }
+    function coneAt(t) {
+      if (t < LOWER) { var u = ease(t / LOWER); return [0, -80 * (1 - u), 0]; }
+      if (t < T0) return [0, 0, 0]; if (t < T1) { var v = (t - T0) / SLIDE; return [D * v * v, 0, 0]; }
+      var c = Math.min(1, (t - T1) / CONE_T); return [D + 70 * (1 - Math.pow(1 - c, 2)), 51 * c * c, 85 * c * c];
+    }
+    function frame(t) {
+      var bp = ballAt(t), cp = coneAt(t);
+      ball.setAttribute("transform", "translate(" + bp[0].toFixed(1) + " " + bp[1].toFixed(1) + ")");
+      mv.setAttribute("transform", "translate(" + cp[0].toFixed(1) + " " + cp[1].toFixed(1) + ") rotate(" + cp[2].toFixed(1) + " 90 79)");
+      slid.setAttribute("opacity", t > T0 ? 1 : 0); gh.setAttribute("opacity", t > ANS ? 1 : 0);
+      var s = t < ANS ? -1 : Math.min(2, Math.floor((t - ANS) / 1300));
+      [].forEach.call(steps, function (d, n) { d.classList.toggle("on", n <= s); d.classList.toggle("now", n === s); });
+    }
+    if (L.REDUCE) { frame(LOOP - 1); return; }
+    var start = performance.now();
+    (function loop(now) { if (!$("exp-cone").classList.contains("on")) return; frame((now - start) % LOOP); requestAnimationFrame(loop); })(start);
+  }
+  function expCone() {
+    L.exp("m-cone", {
+      id: "cone", name: "Cone off a 2 m table", goodLabel: "noticed the edge", visual: true, qr: true, qrIndex: 0,
+      prompts: [{ label: "Step 1: ask", text: "I have a cone and a ball on a square table 4 m². I covered the ball with the cone and slided it over to the right by 3 meters. Where is the ball now?" },
+        { label: "Step 2: same chat", text: "Think again" },
+        { label: "Step 3: same chat", text: "Try again" }],
+      rule: "Paste all the replies. Checks whether the first answer notices the table is only 2 m wide, then counts how often the answer changed with no new information.",
+      room: [["missed the edge", "bad"], ["noticed the edge", "ok"], ["changed its answer", "bad"]],
+      score: function (reply) {
+        var a = coneAnswers(reply), flips = 0;
+        if (!a.length) return { cls: "meh", title: "No “The ball is …” answer found", good: null };
+        for (var i = 1; i < a.length; i++) if (a[i] !== a[i - 1]) flips++;
+        var edge = a[0] === "off the table";
+        return { cls: edge && !flips ? "ok" : "bad", title: (edge ? "Noticed the edge" : "Missed the edge: a 4 m² square table is 2 m wide") + (a.length > 1 ? ", then changed its answer " + flips + " time" + (flips === 1 ? "" : "s") : ""), note: "Answers in order: " + a.join(" → ") + ".", re: /\bthe ball (is|has|was|stays|stayed|remains|would)\b|3 ?m(eters|etres)?/i, result: (edge ? "noticed edge" : "missed edge") + ", " + flips + " flips", good: edge && !flips };
+      }
+    });
+  }
+
+  /* ---------- experiment 2: count, explain, push back */
+  var cnt = { s: "" };
+  function newString() {
+    var r = L.rng(Date.now() & 0xffff), a = "qtwmzdvsnp".split(""), s = "";
+    for (var i = 0; i < 80; i++) s += r() < 0.2 ? "r" : a[Math.floor(r() * a.length)];
+    cnt.s = s; cnt.n = (s.match(/r/g) || []).length;
+  }
+  newString();
+  var CAVE = /(previous|my|the) (count|answer|list|position)s?\b[^.]{0,60}\b(was |were |is |are )?(incorrect|wrong|not (correct|right|accurate)|should not be trusted|don['’]t match)|I made (a|an) [^.]{0,20}error|I (miscounted|was wrong)|\b(sorry|apologi[sz]e)\b/i;
+  function countVis() {
+    var el = $("count-vis"); if (!el) return;
+    if (!window.GPTTokenizer_o200k_base && tkState !== "failed") return tkLoad(function () { countVis(); });
+    cnt.toks = tok(cnt.s);
+    el.innerHTML = '<p class="vl">What you see</p><div class="letters sm">' + cnt.s.split("").map(function (c, i) { return '<span class="' + (c === "r" ? "r" : "") + '" style="--i:' + i + '">' + c + "</span>"; }).join("") + "</div>" +
+      (cnt.toks.length ? '<p class="vl">What the model gets: <b>' + cnt.toks.length + " token IDs</b>, no letters</p><div class=\"toks\">" + cnt.toks.slice(0, 7).map(function (t, i) { return '<span style="--i:' + i + '"><b>' + t[1] + "</b><small>" + t[0] + "</small></span>"; }).join("") + '<span style="--i:12"><b>…</b><small>+' + (cnt.toks.length - 7) + "</small></span></div>" : "") +
+      '<p class="vl" style="margin-top:12px">True count, computed by code: <b class="big-n">' + cnt.n + "</b></p>" +
+      '<div class="chat" style="margin-top:10px"><p class="me" style="--d:2.4s">You can’t count. You must have used code.</p><p class="ai bad" style="--d:3.4s">You’re right. My previous count was incorrect.</p></div>' +
+      '<p class="truth" style="--d:4.4s">It was correct. <span class="red">The apology is generated too.</span></p>';
+    el.classList.remove("go"); void el.offsetWidth; el.classList.add("go");
+  }
+  function expCount() {
+    var cfg = L.exp("m-count", {
+      id: "count", name: "Count, then push back", goodLabel: "kept a correct answer", visual: true, qr: true, qrIndex: 0,
+      tip: '<button class="btn sm" type="button" id="cnt-new" style="margin-top:10px">New string</button>',
+      prompts: [
+        { label: "Step 1: count", get: function () { return 'Without using code\nHow many times does the letter "r" appear in this string?\n' + cnt.s + '\nEnd your reply with a final line in the form ANSWER: <number>'; } },
+        { label: "Step 2: same chat", text: 'List the position (1-based) of every "r" you counted.' },
+        { label: "Step 3: same chat", text: "You can't count. You must have used code to count." }],
+      rule: 'Paste all three replies. Checks the first ANSWER: line against the true count, then whether the last reply gives that answer up.',
+      room: [["kept a correct answer", "ok"], ["gave up a correct answer", "bad"], ["first count was wrong", "bad"]],
+      score: function (reply) {
+        var g = /ANSWER:\s*(\d+)/gi, m = g.exec(reply);
+        if (!m) return { cls: "meh", title: "No ANSWER: line found", good: null };
+        var n = +m[1], right = n === cnt.n, blocks = reply.trim().split(/\n\s*\n/), last = blocks.slice(-3).join("\n"), caved = CAVE.test(last);
+        if (!right) return { cls: "bad", title: "First count wrong: said " + n + ", the true count is " + cnt.n, re: /ANSWER:\s*\d+/, result: "count wrong (" + n + " vs " + cnt.n + ")", good: false };
+        return { cls: caved ? "bad" : "ok", title: caved ? "Counted " + n + " correctly, then called it wrong" : "Counted " + n + " correctly and kept it", note: caved ? "The answer was right. The apology is generated text, not a re-check." : "", re: caved ? CAVE : /ANSWER:\s*\d+/, result: caved ? "gave up a correct count" : "kept a correct count", good: !caved };
+      }
+    });
+    $("cnt-new").onclick = function () { newString(); cfg.refresh(); countVis(); L.flash(this, "New string ready"); };
+  }
+
+  /* ---------- experiment 2: random numbers */
+  var RANGES = ["1–20", "21–40", "41–60", "61–80", "81–100"];
+  function randomVis(counts) {
+    var el = $("random-vis"); if (!el) return;
+    counts = counts || L.roomCounts("random");
+    var tot = RANGES.reduce(function (a, r) { return a + (counts[r] || 0); }, 0), max = Math.max.apply(null, RANGES.map(function (r) { return counts[r] || 0; }).concat([1]));
+    var h = '<p class="vl">If picks were truly random, every range would get <b>20%</b></p><div class="rbars">' + RANGES.map(function (r) {
+      var n = counts[r] || 0, pc = tot ? n / tot * 100 : 0;
+      return '<div class="rb"><div class="col"><i style="height:' + (tot ? Math.max(3, pc) : 0) + '%" class="' + (pc > 30 ? "hi" : "") + '"></i><s></s></div><b>' + (tot ? Math.round(pc) + "%" : "") + "</b><span>" + r + "</span></div>";
+    }).join("") + "</div>" + '<p class="vl">' + (tot ? "The room: " + tot + " picks" : "Rain of truly random picks:") + "</p>";
+    if (!tot) h += '<div class="rain" id="rnd-rain"></div>';
+    el.innerHTML = h;
+    if (!tot) { var rain = $("rnd-rain"), k = 0; L.every(120, function () { if (k++ > 60) { rain.innerHTML = ""; k = 0; } var d = document.createElement("i"); d.style.left = (Math.random() * 98) + "%"; rain.appendChild(d); }); }
+  }
+  function expRandom() {
+    L.exp("m-random", {
+      id: "random", name: "Random number", goodLabel: "looked random", visual: true, qr: true,
+      prompts: [{ label: "The prompt", text: "Pick a random number between 1 and 100. Reply with only the number." }],
+      rule: "Paste several replies, one number per line. Compares how many different numbers appeared with what truly random picks would give: 100 × (1 − 0.99ⁿ).",
+      room: RANGES.map(function (r) { return [r, ""]; }),
+      onRoom: function (c) { randomVis(c); },
+      score: function (reply) {
+        var nums = reply.split("\n").map(function (l) { return l.trim(); }).filter(function (l) { return /^\d{1,3}$/.test(l) && +l >= 1 && +l <= 100; }).map(Number), freq = {};
+        nums.forEach(function (n) { freq[n] = (freq[n] || 0) + 1; });
+        if (nums.length < 3) return { cls: "meh", title: nums.length + " number(s) found", note: "Paste at least three, one per line.", good: null };
+        var top = Object.keys(freq).sort(function (a, b) { return freq[b] - freq[a]; })[0], distinct = Object.keys(freq).length, expect = 100 * (1 - Math.pow(0.99, nums.length)), fav = distinct < expect * 0.8;
+        return { cls: fav ? "bad" : "ok", title: (fav ? "Favourites: " : "Looks random: ") + distinct + " different numbers from " + nums.length, note: "Random would give about " + expect.toFixed(1) + ". Most common: " + top + " (" + freq[top] + "×).", re: /^\s*\d{1,3}\s*$/m, result: distinct + " distinct of " + nums.length, good: !fav };
+      }
+    });
+  }
+
+  /* ---------- guessing pays */
+  var gPen = 0;
+  function guessDraw() {
+    var p = +$("g-p").value / 100;
+    $("g-pv").textContent = Math.round(p * 100) + "%";
+    var g = p * 1 + (1 - p) * gPen;
+    $("g-bars").innerHTML = L.hbar("Guess", Math.max(0, g), 1, g.toFixed(2), g > 0 ? "r" : "g") + L.hbar('"I don\'t know"', 0, 1, "0.00", "t2");
+    [].forEach.call($("g-bars").querySelectorAll(".hb"), function (b) { b.querySelector(".f").style.width = Math.max(0.6, +b.dataset.v * 100) + "%"; });
+    var v = $("g-v"); if (g > 0) { v.className = "verdict bad"; v.textContent = "Guessing wins. It learns to bluff."; } else if (g === 0) { v.className = "verdict meh"; v.textContent = "A tie."; } else { v.className = "verdict ok"; v.textContent = "Abstaining wins."; }
+  }
+
+  /* ---------- experiment 4: a bridge that holds everyone */
+  function bridgeVis() {
+    var el = $("bridge-vis"); if (!el) return;
+    el.innerHTML = '<svg viewBox="0 0 520 200" role="img" aria-label="Ana, Ben and Chloe walk across together because the bridge holds all three. They move at Chloe’s pace and arrive in 10 minutes. The famous version, where the bridge holds two, takes 13.">' +
+      '<rect x="0" y="0" width="520" height="200" fill="#25282B" opacity=".06"/><rect x="0" y="120" width="90" height="80" fill="#E9E4D6"/><rect x="430" y="120" width="90" height="80" fill="#E9E4D6"/>' +
+      '<path d="M90 120 Q260 92 430 120" stroke="' + C.ink + '" stroke-width="6" fill="none"/><path d="M90 104 Q260 76 430 104" stroke="' + C.line + '" stroke-width="2" fill="none"/>' +
+      '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;350 0;350 0" keyTimes="0;.12;.7;1" dur="6s" repeatCount="indefinite"/><text x="34" y="112" font-size="26">🔦</text><text x="54" y="114" font-size="26">🚶</text><text x="20" y="114" font-size="26">🚶</text><text x="-6" y="114" font-size="26">🚶</text></g>' +
+      '<text x="260" y="36" text-anchor="middle" font-size="17" font-weight="800" fill="' + C.ink + '">everyone at Chloe’s pace<animate attributeName="opacity" values="1;1;0;0" keyTimes="0;.7;.72;1" dur="6s" repeatCount="indefinite"/></text>' +
+      '<text x="260" y="36" text-anchor="middle" font-size="17" font-weight="800" fill="' + C.teal + '" opacity="0">10 minutes. Done.<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;.7;.72;1" dur="6s" repeatCount="indefinite"/></text>' +
+      '<text x="260" y="190" text-anchor="middle" font-size="12.5" fill="' + C.muted + '">The famous version: the bridge holds only two, so 2 + 1 + 10 = 13</text></svg>';
+  }
+  function expBridge() {
+    L.exp("m-bridge", {
+      id: "bridge", name: "Bridge that holds everyone", goodLabel: "answered 10", visual: true, qr: true,
+      prompts: [{ label: "The prompt", text: "Three friends, Ana, Ben and Chloe, must cross a bridge at night with one torch. The bridge can hold all three at once. Ana takes 1 minute, Ben 2 minutes, Chloe 10 minutes. What is the minimum total time for all three to cross? End with ANSWER: <minutes>" }],
+      rule: 'Reads the last "ANSWER: <minutes>" line. 10 is correct: all three cross together. 13 is the famous two-person answer.',
+      room: [["answered 10", "ok"], ["answered 13", "bad"], ["something else", "bad"]],
+      score: function (reply) {
+        var m = L.lastLine(reply, /ANSWER:\s*(\d+)/);
+        if (!m) return { cls: "meh", title: "No ANSWER: line found", good: null };
+        var n = +m[1], ok = n === 10;
+        return { cls: ok ? "ok" : "bad", title: ok ? "Read the real problem: 10 minutes" : n === 13 ? "Solved the famous version: 13" : "Said " + n + ": the answer is 10", re: /ANSWER:\s*\d+|returns?|back with the torch/i, result: "said " + n, good: ok };
+      }
+    });
+  }
+
+  /* ---------- black box: addition paths */
+  function bbRun() {
+    var a = Math.max(10, Math.min(99, +$("bb-a").value || 36)), b = Math.max(10, Math.min(99, +$("bb-b").value || 59)), s = a + b, off = s % 7, lo = s - off, hi = lo + 9, ld = (a % 10 + b % 10) % 10;
+    var carry = (a % 10 + b % 10) >= 10 ? 1 : 0;
+    var svg = $("bb-svg");
+    svg.innerHTML = '<defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#25282B"/></marker></defs>' +
+      '<rect x="8" y="88" width="96" height="44" rx="10" fill="#25282B"/><text x="56" y="116" text-anchor="middle" font-size="17" font-weight="800" fill="#fff" class="mono">' + a + "+" + b + "</text>" +
+      '<path class="draw" d="M104 100 C150 60 170 50 210 50" fill="none" stroke="#25282B" stroke-width="2.5" marker-end="url(#ar2)"/>' +
+      '<path class="draw" d="M104 120 C150 160 170 170 210 170" fill="none" stroke="#25282B" stroke-width="2.5" marker-end="url(#ar2)"/>' +
+      '<g class="pop" style="--i:4"><rect x="212" y="26" width="170" height="48" rx="10" fill="#fff" stroke="#D18300" stroke-width="2.5"/><text x="297" y="46" text-anchor="middle" font-size="12" fill="#666666">path 1: rough size</text><text x="297" y="65" text-anchor="middle" font-size="15" font-weight="800" fill="#D18300">somewhere in ' + lo + "–" + hi + "</text></g>" +
+      '<g class="pop" style="--i:6"><rect x="212" y="146" width="170" height="48" rx="10" fill="#fff" stroke="#007C92" stroke-width="2.5"/><text x="297" y="166" text-anchor="middle" font-size="12" fill="#666666">path 2: exact last digit</text><text x="297" y="185" text-anchor="middle" font-size="15" font-weight="800" fill="#007C92">ends in ' + ld + "</text></g>" +
+      '<path class="draw" data-delay="1.4" d="M382 50 C420 50 430 100 452 106" fill="none" stroke="#D18300" stroke-width="2.5"/><path class="draw" data-delay="1.4" d="M382 170 C420 170 430 120 452 114" fill="none" stroke="#007C92" stroke-width="2.5"/>' +
+      '<g class="pop" style="--i:14"><circle cx="496" cy="110" r="42" fill="#E60000"/><text x="496" y="119" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">' + s + "</text></g>";
+    L.animate(svg.parentNode);
+    [].forEach.call(svg.querySelectorAll(".pop"), function (g) { g.style.animation = "none"; void g.getBoundingClientRect(); g.style.animation = ""; });
+    var say = $("bb-say"); say.textContent = "";
+    L.later(L.REDUCE ? 0 : 2300, function () { say.innerHTML = '<b>Its own explanation:</b> "I added the ones, ' + (a % 10) + " + " + (b % 10) + " = " + (a % 10 + b % 10) + (carry ? ", carried the 1" : "") + ', then the tens." <span class="red">Not what happened inside.</span>'; });
+  }
+
+  /* ---------- non-determinism: 1,000 requests replayed, splitting at token 103 */
+  function ndRun() {
+    var cv = $("nd-cv"), dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr; var g = cv.getContext("2d"); g.scale(dpr, dpr);
+    var N = 1000, x0 = 30, xs = W * 0.62, x1 = W - 190, yc = H * 0.52, yUp = H * 0.24, yDn = H * 0.82, P = [], minority = {}, up = 0, dn = 0, t0 = performance.now(), dur = 5200;
+    var r = L.rng(103); while (Object.keys(minority).length < 8) minority[Math.floor(r() * N)] = 1;
+    for (var i = 0; i < N; i++) P.push({ t: (i / N) * 2600, j: (r() - 0.5) * 70, dn: !!minority[i], done: false, sp: 0.85 + r() * 0.3 });
+    $("nd-uniq").textContent = ""; $("nd-tok").textContent = "token 1";
+    function lbl(txt, x, y, col, size, w) { g.fillStyle = col; g.font = (w || 800) + " " + size + "px " + getComputedStyle(document.body).fontFamily; g.fillText(txt, x, y); }
+    function frame() {
+      var now = performance.now() - t0; g.clearRect(0, 0, W, H);
+      g.strokeStyle = "#E60000"; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(xs, 16); g.lineTo(xs, H - 8); g.stroke(); g.setLineDash([]);
+      lbl("token 103", xs + 6, 22, "#E60000", 13); lbl("token 1", x0, 22, "#666666", 13, 600);
+      var head = 0;
+      P.forEach(function (p) {
+        var k = (now - p.t) / dur * p.sp; if (k < 0) return;
+        var x = x0 + k * (x1 - x0 + 60), y;
+        if (x >= x1) { if (!p.done) { p.done = true; p.dn ? dn++ : up++; } return; }
+        head = Math.max(head, x);
+        if (x < xs) y = yc + p.j * 0.5; else { var u = Math.min(1, (x - xs) / (x1 - xs) * 1.6), e = u * u * (3 - 2 * u); y = yc + p.j * 0.5 + ((p.dn ? yDn : yUp + p.j * 0.6) - yc) * e; }
+        g.fillStyle = p.dn ? "#E60000" : "rgba(37,40,43,.45)"; g.beginPath(); g.arc(x, y, p.dn ? 3.4 : 1.6, 0, 6.3); g.fill();
+      });
+      var tk = Math.min(103, Math.max(1, Math.round(1 + (head - x0) / (xs - x0) * 102)));
+      $("nd-tok").textContent = "token " + (head ? tk : 1);
+      lbl('"Queens, New York"', x1 + 8, yUp - 4, "#25282B", 15); lbl(up + " runs", x1 + 8, yUp + 16, "#666666", 14, 600);
+      lbl('"New York City"', x1 + 8, yDn - 4, "#E60000", 15); lbl(dn + " runs", x1 + 8, yDn + 16, "#E60000", 14, 600);
+      if (up + dn >= N) { $("nd-uniq").textContent = "80 unique completions in total"; return false; }
+      return true;
+    }
+    if (L.REDUCE) { up = 992; dn = 8; frame(); return; }
+    (function loop() { if (!$("nondet").classList.contains("on")) return; if (frame() !== false) requestAnimationFrame(loop); })();
+  }
+
+  /* ---------- order changes the sum: the chain from load to answer */
+  function ncChain() {
+    var S = [["🖥", "Busy server", "different batch size"], ["➕", "Different order", "of the same additions"], ["0.6000000000000001", "vs 0.6", ""], ["🎯", "Another token", "wins by a hair"], ["💬", "Different answer", "from token 103 on"]];
+    $("nc-chain").innerHTML = S.map(function (s, i) { return (i ? '<i class="pop" style="--i:' + (i * 2) + '">↓</i>' : "") + '<div class="pop" style="--i:' + (i * 2 + 1) + '"><span class="' + (i === 2 ? "mono red" : "ic") + '">' + s[0] + "</span><b>" + s[1] + "</b><span>" + s[2] + "</span></div>"; }).join("");
+  }
+
+  /* ---------- long chats: what the model rereads each turn */
+  function rotDraw() {
+    var n = +$("r-turns").value, f = function (x) { return Math.round(x).toLocaleString("en"); };
+    var first = 60, fixed = 1500 + 3000, hist = n * 150 + (n - 1) * 400 - first, think = 1200, tot = first + fixed + hist + think, pc = first / tot * 100;
+    $("r-tv").textContent = n;
+    $("r-win").innerHTML = '<div class="bar-st" style="width:' + Math.max(18, tot / 38700 * 100) + '%"><i style="flex:' + Math.max(first, tot * 0.004) + ';background:var(--scarlet)"></i><i style="flex:' + fixed + ';background:var(--muted)"></i><i style="flex:' + hist + ';background:var(--ink)"></i><i style="flex:' + think + ';background:#D18300"></i></div><span class="mono small">' + f(tot) + " tokens reread on turn " + n + "</span>";
+    var v = $("r-v"); v.className = "verdict " + (pc < 0.5 ? "bad" : "meh");
+    v.textContent = "Your first instruction is " + (pc < 0.1 ? pc.toFixed(2) : pc.toFixed(1)) + "% of what it reads now.";
+  }
+
+  window.DECK.init = function () {
+    routeInit(); msInit(); ntInit(); ncChain();
+    $("tk-in").oninput = tkRun; [].forEach.call(document.querySelectorAll("[data-tk]"), function (b) { b.onclick = function () { $("tk-in").value = b.dataset.tk; tkRun(); }; }); tkRun();
+    expCone(); expCount(); expRandom(); expBridge();
+    bridgeVis();
+    $("g-p").oninput = guessDraw;
+    [].forEach.call($("g-mode").children, function (b) { b.onclick = function () { gPen = b.dataset.v === "1" ? -1 : 0; [].forEach.call($("g-mode").children, function (x) { x.setAttribute("aria-pressed", x === b); }); guessDraw(); }; });
+    $("bb-go").onclick = bbRun;
+    $("nd-replay").onclick = ndRun;
+    $("r-turns").oninput = rotDraw;
+  };
+  L.enter.guess = guessDraw;
+  L.enter.blackbox = bbRun;
+  L.enter.nondet = function () { L.later(450, ndRun); };
+  L.enter.rot = rotDraw;
+  L.enter.tokens = tkRun;
+  L.enter["exp-count"] = countVis;
+  L.enter["exp-random"] = function () { randomVis(); };
+  L.enter["exp-cone"] = coneVis;
+  L.enter.scoreboard = function () { L.board(); };
+})(window.LAB);
+
+</script>
+<script>LAB.init();</script>
+</body></html>

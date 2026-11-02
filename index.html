@@ -376,6 +376,86 @@ button.cdot:hover{border-color:var(--red)}
   .panel.in .hls li::before{animation:none}
 }
 .recap li{display:block}
+
+/* ===================== the cosmic workshop journey */
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.wcard{position:relative;overflow:hidden;margin:18px 0 0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 16px;align-items:center;padding:16px 16px 16px 18px;border-radius:18px;background:linear-gradient(115deg,#18080B 0%,#3B0008 62%,#6A0010 100%);color:#fff}
+.wcard::before,.wcard::after{content:"";position:absolute;border-radius:50%;pointer-events:none;border:2px solid rgba(255,70,70,.55);box-shadow:0 0 16px rgba(230,0,0,.55),inset 0 0 14px rgba(230,0,0,.45)}
+.wcard::before{right:-56px;top:-70px;width:170px;height:170px}
+.wcard::after{right:-14px;top:-28px;width:86px;height:86px;opacity:.7}
+.wc-t{position:relative;z-index:1;min-width:0}
+.wk{margin:0;font-size:12.5px;font-weight:800;color:#FF8A80;letter-spacing:.03em;text-transform:uppercase}
+.wt{margin:3px 0 0;font-size:21px;font-weight:800;line-height:1.12;letter-spacing:-.02em}
+.wd{margin:4px 0 0;font-size:14px;color:rgba(255,255,255,.72);line-height:1.35}
+.wlaunch,.fab{position:relative;z-index:1;display:inline-flex;align-items:center;gap:9px;height:46px;padding:0 20px;border-radius:999px;border:0;background:var(--red);color:#fff;font-weight:800;font-size:15px;cursor:pointer;white-space:nowrap;box-shadow:0 10px 24px -8px rgba(230,0,0,.85);transition:transform .2s,background .2s}
+.wlaunch:hover,.fab:hover{background:#FF1F1F;transform:translateY(-1px)}
+.wlaunch svg,.fab svg{width:19px;height:19px}
+.wlaunch:focus-visible,.fab:focus-visible{outline:3px solid #fff;box-shadow:0 0 0 6px var(--red)}
+@media (max-width:440px){.wcard{grid-template-columns:minmax(0,1fr)}.wlaunch{justify-self:start}}
+.fab{position:absolute;left:max(14px,env(safe-area-inset-left,0px));bottom:12px;z-index:3;animation:fabIn .6s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fabIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.stage.journey .stno,.stage.journey .pins,.stage.journey .hint,.stage.journey .fab,.stage.journey .finale{display:none!important}
+.stage.journey{background:#0B0507}
+.veil{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,#FFFFFF 0%,#F4F8FC 55%,#DCEBF8 100%);opacity:0;pointer-events:none;z-index:2}
+.jcap{position:absolute;left:max(14px,env(safe-area-inset-left,0px));top:12px;z-index:3;display:none;gap:10px;align-items:center;max-width:calc(100% - 28px);padding:8px 14px 8px 12px;border-radius:999px;background:rgba(12,6,8,.66);color:#fff;font-weight:700;font-size:14px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.jcap i{flex:none;width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 0 0 rgba(230,0,0,.7);animation:jpulse 1.6s infinite}
+.jcap span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jcap small{flex:none;font-weight:600;color:rgba(255,255,255,.6);font-variant-numeric:tabular-nums}
+.jcap.paused i{animation:none;background:#FFB53D}
+.jcap.paused span::after{content:" · paused";color:#FFB53D}
+.jcap.nudge{animation:jnudge .5s}
+@keyframes jpulse{70%{box-shadow:0 0 0 8px rgba(230,0,0,0)}100%{box-shadow:0 0 0 0 rgba(230,0,0,0)}}
+@keyframes jnudge{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.jctl{position:absolute;right:max(12px,env(safe-area-inset-right,0px));bottom:12px;z-index:3;display:none;gap:8px;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 24px)}
+.stage.journey .jcap,.stage.journey .jctl{display:flex}
+.jb{min-height:40px;padding:0 15px;border-radius:999px;border:1px solid rgba(255,255,255,.38);background:rgba(12,6,8,.66);color:#fff;font-weight:700;font-size:13.5px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.jb:hover{border-color:#fff}
+.jb.pri{background:var(--red);border-color:var(--red)}
+.jb:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.app.locked .rail,.app.locked .ctrack{opacity:.45;pointer-events:none}
+.beats{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:4px}
+.beats li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;align-items:center;padding:9px 10px;border-radius:12px;color:var(--muted);font-weight:700;font-size:16px;transition:background .35s,color .35s}
+.beats li i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12.5px;font-weight:800;background:var(--grey);color:var(--ink-2);transition:background .35s,color .35s,box-shadow .35s}
+.beats small{display:block;font-weight:500;font-size:13.5px;color:var(--muted)}
+.beats li.on{background:#FDECEC;color:var(--ink)}
+.beats li.on i{background:var(--red);color:#fff;box-shadow:0 0 0 5px rgba(230,0,0,.16)}
+.beats li.done{color:var(--ink)}
+.beats li.done i{background:var(--ink);color:#fff}
+.jnote{margin:18px 0 0;font-size:14px;color:var(--muted);max-width:52ch}
+.wmeta{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.wmeta span{background:var(--grey);border-radius:999px;padding:6px 13px;font-size:14px;color:var(--ink-2)}
+.wmeta b{color:var(--red);font-weight:800}
+.agenda{list-style:none;margin:0 0 0 6px;padding:0;display:grid;border-left:2px solid var(--line)}
+.agenda li{position:relative;display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px;align-items:baseline;padding:7px 0 7px 16px}
+.agenda li::before{content:"";position:absolute;left:-7px;top:14px;width:12px;height:12px;border-radius:50%;background:var(--white);border:2.5px solid var(--red)}
+.agenda .at{font-weight:800;font-size:14px;color:var(--red);font-variant-numeric:tabular-nums}
+.agenda a,.xps a{color:var(--ink);text-decoration:none;font-weight:700;font-size:15.5px;line-height:1.35}
+.agenda a:hover,.xps a:hover b{color:var(--red);text-decoration:underline;text-decoration-color:rgba(230,0,0,.4);text-underline-offset:3px}
+.xps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.xps li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;align-items:start;padding:10px 12px;border-radius:14px;background:var(--grey)}
+.xps i{font-style:normal;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;font-weight:800;font-size:13px}
+.xps a{display:grid;gap:1px}
+.xps b{font-size:15.5px}
+.xps span{font-size:13.5px;font-weight:600;color:var(--muted)}
+.wact{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:24px}
+.wact .go{text-decoration:none}
+.btn2{min-height:42px;padding:0 17px;border-radius:999px;border:1.5px solid var(--ink);background:var(--white);font-weight:700;font-size:14.5px;cursor:pointer}
+.btn2:hover{background:var(--grey)}
+.panel .src{margin:16px 0 0;font-size:12.5px;color:var(--muted);line-height:1.45}
+@media (max-width:560px){.jctl .jb{padding:0 11px;font-size:12.5px}.jcap{font-size:13px}}
+@media (prefers-reduced-motion:reduce){.fab,.jcap i,.jcap.nudge{animation:none}}
+
+/* the journey takes over the whole page while the bus flies */
+.stage-ph{display:none}
+html.jfull{overflow:hidden}
+html.jfull .stage-ph{display:block;height:50vh;min-height:320px}
+@media (min-width:1000px){html.jfull .stage-ph{height:auto;min-height:0}}
+.stage.full{position:fixed;inset:0;width:auto;height:auto;min-height:0;z-index:60}
+.stage.ftrans{will-change:clip-path}
+.jcap,.jctl{transition:opacity .25s}
+.stage.ftrans .jcap,.stage.ftrans .jctl{opacity:0;transition:none}
+.stage.full .jcap{top:max(12px,env(safe-area-inset-top,0px))}
+.stage.full .jctl{bottom:max(12px,env(safe-area-inset-bottom,0px))}
 </style>
 <script>
 /* three.js r128: cdnjs first, jsDelivr as a fallback */
@@ -425,6 +505,11 @@ window.__threeFallback=function(){var s=document.createElement("script");s.src="
         </div>
       </div>
       <p class="hint" id="hint">Press → or Space for the next stop</p>
+      <div class="veil" id="veil" aria-hidden="true"></div>
+      <div class="jcap" id="jcap"><i aria-hidden="true"></i><span id="jcapT">Preparing for liftoff</span><small id="jcapB">1 / 5</small></div>
+      <div class="jctl" role="group" aria-label="Workshop journey controls"><button type="button" class="jb" id="jFs" aria-pressed="false" hidden>Full screen</button><button type="button" class="jb" id="jPause" aria-pressed="false">Pause</button><button type="button" class="jb" id="jSkip">Skip to the stage</button><button type="button" class="jb pri" id="jRet">Return to roadmap</button></div>
+      <button type="button" class="fab" id="fab" hidden><span id="fabL">Launch workshop</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 15c-1.5 1.3-2 4-2 6 2 0 4.7-.5 6-2"/><path d="M12 15l-3-3a19 19 0 0 1 8-9c2 0 4 2 4 4a19 19 0 0 1-9 8z"/><path d="M9 12H5l2-4h4M12 15v4l4-2v-4"/></svg></button>
+      <p class="sr" id="jsr" aria-live="polite"></p>
     </section>
     <section class="panel" id="panel" aria-live="polite" tabindex="-1"></section>
   </main>
@@ -542,7 +627,7 @@ function stopS(k){return KNOTS[k+1]}
 /* ================================================================== state: one source of truth */
 var S={s:S_START,at:-1,anim:null,heading:1,hb:1,odo:0,v:0,acc:0,mode:"overview",ov:1,auto:false,autoTimer:null,ever:false,finaleShown:false,active:-1,doneMax:-1};
 var stage=$("stage"),panel=$("panel"),finale=$("finale"),flash=$("flash"),pins=$("pins");
-var W=1,H=1;function measure(){var r=stage.getBoundingClientRect();W=Math.max(1,r.width);H=Math.max(1,r.height);measureChips();if(R){R.resize(W,H);frameFinale()}}
+var W=1,H=1;function measure(){var r=stage.getBoundingClientRect();W=Math.max(1,r.width);H=Math.max(1,r.height);measureChips();if(R){R.resize(W,H);frameFinale();if(jBusy()&&J.state!=="RETURNING")R.journey.redraw(jRenderT())}}
 
 /* ================================================================== header chips with the travelling pill */
 var chipsOl=$("chips"),rail=$("rail"),pill=$("pill"),chipBtns=[],chipRects=[];
@@ -603,7 +688,7 @@ function moduleHTML(st){
    '<div class="nums" style="grid-template-columns:minmax(0,1fr)"><div><b class="r"><span class="count" data-to="5" data-dec="0">0</span>%</b><span>About this share of generative AI pilots reach rapid revenue growth (MIT NANDA, The GenAI Divide, 2025).</span></div></div></div>';
   return ""}
 function stationHTML(k){var st=ST[k],n=0;function i(){return 'style="--i:'+(n++)+'"'}
-  var h='<p class="kick rv" '+i()+'>Stop '+(k+1)+' of '+NST+'</p><h2 class="p-title rv" '+i()+'>'+esc(st.title)+'</h2><p class="p-q rv" '+i()+'>'+esc(st.q)+'</p>'+illoHTML(k,i())+'<p class="p-ov rv" '+i()+'>'+esc(st.ov)+'</p>';
+  var h='<p class="kick rv" '+i()+'>Stop '+(k+1)+' of '+NST+'</p><h2 class="p-title rv" '+i()+'>'+esc(st.title)+'</h2><p class="p-q rv" '+i()+'>'+esc(st.q)+'</p>'+wsCardHTML(k,i())+illoHTML(k,i())+'<p class="p-ov rv" '+i()+'>'+esc(st.ov)+'</p>';
   n=6;h+=moduleHTML(st);
   h+='<h3 class="p-h rv" '+i()+'>Top highlights</h3><ul class="hls">'+st.hl.map(function(x){return '<li class="rv" '+i()+'><div><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div></li>'}).join("")+'</ul>';
   h+='<h3 class="p-h rv" '+i()+'>Branches at this stop</h3>'+branchHTML(k,i());
@@ -737,6 +822,9 @@ function showPanel(html,reveal,after){clearTimeout(panelTimer);panel.classList.r
     var again=$("againBtn");if(again)again.addEventListener("click",function(){userAct();restart()});
     [].forEach.call(panel.querySelectorAll("[data-go]"),function(b){b.addEventListener("click",function(){userAct();travelTo(+b.getAttribute("data-go"))})});
     [].forEach.call(panel.querySelectorAll(".tb"),function(b){b.addEventListener("click",function(){openBranch(b)})});
+    [].forEach.call(panel.querySelectorAll("[data-launch]"),function(b){b.addEventListener("click",function(){launchWorkshop(+b.getAttribute("data-launch"))})});
+    [].forEach.call(panel.querySelectorAll("[data-ret]"),function(b){b.addEventListener("click",returnToRoadmap)});
+    [].forEach.call(panel.querySelectorAll("[data-again]"),function(b){b.addEventListener("click",flyAgain)});
     if(after)after();
     if(reveal){requestAnimationFrame(function(){requestAnimationFrame(function(){panel.classList.add("in");runCounters()})})}else panel.classList.add("in")},REDUCE?0:180)}
 function runCounters(){var els=panel.querySelectorAll(".count");var t0=performance.now(),delay=REDUCE?0:450,dur=REDUCE?1:1100;
@@ -750,7 +838,7 @@ function frameFinale(){if(!R)return;if(!S.finaleShown){R.fitRoute(null);return}
   var ph=pinEls[0]?pinEls[0].offsetHeight:30,narrow=!!(window.matchMedia&&matchMedia("(max-width:560px)").matches);
   R.fitRoute({top:finale.offsetTop+finale.offsetHeight+16,bottom:18,up:ph+6,down:narrow?0:ph+20})}
 function setStationLights(active,doneMax){S.active=active;S.doneMax=doneMax;if(R)R.lights(active,doneMax)}
-function travelTo(k){k=clamp(k,0,NST);var target=S.anim?S.anim.k:S.at;if(k===target)return;
+function travelTo(k){if(jBusy()){nudge();return}k=clamp(k,0,NST);var target=S.anim?S.anim.k:S.at;if(k===target)return;
   var to=stopS(k),from=S.s,dist=Math.abs(to-from);
   S.heading=to>from?1:-1;S.mode="follow";
   if(S.finaleShown){finale.classList.remove("show");S.finaleShown=false;frameFinale()}
@@ -769,7 +857,7 @@ function arrive(k){S.at=k;S.anim=null;S.ever=true;updateChipStates();updateButto
   if(S.auto)scheduleAuto()}
 function next(){var cur=S.anim?S.anim.k:S.at;if(cur<NST)travelTo(cur+1)}
 function prev(){var cur=S.anim?S.anim.k:S.at;if(cur>0)travelTo(cur-1)}
-function restart(keep){if(!keep)setAuto(false);finale.classList.remove("show");S.finaleShown=false;frameFinale();setStationLights(-1,-1);
+function restart(keep){if(jBusy()){nudge();return}if(!keep)setAuto(false);finale.classList.remove("show");S.finaleShown=false;frameFinale();setStationLights(-1,-1);
   stage.classList.add("fading");setTimeout(function(){S.anim=null;S.s=S_START;S.heading=1;S.hb=1;S.at=-1;S.mode="follow";S.ov=0;updateChipStates();stage.classList.remove("fading");
     setTimeout(function(){travelTo(0)},REDUCE?0:450)},260)}
 function setAuto(on){S.auto=on;var b=$("bPlay");if(!b){clearTimeout(S.autoTimer);return}b.setAttribute("aria-pressed",on?"true":"false");b.setAttribute("aria-label",on?"Pause the journey":"Play the journey automatically");
@@ -779,7 +867,134 @@ function scheduleAuto(){clearTimeout(S.autoTimer);S.autoTimer=setTimeout(functio
 var hintGone=false;function hideHint(){if(hintGone)return;hintGone=true;setTimeout(function(){$("hint").classList.add("gone")},2500)}
 var introDone=false;function dismissIntro(){if(introDone)return;introDone=true;$("intro").classList.add("gone")}
 function userAct(){hideHint();dismissIntro();if(S.auto)setAuto(false)}
-function updateButtons(){var cur=S.anim?S.anim.k:S.at;$("bPrev").disabled=!(cur>0);$("bNext").disabled=cur>=NST;$("bNextL").textContent=cur===NST-1?"To the destination":"Next stop"}
+function updateButtons(){var cur=S.anim?S.anim.k:S.at,lk=jBusy();$("bPrev").disabled=lk||!(cur>0);$("bNext").disabled=lk||cur>=NST;$("bRestart").disabled=lk;if(fab)setFab();$("bNextL").textContent=cur===NST-1?"To the destination":"Next stop"}
+
+
+/* ================================================================== workshops linked to stops
+   Taken from the workshop decks themselves (workshops/session-N-*.html): the agenda on each deck's "Today" slide,
+   its experiment slides and its take-away slide. Numbers after each item are the deck's slide numbers (#n deep links).
+   Only Stop 1 has its workshop wired in for now; add an entry here and a ws key on the stop to switch on the others. */
+var WS_BASE="workshops/";
+var WS={
+ s1:{n:1,file:"session-1-how-ai-behaves.html",title:"How AI really behaves",tag:"Every word an LLM writes is one weighted roll of the dice.",min:45,
+  agenda:[["0:00","Today’s story",2],["0:02","The mindset shift",3],["0:04","Act 1 · It guesses",4],["0:11","Act 2 · It can’t see itself",6],["0:20","Act 3 · Loaded dice",10],["0:26","Act 4 · Recognition wins",13],["0:36","Act 5 · Quiet failure",17],["0:41","Finale · Scoreboard and habits",20]],
+  exps:[["The table that never ends","Act 1 · It guesses",5],["Count it, then push back","Act 2 · Its story is not its process",8],["Ask for a random number. Get a favourite.","Act 3 · Loaded dice",12],["A bridge puzzle with nothing to solve","Act 4 · The familiar pattern wins",16]],
+  take:[["One reply is one roll","Ask twice before you trust it"],["Exact work in code","Counting, maths, dates, IDs"],["Explanations are stories","And pushback isn’t evidence"],["Measure rates","Many samples, test properties"],["Change one detail","Catches recall dressed as reasoning"],["Check, feed back, retry","The start of a harness"]]}
+};
+ST[0].ws="s1";
+function wsOf(k){return k>=0&&k<NST&&ST[k].ws?WS[ST[k].ws]||null:null}
+function wsHref(ws,slide){return WS_BASE+ws.file+(slide?"#"+slide:"")}
+
+/* ================================================================== the workshop journey: one clock, one state machine
+   States follow the brief. The journey clock J.t is the only source of truth; the 3D scene, the HUD and the panel all read it. */
+var PHASES=[
+ ["PREPARING_FOR_LIFTOFF",.8,"Preparing for liftoff",0],
+ ["DEPLOYING_CORNER_THRUSTERS",1.5,"Corner thrusters unfolding",0],
+ ["LIFTING_OFF",1.1,"Lifting off the road",0],
+ ["DEPLOYING_CENTRAL_THRUSTER",1.3,"Main engine deploying",0],
+ ["POWERING_ENGINES",.9,"All five engines: full power",0],
+ ["ASCENDING",1.4,"Liftoff",0],
+ ["FLYING_THROUGH_CLOUDS",2.6,"Through the clouds",1],
+ ["PASSING_SATELLITES",2.2,"Passing the satellites",1],
+ ["ENTERING_DEEP_SPACE",2.6,"Deep space, past the Moon",1],
+ ["APPROACHING_VODAFONE_GALAXY",2.2,"The Vodafone Galaxy",2],
+ ["DEPLOYING_REAR_THRUSTER",1.6,"Rear engine unfolding in flight",2],
+ ["TRAVERSING_SPIRAL",8.0,"Through the infinite spiral",3],
+ ["APPROACHING_WORKSHOP_STAGE",2.4,"The workshop stage",4],
+ ["ARRIVING_AT_STAGE",3.0,"Landing on the stage",4],
+ ["REVEALING_WORKSHOP_OUTLINE",1.4,"Workshop outline",4],
+ ["WORKSHOP_READY",Infinity,"Workshop ready",4]];
+var BEATS=[["Liftoff","Four thrusters, then the main engine"],["Into space","Clouds, satellites, the Moon"],["The Vodafone Galaxy","The rear engine unfolds"],["The infinite spiral","Mirrored Vodafone forms"],["The workshop stage","The outline is revealed"]];
+var PT={},PD={},PIX={};(function(){var acc=0;PHASES.forEach(function(p,i){PT[p[0]]=acc;PD[p[0]]=p[1];PIX[p[0]]=i;acc+=p[1]})})();
+/* reduced motion: three held frames with cross-fades (departure, the galaxy, the stage) instead of camera travel */
+var RSTILLS=[["LIFTING_OFF",1.3,PT.DEPLOYING_CENTRAL_THRUSTER-.05],["APPROACHING_VODAFONE_GALAXY",1.9,PT.TRAVERSING_SPIRAL-.02],["REVEALING_WORKSHOP_OUTLINE",.4,PT.WORKSHOP_READY],["WORKSHOP_READY",Infinity,PT.WORKSHOP_READY]];
+var RET_DUR=1.3;
+var J={state:"ROADMAP_IDLE",k:-1,t:0,paused:false,token:0,reduce:false,phase:-1,rt:0};
+function jActive(){return J.state!=="ROADMAP_IDLE"&&J.state!=="RETURNING"}
+function jBusy(){return J.state!=="ROADMAP_IDLE"}
+function rStill(t){var acc=0;for(var i=0;i<RSTILLS.length;i++){if(t<acc+RSTILLS[i][1])return{i:i,start:acc,end:acc+RSTILLS[i][1]};acc+=RSTILLS[i][1]}return{i:RSTILLS.length-1,start:acc,end:Infinity}}
+function jRenderT(){if(!J.reduce)return J.t;return RSTILLS[rStill(J.t).i][2]}
+function jPhaseIdx(){if(J.reduce)return PIX[RSTILLS[rStill(J.t).i][0]];var t=J.t;for(var i=PHASES.length-1;i>=0;i--)if(t>=PT[PHASES[i][0]])return i;return 0}
+
+function jHudHTML(k){var ws=wsOf(k),n=0;function i(){return 'style="--i:'+(n++)+'"'}
+  return '<p class="kick rv" '+i()+'>Workshop '+ws.n+' · launching from stop '+(k+1)+'</p><h2 class="p-title rv" '+i()+'>'+esc(ws.title)+'</h2><p class="p-q rv" '+i()+'>'+esc(ws.tag)+'</p>'+
+   '<ol class="beats rv" '+i()+'>'+BEATS.map(function(b,j){return '<li data-b="'+j+'"><i>'+(j+1)+'</i><div>'+esc(b[0])+'<small>'+esc(b[1])+'</small></div></li>'}).join("")+'</ol>'+
+   '<p class="jnote rv" '+i()+'>The outline appears when the bus lands on the workshop stage. Space pauses, S skips to the stage, Esc returns to the roadmap.</p>'}
+function workshopHTML(k,noFlight){var ws=wsOf(k),n=0;function i(){return 'style="--i:'+Math.min(n++,12)+'"'}
+  function a(slide,inner){return '<a href="'+esc(wsHref(ws,slide))+'" target="_blank" rel="noopener">'+inner+'</a>'}
+  var h='<p class="kick rv" '+i()+'>Workshop '+ws.n+' · from stop '+(k+1)+': '+esc(ST[k].title)+'</p><h2 class="p-title rv" '+i()+'>'+esc(ws.title)+'</h2><p class="p-q rv" '+i()+'>'+esc(ws.tag)+'</p>';
+  h+='<div class="wmeta rv" '+i()+'><span><b>'+ws.min+'</b> minutes</span>'+(ws.exps&&ws.exps.length?'<span><b>'+ws.exps.length+'</b> live experiments</span>':'')+'</div>';
+  if(ws.agenda&&ws.agenda.length)h+='<h3 class="p-h rv" '+i()+'>Agenda</h3><ol class="agenda">'+ws.agenda.map(function(g){return '<li class="rv" '+i()+'><span class="at">'+esc(g[0])+'</span>'+a(g[2],esc(g[1]))+'</li>'}).join("")+'</ol>';
+  if(ws.exps&&ws.exps.length)h+='<h3 class="p-h rv" '+i()+'>Live experiments</h3><ol class="xps">'+ws.exps.map(function(x,j){return '<li class="rv" '+i()+'><i>'+(j+1)+'</i>'+a(x[2],'<b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span>')+'</li>'}).join("")+'</ol>';
+  if(ws.take&&ws.take.length)h+='<h3 class="p-h rv" '+i()+'>What you take back to your desk</h3><ul class="hls">'+ws.take.map(function(x){return '<li class="rv" '+i()+'><div><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div></li>'}).join("")+'</ul>';
+  h+='<div class="wact rv" '+i()+'><a class="go" href="'+esc(wsHref(ws,1))+'" target="_blank" rel="noopener"><span>Open the workshop</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>'+
+    '<button type="button" class="btn2" data-ret>Return to roadmap</button>'+(noFlight?'':'<button type="button" class="btn2" data-again>Fly again</button>')+'</div>';
+  h+='<p class="src rv" '+i()+'>Outline from the workshop deck '+esc(ws.file)+': its agenda slide, experiment slides and take-aways. Each item opens the deck at that slide.</p>';
+  return h}
+function wsCardHTML(k,attr){var ws=wsOf(k);if(!ws)return "";
+  return '<div class="wcard rv" '+attr+'><div class="wc-t"><p class="wk">Workshop '+ws.n+' · '+ws.min+' min · '+ws.exps.length+' live experiments</p><p class="wt">'+esc(ws.title)+'</p><p class="wd">Ride the bus to the workshop stage to see its outline.</p></div>'+
+    '<button type="button" class="wlaunch" data-launch="'+k+'" aria-label="Launch workshop '+ws.n+': '+esc(ws.title)+'">Launch workshop'+ROCKET+'</button></div>'}
+var ROCKET='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 15c-1.5 1.3-2 4-2 6 2 0 4.7-.5 6-2"/><path d="M12 15l-3-3a19 19 0 0 1 8-9c2 0 4 2 4 4a19 19 0 0 1-9 8z"/><path d="M9 12H5l2-4h4M12 15v4l4-2v-4"/></svg>';
+
+var jcap=$("jcap"),jcapT=$("jcapT"),jcapB=$("jcapB"),jPause=$("jPause"),jSkip=$("jSkip"),jRet=$("jRet"),fab=$("fab"),veil=$("veil"),appEl=document.querySelector(".app");
+/* during the flight the journey scene takes over the whole page. When the bus is ready on the stage it glides back into its slot
+   and the workshop outline appears beside it. A placeholder keeps the slot so the way back can be measured. */
+var stPh=document.createElement("div");stPh.className="stage-ph";stPh.setAttribute("aria-hidden","true");stage.parentNode.insertBefore(stPh,stage);
+/* The grow and shrink never resize the canvas mid-way. Growing: the stage jumps to cover the page at once (one resize, redrawn in the same
+   frame), clipped to its old slot, and the camera keeps composing the shot for that slot. Then the clip window and the shot's frame grow
+   together, frame by frame, in the render loop. Shrinking is the same in reverse, and the canvas returns to its slot size only at the end. */
+var fullOn=false,FT=null;
+function vpRect(){return {x:0,y:0,w:window.innerWidth,h:window.innerHeight}}
+function rectOf(el){var r=el.getBoundingClientRect();return {x:r.left,y:r.top,w:r.width,h:r.height}}
+function clipTo(F){var vw=window.innerWidth,vh=window.innerHeight,v="inset("+F.y.toFixed(2)+"px "+(vw-F.x-F.w).toFixed(2)+"px "+(vh-F.y-F.h).toFixed(2)+"px "+F.x.toFixed(2)+"px)";stage.style.clipPath=v;stage.style.webkitClipPath=v}
+function fullApply(u){var e=u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2,a=FT.a,b=FT.b,F={x:lerp(a.x,b.x,e),y:lerp(a.y,b.y,e),w:lerp(a.w,b.w,e),h:lerp(a.h,b.h,e)};FT.cur=F;
+  if(R)R.journey.frame(F);clipTo(F)}
+function fullStep(now){if(!FT)return;if(FT.t0<0)FT.t0=now;var u=FT.dur?Math.min(1,(now-FT.t0)/FT.dur):1;fullApply(u);if(u<1)return;
+  var f=FT;FT=null;stage.style.clipPath=stage.style.webkitClipPath="";stage.classList.remove("ftrans");
+  if(!f.on){stage.classList.remove("full");document.documentElement.classList.remove("jfull")}
+  if(R)R.journey.frame(null);if(!f.on)measure();else if(R)R.journey.redraw(jRenderT());if(f.done)f.done()}
+function setFull(on,done){if(on===fullOn&&!FT){if(done)done();return}fullOn=on;var from=FT?FT.cur:null,to;
+  if(on){if(!from)from=rectOf(stage);document.documentElement.classList.add("jfull");stage.classList.add("ftrans");
+    FT={a:from,b:vpRect(),t0:-1,dur:REDUCE?0:700,on:true,done:done};fullApply(0);if(!stage.classList.contains("full")){stage.classList.add("full");measure()}}
+  else{if(!from)from=vpRect();stage.classList.add("ftrans");FT={a:from,b:rectOf(stPh),t0:-1,dur:REDUCE?0:700,on:false,done:done};fullApply(0)}}
+var jFs=$("jFs");if(jFs){var fsLab=function(){jFs.textContent=isFs()?"Exit full screen":"Full screen";jFs.setAttribute("aria-pressed",isFs()?"true":"false")};fsLab();
+  ["fullscreenchange","webkitfullscreenchange"].forEach(function(ev){document.addEventListener(ev,fsLab)})}
+function setFab(){var k=S.at,ws=wsOf(k),show=!!ws&&!S.anim&&!jBusy();fab.hidden=!show;if(show){$("fabL").textContent="Launch workshop "+ws.n;fab.setAttribute("aria-label","Launch workshop "+ws.n+": "+ws.title)}}
+function lockNav(on){appEl.classList.toggle("locked",on);chipBtns.forEach(function(b){b.disabled=on});dots.forEach(function(d){d.disabled=on});updateButtons();setFab()}
+function nudge(){if(!jcap)return;jcap.classList.remove("nudge");void jcap.offsetWidth;jcap.classList.add("nudge");$("jsr").textContent="The workshop journey is running. Press Escape to return to the roadmap first."}
+
+function launchWorkshop(k){if(jBusy())return;if(S.anim||S.at!==k)return;var ws=wsOf(k);if(!ws)return;userAct();
+  J.token++;J.k=k;J.t=0;J.phase=-1;J.paused=false;J.reduce=REDUCE;J.rt=0;
+  if(finale.classList.contains("show")){finale.classList.remove("show");S.finaleShown=false}
+  if(!R){J.state="WORKSHOP_READY";showPanel(workshopHTML(k,true),true);lockNav(true);return}
+  J.state=PHASES[0][0];R.journey.begin(k,ws,J.reduce);stage.classList.add("journey");setFull(true);if(jFs){jFs.hidden=!fsOk;fsLab()}
+  showPanel(jHudHTML(k),true);setPauseUi();jSkip.hidden=false;jPause.hidden=false;jRet.textContent="Return to roadmap";lockNav(true);
+  $("gl").setAttribute("aria-label","The bus prepares to lift off from stop "+(k+1)+" on its way to workshop "+ws.n);jcap.focus&&jPause.focus({preventScroll:true})}
+function onPhase(i){var p=PHASES[i],ws=wsOf(J.k),tok=J.token;J.state=p[0];
+  jcapT.textContent=i>=PIX.REVEALING_WORKSHOP_OUTLINE?"Workshop "+ws.n+": "+ws.title:p[2];jcapB.textContent=(p[3]+1)+" / "+BEATS.length;
+  [].forEach.call(panel.querySelectorAll(".beats li"),function(li){var b=+li.getAttribute("data-b");li.classList.toggle("done",b<p[3]||i>=PIX.WORKSHOP_READY);li.classList.toggle("on",b===p[3]&&i<PIX.WORKSHOP_READY)});
+  if(i===0||PHASES[i-1][3]!==p[3])$("jsr").textContent="Workshop journey: "+BEATS[p[3]][0]+".";
+  if(p[0]==="REVEALING_WORKSHOP_OUTLINE"||(p[0]==="WORKSHOP_READY"&&!panel.querySelector(".agenda"))){showPanel(workshopHTML(J.k),true,function(){if(tok!==J.token||fullOn)return;if(window.innerWidth<1000)panel.scrollIntoView({behavior:REDUCE?"auto":"smooth",block:"start"})});
+    $("gl").setAttribute("aria-label","The bus has landed on the Vodafone workshop stage for workshop "+ws.n+": "+ws.title)}
+  if(p[0]==="WORKSHOP_READY"){setFull(false,function(){if(tok===J.token&&window.innerWidth<1000)panel.scrollIntoView({behavior:REDUCE?"auto":"smooth",block:"start"})});jPause.hidden=true;jSkip.hidden=true;$("jsr").textContent="Workshop "+ws.n+" is ready: "+ws.title+". The outline is in the panel."}}
+function setPauseUi(){jPause.textContent=J.paused?"Resume":"Pause";jPause.setAttribute("aria-pressed",J.paused?"true":"false");jcap.classList.toggle("paused",J.paused);if(J.paused)jcapT.setAttribute("data-was",jcapT.textContent)}
+function togglePause(){if(!jActive()||J.state==="WORKSHOP_READY")return;J.paused=!J.paused;setPauseUi();$("jsr").textContent=J.paused?"Journey paused.":"Journey resumed."}
+function skipToStage(){if(!jActive())return;var to=J.reduce?RSTILLS[0][1]+RSTILLS[1][1]:PT.ARRIVING_AT_STAGE;if(J.t<to){J.t=to;J.paused=false;setPauseUi()}}
+function flyAgain(){if(!jActive()||!R)return;J.token++;J.t=0;J.phase=-1;J.paused=false;J.reduce=REDUCE;R.journey.begin(J.k,wsOf(J.k),J.reduce);setFull(true);showPanel(jHudHTML(J.k),true);setPauseUi();jPause.hidden=false;jSkip.hidden=false}
+function returnToRoadmap(){if(!jActive())return;var tok=++J.token,k=J.k;
+  if(!R){J.state="ROADMAP_IDLE";showPanel(stationHTML(k),true);lockNav(false);return}
+  J.paused=true;setFull(false,function(){if(tok!==J.token)return;stage.classList.add("fading");
+  setTimeout(function(){if(tok!==J.token)return;R.journey.end();J.state="RETURNING";J.rt=J.reduce?RET_DUR:0;J.paused=false;stage.classList.remove("fading");stage.classList.remove("journey");veil.style.opacity="0";
+    showPanel(stationHTML(k),true);$("gl").setAttribute("aria-label","The bus has stopped at stop "+(k+1)+": "+ST[k].title);$("jsr").textContent="Back on the roadmap at stop "+(k+1)+"."},REDUCE?0:260)})}
+function finishReturn(){J.state="ROADMAP_IDLE";J.phase=-1;if(R)R.journey.mechReset();lockNav(false);if(!fab.hidden)fab.focus({preventScroll:true})}
+var JL=0;function jdt(now){var d=JL?Math.min(.25,Math.max(0,(now-JL)/1000)):0;JL=now;return d}
+function jTick(dt){fullStep(performance.now());
+  if(J.state==="RETURNING"){J.rt+=dt;if(J.rt>=RET_DUR)finishReturn();return}
+  if(!jActive()||!R)return;
+  if(!J.paused)J.t+=dt;
+  var i=jPhaseIdx();if(i!==J.phase){J.phase=i;onPhase(i)}
+  if(J.reduce){var s=rStill(J.t),fade=(s.end-J.t<.26&&s.end!==Infinity)||(J.t-s.start<.06&&s.i>0);stage.classList.toggle("fading",fade)}
+  veil.style.opacity=R.journey.veil().toFixed(3)}
 
 /* ================================================================== the 3D scene */
 var R=null;
@@ -789,7 +1004,7 @@ function init3D(){
   try{renderer=new T.WebGLRenderer({canvas:canvas,antialias:true,powerPreference:"high-performance"})}catch(e){return null}
   if(!renderer.getContext())return null;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
-  renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
+  renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.outputEncoding=T.sRGBEncoding;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
   var BG=0xF3F4F6,scene=new T.Scene();scene.background=new T.Color(BG);scene.fog=new T.Fog(BG,150,620);
   var camera=new T.PerspectiveCamera(52,1,0.3,9000);
   scene.add(new T.HemisphereLight(0xFFFFFF,0xCDD3DA,0.78));
@@ -799,11 +1014,11 @@ function init3D(){
   var maxAniso=renderer.capabilities.getMaxAnisotropy();
   var FONT="Figtree,system-ui,-apple-system,Segoe UI,sans-serif";
   function cv(w,h){var c=document.createElement("canvas");c.width=w;c.height=h;return c}
-  function tex(c){var t=new T.CanvasTexture(c);t.anisotropy=maxAniso;return t}
+  function tex(c){var t=new T.CanvasTexture(c);t.anisotropy=maxAniso;t.encoding=T.sRGBEncoding;return t}
   function std(col,o){var m=new T.MeshStandardMaterial({color:col,roughness:.8,metalness:0});if(o)for(var k in o)m[k]=o[k];return m}
 
   /* ground */
-  var ground=new T.Mesh(new T.PlaneGeometry(40000,40000),std(0xE9ECEF,{roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-.6;ground.receiveShadow=true;scene.add(ground);
+  var ground=new T.Mesh(new T.PlaneGeometry(40000,40000),std(0xE9ECEF,{roughness:1,toneMapped:false}));ground.rotation.x=-Math.PI/2;ground.position.y=-.6;ground.receiveShadow=true;scene.add(ground);
 
   /* road: a ribbon with painted lines, white edges, red studs and a dark skirt down to the ground */
   var rc=cv(256,1024),rx=rc.getContext("2d");rx.fillStyle="#2C2F35";rx.fillRect(0,0,256,1024);
@@ -912,40 +1127,120 @@ function init3D(){
   /* the bus: a London-style double-decker built facing +Z, seen from behind */
   var bus=new T.Group();scene.add(bus);
   var body=new T.Group();bus.add(body);
-  var redM=std(0xE60000,{roughness:.36,metalness:.14}),glassM=new T.MeshStandardMaterial({color:0x1E232A,roughness:.12,metalness:.65}),darkM=std(0x1D1E21,{roughness:.7});
-  var sh=new T.Shape(),bw=1.24,y0=.44,y1=4.32,r1=.46,rb=.08;
-  sh.moveTo(-bw+rb,y0);sh.lineTo(bw-rb,y0);sh.quadraticCurveTo(bw,y0,bw,y0+rb);sh.lineTo(bw,y1-r1);sh.quadraticCurveTo(bw,y1,bw-r1,y1);sh.lineTo(-bw+r1,y1);sh.quadraticCurveTo(-bw,y1,-bw,y1-r1);sh.lineTo(-bw,y0+rb);sh.quadraticCurveTo(-bw,y0,-bw+rb,y0);
-  var bg=new T.ExtrudeGeometry(sh,{depth:10.2,bevelEnabled:true,bevelThickness:.1,bevelSize:.06,bevelSegments:3,curveSegments:10});bg.translate(0,0,-5.1);
-  var shell=new T.Mesh(bg,redM);shell.castShadow=true;body.add(shell);
-  function box(w,h,d,m,x,y,z){var o=new T.Mesh(new T.BoxGeometry(w,h,d),m);o.position.set(x,y,z);body.add(o);return o}
-  var XS=1.322;
-  [-1,1].forEach(function(sd){box(.03,.95,9.3,glassM,sd*XS,3.43,.1);box(.03,.96,6.6,glassM,sd*XS,2.0,-1.3);
-    for(var pz=-4.2;pz<=4.6;pz+=1.9)box(.04,.97,.16,redM,sd*(XS+.004),3.43,pz);
-    for(var pz2=-4.2;pz2<=1.8;pz2+=2.0)box(.04,.98,.16,redM,sd*(XS+.004),2.0,pz2);
-    box(.035,.1,10.1,new T.MeshBasicMaterial({color:0xF4F4F4}),sd*(XS+.003),2.78,0);
-    box(.04,.34,10.3,darkM,sd*(XS-.01),.64,0)});
-  box(.03,2.05,1.15,glassM,XS,1.62,3.55);
-  box(2.2,.98,.03,glassM,0,3.45,-5.22);
-  box(2.3,1.3,.03,glassM,0,3.2,5.22);box(2.3,1.1,.03,glassM,0,1.9,5.22);
-  var advC=cv(512,192),ax=advC.getContext("2d");ax.fillStyle="#1A1A1A";ax.fillRect(0,0,512,192);ax.fillStyle="#E60000";ax.fillRect(0,0,14,192);
-  ax.fillStyle="#FFFFFF";ax.font="800 52px "+FONT;ax.fillText("Demystifying",40,82);ax.fillStyle="#FF8A80";ax.fillText("AI Engineering",40,146);
-  var adv=new T.Mesh(new T.PlaneGeometry(2.0,.75),new T.MeshBasicMaterial({map:tex(advC)}));adv.position.set(0,2.15,-5.23);adv.rotation.y=Math.PI;body.add(adv);
+  /* the bus, rebuilt as real panels: side, end and roof skins with window and wheel-arch openings, recessed glass over a lit interior,
+     clear-coated paint, rubber tyres on dished rims, lamp housings, mirrors and bumpers. Built facing +Z, 2.48 m wide, 10.4 m long. */
+  var redM=new T.MeshPhysicalMaterial({color:0xD10000,roughness:.38,metalness:0,clearcoat:1,clearcoatRoughness:.12}),
+    glassM=new T.MeshStandardMaterial({color:0x0C141C,roughness:.04,metalness:0,transparent:true,opacity:.5,depthWrite:false,envMapIntensity:2.2}),
+    darkM=std(0x18191C,{roughness:.62}),rubberM=std(0x121315,{roughness:.88}),chromeM=std(0xE3E6EA,{roughness:.16,metalness:1}),
+    trimGM=std(0x2A2C31,{roughness:.45,metalness:.3}),seatM=std(0x5C1222,{roughness:.9}),cabinM=std(0x3B3E45,{roughness:.85,side:T.BackSide}),floorM=std(0x2B2D31,{roughness:.9});
+  var BW=1.24,BY0=.44,BY1=4.32,BR=.46,BZ=5.1,PT_=.07;
+  function rrect(s,x0,y0,x1,y1,r,hole){var p=hole?new T.Path():s;p.moveTo(x0+r,y0);p.lineTo(x1-r,y0);p.quadraticCurveTo(x1,y0,x1,y0+r);p.lineTo(x1,y1-r);p.quadraticCurveTo(x1,y1,x1-r,y1);p.lineTo(x0+r,y1);p.quadraticCurveTo(x0,y1,x0,y1-r);p.lineTo(x0,y0+r);p.quadraticCurveTo(x0,y0,x0+r,y0);if(hole)s.holes.push(p);return p}
+  function rbox(w,h,d,r,m,x,y,z,par){var s=new T.Shape();rrect(s,-w/2,-h/2,w/2,h/2,Math.min(r,w/2-.001,h/2-.001));var g=new T.ExtrudeGeometry(s,{depth:Math.max(.001,d-2*Math.min(r,d/2.2)*.6),bevelEnabled:true,bevelThickness:Math.min(r,d/2.2)*.6,bevelSize:Math.min(r,d/2.2)*.6,bevelSegments:2,curveSegments:5});g.center();var o=new T.Mesh(g,m);o.position.set(x,y,z);(par||body).add(o);return o}
+  function part(geo,m,x,y,z,par){var o=new T.Mesh(geo,m);o.position.set(x||0,y||0,z||0);(par||body).add(o);return o}
+  var AXF=2.85,AXR=-3.05,WR=.53,ARCH=.66,DOOR=[3.72,4.82];
+  /* side skins: the outline runs along the sill with the two wheel arches cut out of it, the windows and (on the near side) the door are holes */
+  function sideWins(sd){var up=[],lo=[],i,n=5,w;w=(9.8-4*.18)/n;for(i=0;i<n;i++)up.push([-4.9+i*(w+.18),-4.9+i*(w+.18)+w]);
+    var lz1=sd>0?DOOR[0]-.2:4.9;w=(lz1+4.9-4*.18)/n;for(i=0;i<n;i++)lo.push([-4.9+i*(w+.18),-4.9+i*(w+.18)+w]);return{up:up,lo:lo}}
+  [-1,1].forEach(function(sd){var s=new T.Shape(),m=function(z){return sd>0?z:-z},pts=[],a;
+    var zs=[-BZ,AXR,AXF].sort(function(p,q){return p-q});
+    pts.push([-BZ,BY0]);[AXR,AXF].forEach(function(az){var hw=Math.sqrt(ARCH*ARCH-(BY0-WR)*(BY0-WR)),a0=Math.PI+Math.asin((WR-BY0)/ARCH),a1=-Math.asin((WR-BY0)/ARCH);
+      if(sd>0&&az===AXF){}
+      pts.push([az-hw,BY0]);for(var k=1;k<24;k++){a=a0+(a1-a0)*k/24;pts.push([az+Math.cos(a)*ARCH,WR+Math.sin(a)*ARCH])}pts.push([az+hw,BY0])});
+    if(sd>0){pts.push([DOOR[0],BY0]);pts.push([DOOR[0],2.46]);pts.push([DOOR[1],2.46]);pts.push([DOOR[1],BY0])}
+    pts.push([BZ,BY0]);pts.push([BZ,BY1-BR]);pts.push([-BZ,BY1-BR]);
+    if(sd<0)pts.reverse();
+    s.moveTo(m(pts[0][0]),pts[0][1]);for(var i=1;i<pts.length;i++)s.lineTo(m(pts[i][0]),pts[i][1]);s.closePath();
+    var W=sideWins(sd);W.up.forEach(function(z){rrect(s,Math.min(m(z[0]),m(z[1])),3.0,Math.max(m(z[0]),m(z[1])),3.92,.1,true)});W.lo.forEach(function(z){rrect(s,Math.min(m(z[0]),m(z[1])),1.5,Math.max(m(z[0]),m(z[1])),2.42,.1,true)});
+    var g=new T.ExtrudeGeometry(s,{depth:PT_-.03,bevelEnabled:true,bevelThickness:.015,bevelSize:.015,bevelSegments:2,curveSegments:6});
+    g.rotateY(sd>0?-Math.PI/2:Math.PI/2);g.translate(sd*(BW-.015),0,0);var sk=part(g,redM);sk.castShadow=true;
+    /* recessed glass, rubber seals, the cream band between decks and the dark sill strip broken by the arches */
+    W.up.concat(W.lo).forEach(function(z,j){var y0=j<W.up.length?3.0:1.5,y1=y0+(j<W.up.length?.92:.92),gm=new T.Mesh(new T.PlaneGeometry(z[1]-z[0]-.02,y1-y0-.02),glassM);gm.position.set(sd*(BW-.045),(y0+y1)/2,(z[0]+z[1])/2);gm.rotation.y=sd*Math.PI/2;gm.renderOrder=2;body.add(gm)});
+    rbox(.02,.05,10.1,.01,chromeM,sd*(BW+.004),2.74,0);
+    [[-BZ+.05,AXR-ARCH-.06],[AXR+ARCH+.06,AXF-ARCH-.06],[AXF+ARCH+.06,sd>0?DOOR[0]-.04:BZ-.05]].forEach(function(r){rbox(.05,.16,r[1]-r[0],.03,trimGM,sd*(BW+.012),.66,(r[0]+r[1])/2)});
+    if(sd>0){var dz=(DOOR[0]+DOOR[1])/2,dw=DOOR[1]-DOOR[0];
+      [-1,1].forEach(function(h){var dg=new T.Mesh(new T.PlaneGeometry(dw/2-.07,1.74),glassM);dg.position.set(BW-.06,1.6,dz+h*dw/4);dg.rotation.y=Math.PI/2;dg.renderOrder=2;body.add(dg);
+        rbox(.04,1.9,.05,.02,trimGM,BW-.05,1.55,dz+h*(dw/2-.03))});
+      rbox(.04,1.9,.05,.02,rubberM,BW-.05,1.55,dz);rbox(.05,.05,dw,.02,trimGM,BW-.05,.65,dz);rbox(.04,.26,dw-.04,.01,darkM,BW-.05,.57,dz);rbox(.05,.05,dw,.02,trimGM,BW-.05,2.45,dz)}
+    /* wheel arches: a dark liner inside each cut-out and a rubber lip on its edge */
+    [AXR,AXF].forEach(function(az){var lg=new T.CylinderGeometry(ARCH-.01,ARCH-.01,.62,28,1,true,-.14,Math.PI+.28);lg.rotateZ(Math.PI/2);
+      var ln=part(lg,std(0x0C0C0E,{roughness:1,side:T.DoubleSide}),sd*(BW-.31),WR,az);
+      var tg=new T.TorusGeometry(ARCH+.01,.035,8,32,Math.PI+.28);tg.rotateZ(-.14);tg.rotateY(-Math.PI/2);part(tg,rubberM,sd*(BW+.005),WR,az)})});
+  /* end skins: the full cross-section with soft roof corners, windows cut through */
+  function section(s){s.moveTo(-BW+.08,BY0);s.lineTo(BW-.08,BY0);s.quadraticCurveTo(BW,BY0,BW,BY0+.08);s.lineTo(BW,BY1-BR);s.quadraticCurveTo(BW,BY1,BW-BR,BY1);s.lineTo(-BW+BR,BY1);s.quadraticCurveTo(-BW,BY1,-BW,BY1-BR);s.lineTo(-BW,BY0+.08);s.quadraticCurveTo(-BW,BY0,-BW+.08,BY0)}
+  function endSkin(front){var s=new T.Shape();section(s);var wins=[];
+    if(front){wins=[[-1.08,-.05,3.0,3.95],[.05,1.08,3.0,3.95],[-1.1,1.1,1.22,2.47],[-.7,.7,2.6,2.88]]}else{wins=[[-1.0,1.0,3.0,3.92]]}
+    wins.forEach(function(w,j){if(!(front&&j===3))rrect(s,w[0],w[2],w[1],w[3],.12,true)});
+    var g=new T.ExtrudeGeometry(s,{depth:.09,bevelEnabled:true,bevelThickness:.03,bevelSize:.03,bevelSegments:3,curveSegments:10});
+    g.translate(0,0,front?BZ-.03:-BZ-.06);var o=part(g,redM);o.castShadow=true;
+    wins.forEach(function(w,j){if(front&&j===3)return;var gm=new T.Mesh(new T.PlaneGeometry(w[1]-w[0]-.02,w[3]-w[2]-.02),glassM);gm.position.set((w[0]+w[1])/2,(w[2]+w[3])/2,front?BZ+.02:-BZ-.03);if(!front)gm.rotation.y=Math.PI;gm.renderOrder=2;body.add(gm)});
+    return wins}
+  var fw=endSkin(true);endSkin(false);
+  /* roof: the curved top of the section, a separate skin so the end caps stay crisp; two roof hatches */
+  (function(){var s=new T.Shape(),t=.06,n=12,i,a,pts=[];
+    for(i=0;i<=n;i++){a=i/n*Math.PI/2;pts.push([BW-BR+Math.cos(a)*BR,BY1-BR+Math.sin(a)*BR])}for(i=n;i>=0;i--){a=i/n*Math.PI/2;pts.push([-(BW-BR+Math.cos(a)*BR),BY1-BR+Math.sin(a)*BR])}
+    s.moveTo(pts[0][0],pts[0][1]);for(i=1;i<pts.length;i++)s.lineTo(pts[i][0],pts[i][1]);
+    for(i=pts.length-1;i>=0;i--){var p=pts[i],cx=p[0]>0?BW-BR:-(BW-BR),dx=p[0]-cx,dy=p[1]-(BY1-BR),l=Math.hypot(dx,dy)||1;s.lineTo(p[0]-dx/l*t,p[1]-dy/l*t)}s.closePath();
+    var g=new T.ExtrudeGeometry(s,{depth:2*BZ,bevelEnabled:false,curveSegments:4});g.translate(0,0,-BZ);var o=part(g,redM);o.castShadow=true;
+    [-2.4,1.6].forEach(function(z){rbox(.8,.06,.9,.03,std(0xC9CDD2,{roughness:.5,metalness:.2}),0,BY1+.02,z)})})();
+  /* the cabin seen through the glass: walls, two floors, rows of seats and ceiling light strips */
+  part(new T.BoxGeometry(2*BW-.16,BY1-BY0-.16,2*BZ-.14),cabinM,0,(BY0+BY1)/2,0);
+  part(new T.BoxGeometry(2*BW-.18,.1,2*BZ-.18),floorM,0,2.62,0);
+  (function(){var cush=new T.BoxGeometry(.86,.14,.46),back=new T.BoxGeometry(.86,.6,.1),rows=[],z;
+    for(z=-4.45;z<=4.4;z+=.82)rows.push([z,2.67]);for(z=-4.45;z<=2.6;z+=.82)rows.push([z,.62]);
+    var n=rows.length*2,ci=new T.InstancedMesh(cush,seatM,n),bi=new T.InstancedMesh(back,seatM,n),m4=new T.Matrix4(),k=0;
+    rows.forEach(function(r){[-1,1].forEach(function(sd){m4.makeTranslation(sd*.66,r[1]+.42,r[0]);ci.setMatrixAt(k,m4);m4.makeTranslation(sd*.66,r[1]+.72,r[0]-.22);bi.setMatrixAt(k,m4);k++})});
+    body.add(ci);body.add(bi);
+    var lm=new T.MeshBasicMaterial({color:0xFFF1DE});[[2.5],[4.18]].forEach(function(y){[-1,1].forEach(function(sd){part(new T.BoxGeometry(.08,.025,9.4),lm,sd*.55,y[0],0)})})})();
+  /* front: windscreen pillars, destination blind, grille, headlamps in chrome bezels, indicators, wipers, mirrors on arms */
+  var F=BZ+.09;
   var ledC=cv(256,64),ledX=ledC.getContext("2d"),ledT=tex(ledC);
   function setLed(t){ledX.fillStyle="#0F0F10";ledX.fillRect(0,0,256,64);ledX.fillStyle="#FFB53D";ledX.font="800 40px "+FONT;ledX.textAlign="center";ledX.textBaseline="middle";ledX.fillText(t,128,35);ledT.needsUpdate=true}
   setLed("STOP 1");
-  var led=new T.Mesh(new T.PlaneGeometry(1.0,.25),new T.MeshBasicMaterial({map:ledT}));led.position.set(0,4.12,-5.23);led.rotation.y=Math.PI;body.add(led);
+  var ledF=new T.Mesh(new T.PlaneGeometry(1.4,.28),new T.MeshBasicMaterial({map:ledT}));ledF.position.set(0,2.74,F+.025);body.add(ledF);
+  rbox(1.46,.34,.03,.015,darkM,0,2.74,F+.008);
+  rbox(1.5,.3,.04,.02,darkM,0,.86,F+.012);
+  for(var gi=0;gi<4;gi++)rbox(1.36,.025,.02,.01,chromeM,0,.77+gi*.06,F+.038);
+  var lampM=std(0xFFF6E2,{roughness:.1,emissive:new T.Color(0xFFF2D8),emissiveIntensity:.55}),indM=std(0xD08A1C,{roughness:.2,emissive:new T.Color(0xFF9A20),emissiveIntensity:.35});
+  [-1,1].forEach(function(sd){var bz=new T.Mesh(new T.TorusGeometry(.13,.025,8,24),chromeM);bz.position.set(sd*.9,.95,F+.015);body.add(bz);
+    var ln=new T.Mesh(new T.CircleGeometry(.12,24),lampM);ln.position.set(sd*.9,.95,F+.012);body.add(ln);
+    rbox(.2,.08,.03,.015,indM,sd*.9,.72,F+.012);
+    var wp=rbox(.75,.025,.02,.01,darkM,sd*.45,1.32,BZ+.04);wp.rotation.z=sd*.5;
+    var arm=new T.Mesh(new T.CylinderGeometry(.02,.02,.5,8),chromeM);arm.rotation.z=sd*1.15;arm.position.set(sd*(BW+.2),2.38,BZ-.18);body.add(arm);
+    var mh=rbox(.1,.38,.22,.04,darkM,sd*(BW+.4),2.2,BZ-.12);var mg=new T.Mesh(new T.PlaneGeometry(.16,.32),chromeM);mg.position.set(sd*(BW+.4),2.2,BZ-.235);mg.rotation.y=Math.PI;body.add(mg)});
+  /* rear: advertising panel, route display, plate, lamps; bumpers front and back */
+  var advC=cv(512,192),ax=advC.getContext("2d");ax.fillStyle="#1A1A1A";ax.fillRect(0,0,512,192);ax.fillStyle="#E60000";ax.fillRect(0,0,14,192);
+  ax.fillStyle="#FFFFFF";ax.font="800 52px "+FONT;ax.fillText("Demystifying",40,82);ax.fillStyle="#FF8A80";ax.fillText("AI Engineering",40,146);
+  var adv=new T.Mesh(new T.PlaneGeometry(2.0,.75),new T.MeshBasicMaterial({map:tex(advC)}));adv.position.set(0,2.15,-5.235);adv.rotation.y=Math.PI;body.add(adv);
+  rbox(2.08,.83,.03,.02,trimGM,0,2.15,-5.2);
+  var led=new T.Mesh(new T.PlaneGeometry(1.0,.25),new T.MeshBasicMaterial({map:ledT}));led.position.set(0,4.07,-5.235);led.rotation.y=Math.PI;body.add(led);
+  rbox(1.06,.31,.03,.015,darkM,0,4.07,-5.2);
   var plC=cv(256,64),plX=plC.getContext("2d");plX.fillStyle="#F6C400";plX.fillRect(0,0,256,64);plX.fillStyle="#111";plX.font="800 40px "+FONT;plX.textAlign="center";plX.textBaseline="middle";plX.fillText("AI26 ENG",128,35);
-  var plate=new T.Mesh(new T.PlaneGeometry(.95,.24),new T.MeshBasicMaterial({map:tex(plC)}));plate.position.set(0,.86,-5.23);plate.rotation.y=Math.PI;body.add(plate);
-  box(2.5,.26,.14,darkM,0,.52,-5.18);box(2.5,.26,.14,darkM,0,.52,5.18);
-  var brakeM=new T.MeshStandardMaterial({color:0x8A0000,emissive:new T.Color(0xFF1A1A),emissiveIntensity:.35,roughness:.4});
-  [-1,1].forEach(function(sd){box(.24,.8,.05,brakeM,sd*1.02,1.25,-5.22);box(.24,.14,.05,new T.MeshStandardMaterial({color:0xC27A00,emissive:new T.Color(0xFFA000),emissiveIntensity:.5}),sd*1.02,1.74,-5.22);
-    box(.3,.18,.05,new T.MeshBasicMaterial({color:0xFFF5D6}),sd*.95,.98,5.22)});
-  var badgeM=new T.MeshBasicMaterial({color:0xFFFFFF,transparent:true,depthWrite:false}),badge=new T.Mesh(new T.PlaneGeometry(.7,.53),badgeM);badge.position.set(0,2.74,-5.235);badge.rotation.y=Math.PI;badge.visible=false;body.add(badge);
-  var wheels=[];[[1.12,3.35],[-1.12,3.35],[1.12,-3.05],[-1.12,-3.05]].forEach(function(w){var wg=new T.Group();wg.position.set(w[0],.53,w[1]);body.add(wg);
-    var tyre=new T.Mesh(new T.CylinderGeometry(.53,.53,.38,24),std(0x151618,{roughness:.9}));tyre.rotation.z=Math.PI/2;tyre.castShadow=true;wg.add(tyre);
-    var hub=new T.Mesh(new T.CylinderGeometry(.27,.27,.4,12),std(0xC9CED6,{roughness:.35,metalness:.6}));hub.rotation.z=Math.PI/2;wg.add(hub);
-    var sgn=w[0]>0?1:-1,barM=std(0x5E656E,{roughness:.5});var b1=new T.Mesh(new T.BoxGeometry(.03,.4,.08),barM);b1.position.x=sgn*.205;wg.add(b1);var b2=new T.Mesh(new T.BoxGeometry(.03,.08,.4),barM);b2.position.x=sgn*.205;wg.add(b2);
-    wheels.push(wg)});
+  var plate=new T.Mesh(new T.PlaneGeometry(.95,.24),new T.MeshBasicMaterial({map:tex(plC)}));plate.position.set(0,.86,-5.235);plate.rotation.y=Math.PI;body.add(plate);
+  rbox(2.56,.28,.18,.07,darkM,0,.52,-5.2);rbox(2.56,.28,.18,.07,darkM,0,.52,5.2);
+  var brakeM=new T.MeshStandardMaterial({color:0x8A0000,emissive:new T.Color(0xFF1A1A),emissiveIntensity:.35,roughness:.25});
+  [-1,1].forEach(function(sd){rbox(.26,.82,.06,.03,brakeM,sd*.98,1.25,-5.21);rbox(.26,.15,.06,.03,new T.MeshStandardMaterial({color:0xC27A00,emissive:new T.Color(0xFFA000),emissiveIntensity:.5,roughness:.25}),sd*.98,1.76,-5.21);
+    rbox(.3,.88,.04,.02,chromeM,sd*.98,1.33,-5.19)});
+  /* vertical corner pillars soften the joins between the side and end skins */
+  [-1,1].forEach(function(sx){[-1,1].forEach(function(sz){var c=new T.Mesh(new T.CylinderGeometry(.075,.075,BY1-BR-BY0-.02,12),redM);c.position.set(sx*(BW-.045),(BY0+BY1-BR)/2,sz*(BZ+.01));body.add(c)})});
+  var badgeM=new T.MeshBasicMaterial({color:0xFFFFFF,transparent:true,depthWrite:false}),badge=new T.Mesh(new T.PlaneGeometry(.7,.53),badgeM);badge.position.set(0,2.74,-5.24);badge.rotation.y=Math.PI;badge.visible=false;body.add(badge);
+  /* wheels: lathed tyres with rounded shoulders, dished rims with eight nuts; the group spins about X */
+  var tyreGeo=(function(){var p=[],i,a;for(i=0;i<=8;i++){a=-Math.PI/2+i/8*Math.PI;p.push(new T.Vector2(.36+Math.cos(a)*.0,0))}
+    p=[[.3,-.17],[.44,-.19],[.5,-.17],[.53,-.1],[.535,0],[.53,.1],[.5,.17],[.44,.19],[.3,.17]].map(function(q){return new T.Vector2(q[0],q[1])});var g=new T.LatheGeometry(p,36);g.rotateZ(Math.PI/2);return g})();
+  var rimGeo=(function(){var p=[[.0,.15],[.12,.15],[.28,.12],[.31,.2],[.33,.19],[.33,-.15]].map(function(q){return new T.Vector2(q[0],q[1])});var g=new T.LatheGeometry(p,30);g.rotateZ(-Math.PI/2);return g})();
+  var rimM=std(0xD9DDE2,{roughness:.22,metalness:1,side:T.DoubleSide}),nutGeo=new T.CylinderGeometry(.022,.022,.04,6);nutGeo.rotateZ(Math.PI/2);
+  /* each wheel: hub mount (suspension travel) > fold group (the wheel swings flat into its well for flight) > spin group (rolling on the road) */
+  var wheels=[],wheelRig=[];[[1.04,AXF],[-1.04,AXF],[1.04,AXR],[-1.04,AXR]].forEach(function(w){var wg=new T.Group();wg.position.set(w[0],WR,w[1]);body.add(wg);
+    var fg=new T.Group();wg.add(fg);var sg=new T.Group();fg.add(sg);
+    var sgn=w[0]>0?1:-1,ty=new T.Mesh(tyreGeo,rubberM);ty.castShadow=true;sg.add(ty);
+    var rim=new T.Mesh(rimGeo,rimM);rim.scale.x=sgn;sg.add(rim);
+    for(var n=0;n<8;n++){var a=n/8*Math.PI*2,nt=new T.Mesh(nutGeo,trimGM);nt.position.set(sgn*.17,Math.cos(a)*.12,Math.sin(a)*.12);sg.add(nt)}
+    var cap=new T.Mesh(new T.CircleGeometry(.07,16),trimGM);cap.position.x=sgn*.165;cap.rotation.y=sgn*Math.PI/2;sg.add(cap);
+    wg.userData.y0=WR;wheels.push(sg);wheelRig.push({wg:wg,fg:fg,sg:sg,cap:cap,sgn:sgn,z:w[1]})});
+  /* underbody: a dark chassis pan between the wheel wells, and a dark well above each axle for the folded wheels */
+  [[-BZ+.12,AXR-.75],[AXR+.75,AXF-.75],[AXF+.75,BZ-.12]].forEach(function(r){var u=new T.Mesh(new T.BoxGeometry(2*BW-.1,.05,r[1]-r[0]),darkM);u.position.set(0,BY0+.02,(r[0]+r[1])/2);body.add(u)});
+  [AXR,AXF].forEach(function(az){var wl=new T.Mesh(new T.BoxGeometry(2*BW-.12,.04,1.48),std(0x0C0C0E,{roughness:1}));wl.position.set(0,1.08,az);body.add(wl);
+    [-1,1].forEach(function(s){var e=new T.Mesh(new T.BoxGeometry(.04,.64,1.48),std(0x0C0C0E,{roughness:1}));e.position.set(s*.05,.76,az);body.add(e)})});
+  var BUSMATS=[redM,glassM,darkM,rubberM,chromeM,trimGM,brakeM,lampM,rimM];
   var busShadow=new T.Mesh(new T.PlaneGeometry(3.4,11.4),new T.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22,depthWrite:false}));busShadow.rotation.x=-Math.PI/2;busShadow.position.y=.09;bus.add(busShadow);
 
   /* camera rig: rides behind the bus, swings to the right at a stop to show the stop, rises for the overview */
@@ -972,12 +1267,543 @@ function init3D(){
      if(!camera.view)camera.setViewOffset(W,H,0,0,W,H);var v=camera.view;v.enabled=true;v.fullWidth=W;v.fullHeight=H;v.offsetX=-fitC.b/fitC.f;v.offsetY=-fitC.a/fitC.f;v.width=W/fitC.f;v.height=H/fitC.f}
    function project(x,y,z){vb.set(x,y,z).project(camera);return{x:(vb.x+1)/2*W,y:(1-vb.y)/2*H,ok:vb.z<1}}
 
+
+  /* ================================================================ cosmic workshop journey (3D)
+     The same bus object flies the whole route. Every pose, engine, camera and environment value below is a
+     pure function of the journey clock J.t, so pause, skip, restart and cancel only ever set that clock. */
+  function rndS(seed){return function(){seed=(seed*16807)%2147483647;return seed/2147483647}}
+  function kf(list,t,lin){if(t<=list[0][0])return list[0][1];for(var i=0;i<list.length-1;i++){if(t<list[i+1][0]){var u=(t-list[i][0])/(list[i+1][0]-list[i][0]);return lerp(list[i][1],list[i+1][1],lin?u:u*u*(3-2*u))}}return list[list.length-1][1]}
+  function kfc(list,t,out){if(t<=list[0][0])return out.copy(list[0][1]);for(var i=0;i<list.length-1;i++){if(t<list[i+1][0]){var u=sstep(list[i][0],list[i+1][0],t);return out.copy(list[i][1]).lerp(list[i+1][1],u)}}return out.copy(list[list.length-1][1])}
+  function prog(id,t){return clamp((t-PT[id])/PD[id],0,1)}
+
+  /* --- image-based lighting: a daylight sky and a dark space sky (red neon band, Earth glow), prefiltered once with PMREM */
+  function envScene(kind,rot){rot=rot||0;var es=new T.Scene(),g=new T.SphereGeometry(50,64,32),p=g.attributes.position,col=new Float32Array(p.count*3),c=new T.Color();
+    for(var i=0;i<p.count;i++){var y=p.getY(i)/50;
+      if(kind==="day"){if(y>=0){var h=Math.pow(y,.5);c.setRGB(lerp(.7,.09,h),lerp(.72,.16,h),lerp(.76,.34,h))}else{var d=Math.pow(-y,.4);c.setRGB(lerp(.2,.04,d),lerp(.205,.042,d),lerp(.21,.045,d))}}
+      else if(kind==="neon"){var band=Math.exp(-Math.pow(y/.13,2));c.setRGB(.004+1.6*band,.0015+.02*band,.003+.05*band)}
+      else{c.setRGB(.004,.005,.008);if(y<0){var e=Math.pow(-y,1.5);c.r+=.012*e;c.g+=.04*e;c.b+=.1*e}}
+      col.set([c.r,c.g,c.b],i*3)}
+    g.setAttribute("color",new T.BufferAttribute(col,3));es.add(new T.Mesh(g,new T.MeshBasicMaterial({vertexColors:true,side:T.BackSide})));
+    function lamp(w,h,dir,r,gg,b){var m=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({color:new T.Color(r,gg,b),side:T.DoubleSide}));m.position.copy(dir).normalize().applyAxisAngle(new T.Vector3(0,1,0),rot).multiplyScalar(45);m.lookAt(0,0,0);es.add(m)}
+    if(kind==="day"){lamp(4,4,new T.Vector3(40,80,28),40,37,33);lamp(70,3,new T.Vector3(1,.12,0),2.2,2.2,2.3);lamp(70,3,new T.Vector3(-1,.12,0),1.8,1.8,1.9)}
+    else if(kind==="space")lamp(3,3,new T.Vector3(300,200,150),26,24,21);
+    else{lamp(3,3,new T.Vector3(300,200,150),8,7.5,7);lamp(40,2.5,new T.Vector3(0,.7,-1),2.4,.12,.16);lamp(10,10,new T.Vector3(0,1,.3),2,1.9,1.8)}
+    return es}
+  var ENV_DAY=null,ENV_SPACE=null,ENV_NEON=null,PMG=null;try{PMG=new T.PMREMGenerator(renderer);ENV_DAY=PMG.fromScene(envScene("day"),.015).texture;ENV_SPACE=PMG.fromScene(envScene("space"),.015).texture;ENV_NEON=PMG.fromScene(envScene("neon"),.015).texture}catch(e){}
+  var ENVMATS=[];function envTag(m,k,fixed){m.userData.envI=k;if(fixed!==undefined){if(fixed){m.envMap=fixed;m.envMapIntensity=k}}else ENVMATS.push(m);return m}
+  var envNow=null;function setEnv(tex,k){if(!ENV_DAY)return;var first=envNow===null;envNow=tex;ENVMATS.forEach(function(m){m.envMap=tex;m.envMapIntensity=m.userData.envI*k;if(first)m.needsUpdate=true})}
+
+  /* --- materials and the exhaust shader shared by all five engines */
+  var metalM=std(0xC9CED5,{roughness:.26,metalness:1}),graphM=std(0x2B2E34,{roughness:.42,metalness:.7}),trimM=std(0xD80000,{roughness:.3,metalness:.5}),doorM=std(0x33363C,{roughness:.4,metalness:.6}),bellM=std(0xB8BEC6,{roughness:.22,metalness:1,side:T.DoubleSide});
+  [[metalM,1],[graphM,.8],[trimM,.8],[doorM,.8],[bellM,1.1]].forEach(function(a){envTag(a[0],a[1])});
+  /* the nozzle wall is built from brazed cooling tubes running down the bell: fine vertical ribs in colour and relief */
+  (function(){var c=cv(256,8),x=c.getContext("2d");for(var i=0;i<64;i++){var g=x.createLinearGradient(i*4,0,i*4+4,0);g.addColorStop(0,"#7d8189");g.addColorStop(.5,"#e4e7ec");g.addColorStop(1,"#6f737a");x.fillStyle=g;x.fillRect(i*4,0,4,8)}
+    var tt=tex(c);tt.wrapS=tt.wrapT=T.RepeatWrapping;bellM.map=tt;bellM.bumpMap=tt;bellM.bumpScale=.004;bellM.color.setHex(0xB9BDC4)})();BUSMATS.forEach(function(m){envTag(m,m===glassM?2.2:m===redM?1:.9)});
+  /* a rocket engine contour: a closed combustion chamber, a converging section, a narrow throat, then a bell that flares fast at the
+     throat and straightens towards the exit (a parabolic "Rao" bell), not a lampshade cone */
+  var bellGeo=(function(){var pts=[[.001,.24],[.1,.24],[.122,.225],[.128,.2],[.128,.11],[.118,.07],[.095,.035],[.074,.01],[.068,0]].map(function(p){return new T.Vector2(p[0],p[1])});
+    for(var i=1;i<=16;i++){var u=i/16;pts.push(new T.Vector2(.068+.232*(1-Math.pow(1-u,2.2)),-u*.5))}return new T.LatheGeometry(pts,32)})();
+  var PL_VS="varying vec2 vUv;varying vec3 vN;varying vec3 vV;void main(){vUv=uv;vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vV=-mv.xyz;gl_Position=projectionMatrix*mv;}";
+  var PL_FS="uniform float uP;uniform float uT;uniform vec3 uA;uniform vec3 uB;varying vec2 vUv;varying vec3 vN;varying vec3 vV;"+
+    "uniform float uD;void main(){float f=abs(dot(normalize(vN),normalize(vV)));float y=vUv.y;float fl=.82+.18*sin(uT*61.0+y*26.0+vUv.x*18.85);"+
+    "float sd=1.0-uD+uD*(.55+.45*pow(abs(cos((1.0-y)*14.0)),4.0)*smoothstep(.0,.55,y));"+
+    "float a=pow(f,1.5)*pow(y,1.35)*uP*fl*sd;vec3 c=mix(uB,uA,clamp(y*y*f*1.2,0.0,1.0));gl_FragColor=vec4(c*a,1.0);}";
+  function plumeMat(a,b,d){return new T.ShaderMaterial({uniforms:{uP:{value:0},uT:{value:0},uD:{value:d||0},uA:{value:new T.Color(a)},uB:{value:new T.Color(b)}},vertexShader:PL_VS,fragmentShader:PL_FS,transparent:true,depthWrite:false,blending:T.AdditiveBlending,side:T.DoubleSide})}
+  var plumeGeo=new T.CylinderGeometry(1,1.75,1,26,1,true);plumeGeo.translate(0,-.5,0);
+  /* an engine: a lathed bell with a red throat ring, a core that heats up, two nested plumes and a glow; exhaust leaves along local -Y */
+  function makeEngine(sc,len,parent){var g=new T.Group();parent.add(g);
+    var bell=new T.Mesh(bellGeo,bellM);bell.scale.setScalar(sc);g.add(bell);
+    var heatM=new T.MeshStandardMaterial({color:0x202022,roughness:.6,metalness:.4,emissive:new T.Color(0xFF5A1A),emissiveIntensity:0}),liner=new T.Mesh(bellGeo,heatM);liner.scale.set(sc*.95,sc*.985,sc*.95);liner.position.y=-.004*sc;g.add(liner);
+    var ring=new T.Mesh(new T.TorusGeometry(.13*sc,.022*sc,8,24),trimM);ring.rotation.x=Math.PI/2;ring.position.y=.2*sc;g.add(ring);
+    var ring2=new T.Mesh(new T.TorusGeometry(.072*sc,.016*sc,6,20),metalM);ring2.rotation.x=Math.PI/2;g.add(ring2);
+    var ring3=new T.Mesh(new T.TorusGeometry(.3*sc,.012*sc,6,32),metalM);ring3.rotation.x=Math.PI/2;ring3.position.y=-.5*sc;g.add(ring3);
+    var coreM=new T.MeshBasicMaterial({color:0x1A0400,side:T.DoubleSide}),core=new T.Mesh(new T.CircleGeometry(.075*sc,24),coreM);core.rotation.x=Math.PI/2;core.position.y=-.015*sc;g.add(core);
+    var pw=new T.Group();pw.position.y=-.5*sc;g.add(pw);
+    var o=new T.Mesh(plumeGeo,plumeMat(0xFFB070,0xD81000)),c=new T.Mesh(plumeGeo,plumeMat(0xFFF0D8,0xFF6A20,1));o.frustumCulled=c.frustumCulled=false;pw.add(o);pw.add(c);
+    var gl=new T.Sprite(new T.SpriteMaterial({map:GLOW,color:0xFF8A50,transparent:true,blending:T.AdditiveBlending,depthWrite:false,opacity:0}));gl.position.y=-.46*sc;g.add(gl);
+    return {g:g,sc:sc,len:len,o:o,c:c,pw:pw,coreM:coreM,gl:gl,heatM:heatM,rexit:.3*sc,gain:1}}
+  var coreOff=new T.Color(0x1A0400),coreHot=new T.Color(0xFFC890);
+  function ignite(p,t,seed){if(p<=0||p>=.45)return p;var n=Math.sin(Math.floor(t*22+seed*7)*91.37+seed)*43758.5453;n-=Math.floor(n);return p*(1-(1-p/.45)*(.75*(n>.45?1:0)))}
+  function power(e,p,t){p=ignite(clamp(p,0,1.2),t,e.sc);var on=p>.004;e.o.visible=e.c.visible=e.gl.visible=on;if(!on){e.coreM.color.copy(coreOff);e.heatM.emissiveIntensity=0;return}
+    var L=e.len*(.22+.78*Math.min(p,1))*(1+.05*Math.sin(t*37+e.sc*3));
+    e.o.scale.set(e.rexit,L,e.rexit);e.c.scale.set(e.rexit*.55,L*.6,e.rexit*.55);
+    e.o.material.uniforms.uP.value=Math.min(1,p*1.1)*.6*e.gain;e.c.material.uniforms.uP.value=Math.min(1,p*1.25)*.78*e.gain;
+    e.o.material.uniforms.uT.value=t;e.c.material.uniforms.uT.value=t+1.7;
+    e.gl.material.opacity=Math.min(1,p)*.55*e.gain;e.gl.scale.setScalar(e.sc*(.5+.8*Math.min(p,1)));
+    e.coreM.color.copy(coreOff).lerp(coreHot,Math.min(1,p*1.4));e.heatM.emissiveIntensity=.75*Math.min(1,p)}
+
+  /* --- four thrusters that live in the wheel hubs. The hub cap opens, a thruster pod pushes out of the hub along the axle and its nozzle
+     swings down to face the road. Once airborne each wheel folds flat into its well and the pod tucks under the folded wheel's centre,
+     so the wheel becomes the thruster's shroud. On landing the order reverses. */
+  var pods=[];
+  wheelRig.forEach(function(w){var sg=w.sgn,pg=new T.Group();pg.visible=false;w.wg.add(pg);
+    var hous=new T.Mesh(new T.CylinderGeometry(.14,.16,.3,18),graphM);hous.rotation.z=Math.PI/2;pg.add(hous);
+    var ring=new T.Mesh(new T.TorusGeometry(.15,.022,8,22),trimM);ring.rotation.y=Math.PI/2;ring.position.x=sg*.15;pg.add(ring);
+    var gim=new T.Group();gim.position.x=sg*.2;pg.add(gim);gim.add(new T.Mesh(new T.SphereGeometry(.1,14,10),metalM));
+    var e=makeEngine(.78,3.6,gim);e.g.position.y=-.05;
+    pods.push({w:w,pg:pg,gim:gim,eng:e,s:sg})});
+  /* an under-damped spring that starts at rest: about 7% overshoot, settled by the end of its window */
+  function settle(a,b,x){var u=clamp((x-a)/(b-a),0,1);if(u>=1)return 1;return(1-Math.exp(-6*u)*(Math.cos(7*u)+6/7*Math.sin(7*u)))/.9967}
+  function setPod(pd,d,fold,tuck){var sg=pd.s,w=pd.w,cap=sstep(0,.14,d),ext=settle(.1,.5,d),gm=settle(.42,.86,d);
+    w.cap.scale.setScalar(Math.max(.001,1-cap));pd.pg.visible=d>.01;
+    pd.pg.position.set(sg*(.05+.42*ext-.89*tuck),-.2*tuck-.1*Math.sin(Math.PI*tuck),0);pd.pg.scale.setScalar(.35+.65*Math.min(1,ext*1.4));
+    pd.gim.position.x=sg*.2*(1-tuck);pd.gim.rotation.z=sg*(Math.PI/2)*(1-gm);
+    w.fg.rotation.z=-sg*fold*Math.PI/2;w.fg.position.set(-sg*.42*fold,.12*fold,0)}
+  /* --- the main engine: clamshell doors open under the middle, the engine drops on four struts and locks */
+  var mid={};(function(){var hp=new T.Group();hp.position.set(0,.43,.15);body.add(hp);mid.hp=hp;
+    hp.add(new T.Mesh(new T.BoxGeometry(1.64,.06,2.6),graphM));
+    mid.doors=[-1,1].map(function(s){var p=new T.Group();p.position.set(0,-.04,s*.64);hp.add(p);var d=new T.Mesh(new T.BoxGeometry(1.6,.03,1.27),doorM);p.add(d);return{p:p,s:s}});
+    var ce=new T.Group();hp.add(ce);mid.ce=ce;
+    ce.add(new T.Mesh(new T.CylinderGeometry(.5,.57,.34,28),graphM));
+    var r1=new T.Mesh(new T.TorusGeometry(.56,.05,8,36),trimM);r1.rotation.x=Math.PI/2;r1.position.y=-.17;ce.add(r1);
+    for(var i=0;i<6;i++){var a=i/6*Math.PI*2,fin=new T.Mesh(new T.BoxGeometry(.05,.3,.22),metalM);fin.position.set(Math.cos(a)*.56,0,Math.sin(a)*.56);fin.rotation.y=-a;ce.add(fin)}
+    mid.struts=[];for(var j=0;j<4;j++){var b=j*Math.PI/2+Math.PI/4,st=new T.Mesh(new T.CylinderGeometry(.045,.045,1,8),metalM);st.position.set(Math.cos(b)*.62,0,Math.sin(b)*.9);hp.add(st);mid.struts.push(st)}
+    var nz=new T.Group();nz.position.y=-.17;ce.add(nz);mid.nz=nz;mid.eng=makeEngine(1.6,10.5,nz)})();
+  function setMid(d){var door=sstep(0,.3,d),ext=settle(.2,.92,d),lock=0;
+    mid.doors.forEach(function(o){o.p.position.set(0,-.04-.03*Math.min(1,door*4),o.s*(.64+1.3*door))});
+    var y=lerp(.55,-.12,ext)-.07*lock;mid.ce.position.y=y;mid.nz.scale.set(1,lerp(.22,1,Math.min(1,ext)),1);mid.nz.visible=d>0;
+    mid.struts.forEach(function(s){var top=-.03,bot=y+.12,len=Math.max(.01,top-bot);s.scale.y=len;s.position.y=(top+bot)/2;s.visible=ext>.03})}
+  /* --- the rear engine: hatch doors slide apart, a boom pushes the engine out, braces lock, the nozzle skirt extends */
+  var rear={};(function(){var hp=new T.Group();hp.position.set(0,1.15,-5.12);body.add(hp);rear.hp=hp;
+    rear.doors=[-1,1].map(function(s){var d=new T.Mesh(new T.BoxGeometry(.5,.34,.03),redM);d.position.set(s*.25,0,-.12);hp.add(d);return{m:d,s:s}});
+    var cav=new T.Mesh(new T.PlaneGeometry(.98,.32),std(0x0B0C0E,{roughness:.9}));cav.rotation.y=Math.PI;cav.position.z=-.1;hp.add(cav);
+    var ax=new T.Group();ax.rotation.x=Math.PI/2;hp.add(ax);
+    var boom=new T.Group();ax.add(boom);rear.boom=boom;
+    var bm=new T.Mesh(new T.CylinderGeometry(.14,.14,1.4,14),graphM);bm.position.y=.7;boom.add(bm);
+    boom.add(new T.Mesh(new T.CylinderGeometry(.32,.38,.3,26),graphM));
+    var tr=new T.Mesh(new T.TorusGeometry(.36,.05,8,30),trimM);tr.rotation.x=Math.PI/2;tr.position.y=-.15;boom.add(tr);
+    var nz=new T.Group();nz.position.y=-.15;boom.add(nz);rear.eng=makeEngine(1.25,13,nz);
+    var skg=new T.CylinderGeometry(.5,1.05,1,36,1,true);skg.translate(0,-.5,0);var sk=new T.Mesh(skg,envTag(new T.MeshStandardMaterial({color:0xB9C0C8,roughness:.22,metalness:1,side:T.DoubleSide}),1));nz.add(sk);rear.sk=sk;rear.eng.gain=.62;
+    var skr=new T.Mesh(new T.TorusGeometry(1.05,.05,8,40),trimM);skr.rotation.x=Math.PI/2;skr.position.y=-1;sk.add(skr);
+    rear.braces=[-1,1].map(function(s){var m=new T.Mesh(new T.CylinderGeometry(.045,.045,1,8),metalM);body.add(m);return{m:m,s:s}})})();
+  var bA=new T.Vector3(),bB=new T.Vector3(),bD=new T.Vector3();
+  function setRear(d){var door=sstep(0,.2,d),bo=settle(.15,.6,d),br=sstep(.45,.7,d),sk=settle(.55,.95,d);
+    rear.doors.forEach(function(o){o.m.position.x=o.s*(.25+.55*door);o.m.position.z=-.12-.05*door});
+    /* the engine only travels far enough for its bell to clear the back panel: no boom, no braces, no skirt */
+    var by=lerp(1.3,.2,bo);rear.boom.position.y=by;rear.sk.visible=false;br=0;
+    rear.braces.forEach(function(o){bA.set(o.s*1.0,.62,-5.18);bB.set(o.s*.3,1.15,-5.12+by-.05);bD.subVectors(bB,bA);var len=bD.length();bD.divideScalar(len);
+      o.m.visible=br>.01;o.m.scale.y=Math.max(.01,len*br);o.m.position.copy(bA).addScaledVector(bD,len*br/2);o.m.quaternion.setFromUnitVectors(Y1,bD)})}
+  function mechVisible(on){if(!on)pods.forEach(function(p){p.pg.visible=false});mid.hp.visible=on;rear.hp.visible=on;rear.braces.forEach(function(o){if(!on)o.m.visible=false})}
+  function mechReset(){pods.forEach(function(p){setPod(p,0,0,0);power(p.eng,0,0)});setMid(0);power(mid.eng,0,0);setRear(0);power(rear.eng,0,0);engL.intensity=0;rearL.intensity=0;mechVisible(false)}
+  var engL=new T.PointLight(0xFF6A3A,0,24,2);engL.position.set(0,-.7,0);body.add(engL);
+  var rearL=new T.PointLight(0xFF2A1A,0,30,2);rearL.position.set(0,1.2,-8);body.add(rearL);
+
+  /* the engine channels over the journey clock (deploy 0..1 and power 0..1) */
+  function engState(t,out){var pc=prog("DEPLOYING_CORNER_THRUSTERS",t),TD=PT.REVEALING_WORKSHOP_OUTLINE,ret=1-sstep(TD+.35,TD+1.25,t),L=PT.LIFTING_OFF,A=PT.ARRIVING_AT_STAGE;
+    for(var i=0;i<4;i++)out.dc[i]=Math.min(clamp((pc-i*.06)/.8,0,1),ret);
+    out.fold=t<PT.APPROACHING_WORKSHOP_STAGE?settle(L+.35,L+1.0,t):1-settle(A+1.0,A+1.75,t);
+    out.tuck=t<PT.APPROACHING_WORKSHOP_STAGE?sstep(L+.95,PT.DEPLOYING_CENTRAL_THRUSTER+.45,t):1-sstep(A+.4,A+.95,t);
+    out.ic=kf([[PT.DEPLOYING_CORNER_THRUSTERS+1.3,0],[L,.32],[L+.25,.62],[L+.6,.88],[L+1.1,.74],[PT.POWERING_ENGINES,.7],[PT.POWERING_ENGINES+.55,.6],[PT.ASCENDING,1],[PT.APPROACHING_VODAFONE_GALAXY,.7],
+      [PT.DEPLOYING_REAR_THRUSTER,.35],[PT.TRAVERSING_SPIRAL,.25],[PT.APPROACHING_WORKSHOP_STAGE,.3],[PT.APPROACHING_WORKSHOP_STAGE+1.2,.55],[A,.62],[A+2.6,.58],[TD-.05,.3],[TD+.12,0]],t);
+    var lu=clamp((t-A)/PD.ARRIVING_AT_STAGE,0,1),lenv=3.2*lu*(1-lu)*(1-lu);
+    out.thr=HV.env*.1*nzf(t*1.7,9)+lenv*.28*nzf(t*1.6+.35,7);
+    out.dm=kf([[PT.DEPLOYING_CENTRAL_THRUSTER,0],[PT.POWERING_ENGINES,1],[PT.APPROACHING_WORKSHOP_STAGE+.5,1],[PT.APPROACHING_WORKSHOP_STAGE+1.7,0]],t,true);
+    out.im=kf([[PT.DEPLOYING_CENTRAL_THRUSTER+1.1,0],[PT.POWERING_ENGINES,.16],[PT.POWERING_ENGINES+.65,.22],[PT.ASCENDING,1.1],[PT.PASSING_SATELLITES,.9],[PT.ENTERING_DEEP_SPACE,.75],[PT.APPROACHING_VODAFONE_GALAXY,.5],
+      [PT.DEPLOYING_REAR_THRUSTER,.3],[PT.TRAVERSING_SPIRAL,.12],[PT.APPROACHING_WORKSHOP_STAGE,.15],[PT.APPROACHING_WORKSHOP_STAGE+.45,0]],t);
+    out.dr=kf([[PT.DEPLOYING_REAR_THRUSTER,0],[PT.DEPLOYING_REAR_THRUSTER+1.35,1],[TD+.3,1],[TD+1.3,0]],t,true);
+    out.ir=kf([[PT.TRAVERSING_SPIRAL-.04,0],[PT.TRAVERSING_SPIRAL+.1,1.3],[PT.TRAVERSING_SPIRAL+.45,1],[PT.TRAVERSING_SPIRAL+6.3,1],[PT.APPROACHING_WORKSHOP_STAGE,.5],[PT.APPROACHING_WORKSHOP_STAGE+.9,.12],[PT.APPROACHING_WORKSHOP_STAGE+1.5,0]],t);
+    return out}
+  var ES={dc:[0,0,0,0],fold:0,tuck:0,ic:0,thr:0,dm:0,im:0,dr:0,ir:0};
+  /* small random-looking motion: incommensurate sines (smooth, deterministic in t) plus a few gusts */
+  function nzf(t,k){return .5*Math.sin(t*1.13+k)+.3*Math.sin(t*2.71+k*2.3)+.15*Math.sin(t*4.37+k*1.7)+.05*Math.sin(t*7.9+k*3.1)}
+  function gusts(t,G){var g=0;for(var i=0;i<G.length;i++){var d=(t-G[i][0])/G[i][2];g+=G[i][1]*Math.exp(-d*d)}return g}
+  var HV={env:0,y:0,roll:0,pitch:0,yaw:0,x:0,z:0};
+  function applyEngines(t){engState(t,ES);
+    pods.forEach(function(pd,i){setPod(pd,ES.dc[i],ES.fold,ES.tuck);var zs=pd.w.z>0?1:-1,imb=clamp(3.5*(pd.s*HV.roll-zs*HV.pitch),-.3,.3);power(pd.eng,ES.dc[i]>.97?ES.ic*(1+imb+ES.thr):0,t+i*.37)});
+    setMid(ES.dm);power(mid.eng,ES.dm>.97?ES.im:0,t);setRear(ES.dr);power(rear.eng,ES.dr>.97?ES.ir:0,t);
+    var ic=ES.dc[0]>.97?ES.ic:0,im=ES.dm>.97?ES.im:0;engL.intensity=5*ic+9*Math.min(im,1);rearL.intensity=ES.dr>.97?3.2*ES.ir:0}
+
+  /* --- textures */
+  function cloudTex(seed){var c=cv(512,256),x=c.getContext("2d"),r=rndS(seed||11),lobes=[],i;
+    for(i=0;i<34+Math.floor(r()*12);i++){var u=r(),px=80+u*352,base=196,rad=(16+r()*40)*(1-.55*Math.abs(u-.5)),py=base-rad*(.3+r()*1.1)-(1-2*Math.abs(u-.5))*r()*40;lobes.push([px,py,rad])}
+    lobes.sort(function(a,b){return a[1]-b[1]});
+    /* soft shadowed underside first, then each lobe shaded from a light at the upper left */
+    lobes.forEach(function(l){var g=x.createRadialGradient(l[0],l[1]+l[2]*.25,0,l[0],l[1]+l[2]*.25,l[2]*1.1);g.addColorStop(0,"rgba(150,166,190,.55)");g.addColorStop(1,"rgba(150,166,190,0)");x.fillStyle=g;x.fillRect(0,0,512,256)});
+    lobes.forEach(function(l){var g=x.createRadialGradient(l[0]-l[2]*.3,l[1]-l[2]*.35,l[2]*.05,l[0],l[1],l[2]);g.addColorStop(0,"rgba(255,255,255,.8)");g.addColorStop(.6,"rgba(238,243,249,.62)");g.addColorStop(.88,"rgba(206,216,230,.3)");g.addColorStop(1,"rgba(200,212,228,0)");x.fillStyle=g;x.beginPath();x.arc(l[0],l[1],l[2],0,7);x.fill()});
+    var fb=x.createLinearGradient(0,150,0,256);fb.addColorStop(0,"rgba(0,0,0,0)");fb.addColorStop(1,"rgba(0,0,0,1)");x.globalCompositeOperation="destination-out";x.fillStyle=fb;x.fillRect(0,150,512,106);x.globalCompositeOperation="source-over";
+    var c2=cv(512,256),x2=c2.getContext("2d");x2.filter="blur(3px)";x2.drawImage(c,0,0);return x2.filter==="blur(3px)"?c2:c}
+  function dotTex(){var c=cv(64,64),x=c.getContext("2d"),g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,"rgba(255,255,255,1)");g.addColorStop(.25,"rgba(255,255,255,.85)");g.addColorStop(.6,"rgba(255,255,255,.18)");g.addColorStop(1,"rgba(255,255,255,0)");x.fillStyle=g;x.fillRect(0,0,64,64);return c}
+  function foilTex(){var c=cv(256,256),x=c.getContext("2d"),r=rndS(61);x.fillStyle="#C99A34";x.fillRect(0,0,256,256);
+    for(var i=0;i<220;i++){var px=r()*256,py=r()*256,s=10+r()*40;x.fillStyle="rgba("+(r()<.5?"255,226,140,":"110,70,10,")+(.12+r()*.25).toFixed(2)+")";x.beginPath();x.moveTo(px,py);x.lineTo(px+s*(r()-.2),py+s*(r()-.5));x.lineTo(px+s*(r()-.5),py+s*(r()+.2));x.fill()}return c}
+  function earthTex(){var c=cv(1024,512),x=c.getContext("2d"),g=x.createLinearGradient(0,0,0,512);g.addColorStop(0,"#0B2B55");g.addColorStop(.5,"#1B5C9E");g.addColorStop(1,"#0B2B55");x.fillStyle=g;x.fillRect(0,0,1024,512);
+    var r=rndS(5),cols=["#3E7638","#5C8A3C","#8B7848","#2E5F35"];for(var k=0;k<13;k++){var cx=r()*1024,cy=110+r()*290,n=34+r()*40;for(var j=0;j<n;j++){x.globalAlpha=.6;x.fillStyle=cols[j%4];x.beginPath();x.arc(cx+(r()-.5)*190,cy+(r()-.5)*110,7+r()*30,0,7);x.fill()}}
+    x.globalAlpha=1;x.fillStyle="#EEF3F8";x.fillRect(0,0,1024,30);x.fillRect(0,482,1024,30);return c}
+  function earthCloudTex(){var c=cv(1024,512),x=c.getContext("2d"),r=rndS(21);x.strokeStyle="rgba(255,255,255,.55)";x.lineCap="round";
+    for(var i=0;i<160;i++){var px=r()*1024,py=40+r()*432,l=30+r()*120;x.lineWidth=3+r()*12;x.globalAlpha=.25+r()*.4;x.beginPath();x.moveTo(px,py);x.quadraticCurveTo(px+l/2,py+(r()-.5)*40,px+l,py+(r()-.5)*20);x.stroke()}return c}
+  /* value noise that wraps horizontally, for maps laid over a sphere or tiled */
+  function vnoise(seed){var P=new Float32Array(65536),r=rndS(seed);for(var i=0;i<65536;i++)P[i]=r();
+    return function(x,y,per){var xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi,u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf),x0=((xi%per)+per)%per,x1=(x0+1)%per,y0=yi&255,y1=(yi+1)&255;
+      var a=P[(y0<<8)|x0],b=P[(y0<<8)|x1],c=P[(y1<<8)|x0],d=P[(y1<<8)|x1];return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v}}
+  function fbm(nf,x,y,per,oct){var s=0,a=.5,t=0;for(var o=0;o<oct;o++){s+=a*nf(x,y,per);t+=a;x*=2;y*=2;per*=2;a*=.5}return s/t}
+  /* the Moon: dark lava plains (maria) on bright highlands, about a thousand craters with bowls, raised rims, central peaks and a few
+     bright ray systems. One map holds the albedo, a second the height used for relief in the shader. */
+  var MOONW=1024,MOONH=512;
+  function moonMaps(){var Wm=MOONW,Hm=MOONH,nf=vnoise(31),r=rndS(33),A=new Float32Array(Wm*Hm),Hh=new Float32Array(Wm*Hm),i,j,k;
+    for(j=0;j<Hm;j++)for(i=0;i<Wm;i++){var u=i/Wm*6,v=j/Hm*3,m=fbm(nf,u,v,6,4),mare=sstep(.53,.6,m+.06*Math.sin(i/Wm*Math.PI*2)),g=fbm(nf,u*8+11,v*8+5,48,3);
+      k=j*Wm+i;A[k]=.74-.36*mare+.12*(g-.5);Hh[k]=-.35*mare+.25*(m-.5)+.06*(g-.5)}
+    for(var c=0;c<850;c++){var cr=Math.pow(r(),2.6),rad=1.4+cr*46,cx=r()*Wm,lat=(r()-.5)*Math.PI*.82,cy=(.5-lat/Math.PI)*Hm,sx=1/Math.max(.4,Math.cos(lat)),
+        dep=.18+.5*cr,young=r()<.06&&rad>5&&rad<24,peak=rad>14,ext=young?3:1.7,bx=Math.ceil(rad*ext*sx),by=Math.ceil(rad*ext),ir=1/rad,isx=1/sx;
+      for(var dy=-by;dy<=by;dy++){var py=Math.round(cy+dy);if(py<0||py>=Hm)continue;
+        for(var dx=-bx;dx<=bx;dx++){var px=((Math.round(cx+dx)%Wm)+Wm)%Wm,ex=dx*isx,d=Math.sqrt(ex*ex+dy*dy)*ir;if(d>ext)continue;k=py*Wm+px;
+          if(d<1){Hh[k]+=-dep*(1-d*d)+(peak&&d<.3?.35*dep*(1-d/.3)*(1-d/.3):0);A[k]+=young?.08:-.02*(1-d)}
+          if(d>.6&&d<1.4){var q=(d-1)*4,rim=Math.max(0,1-q*q*.45);rim*=rim;Hh[k]+=.32*dep*rim;A[k]+=.05*rim}
+          if(d>1&&d<1.7)Hh[k]+=.08*dep*(1.7-d);
+          if(young&&d>1){var an=Math.atan2(dy,ex),ray=Math.pow(Math.max(0,Math.sin(an*7+c)*Math.sin(an*11+c*2)),3);A[k]+=.22*ray*Math.max(0,1-(d-1)/3)}}}}
+    var ca=cv(Wm,Hm),xa=ca.getContext("2d"),ia=xa.createImageData(Wm,Hm),ch=cv(Wm,Hm),xh=ch.getContext("2d"),ih=xh.createImageData(Wm,Hm),mn=1e9,mx=-1e9;
+    for(k=0;k<Wm*Hm;k++){mn=Math.min(mn,Hh[k]);mx=Math.max(mx,Hh[k])}
+    for(k=0;k<Wm*Hm;k++){var a=clamp(A[k],.12,1),o=k*4;ia.data[o]=255*a*1.0;ia.data[o+1]=255*a*.975;ia.data[o+2]=255*a*.94;ia.data[o+3]=255;var hv=65535*(Hh[k]-mn)/(mx-mn);ih.data[o]=hv>>8;ih.data[o+1]=hv&255;ih.data[o+2]=0;ih.data[o+3]=255}
+    xa.putImageData(ia,0,0);xh.putImageData(ih,0,0);return [ca,ch,moonDetail()]}
+  /* a tileable field of small craters and grit, laid many times over the globe so close views keep their texture: height (R high, G low)
+     and an albedo variation in B */
+  function moonDetail(){var N=256,r=rndS(71),nf=vnoise(72),Hd=new Float32Array(N*N),Ad=new Float32Array(N*N),k,i,j;
+    for(j=0;j<N;j++)for(i=0;i<N;i++){k=j*N+i;var g=fbm(nf,i/N*8,j/N*8,8,4);Hd[k]=.3*(g-.5);Ad[k]=g-.5}
+    for(var c=0;c<260;c++){var rad=1.2+Math.pow(r(),3)*14,cx=r()*N,cy=r()*N,dep=.25+.4*r(),b=Math.ceil(rad*1.5);
+      for(var dy=-b;dy<=b;dy++)for(var dx=-b;dx<=b;dx++){var d=Math.sqrt(dx*dx+dy*dy)/rad;if(d>1.5)continue;var px=((Math.round(cx+dx)%N)+N)%N,py=((Math.round(cy+dy)%N)+N)%N;k=py*N+px;
+        if(d<1)Hd[k]-=dep*(1-d*d);var q=(d-1)*4,rim=Math.max(0,1-q*q*.45);Hd[k]+=.3*dep*rim*rim;Ad[k]+=.15*rim*rim}}
+    var mn=1e9,mx=-1e9;for(k=0;k<N*N;k++){mn=Math.min(mn,Hd[k]);mx=Math.max(mx,Hd[k])}
+    var c2=cv(N,N),x=c2.getContext("2d"),im=x.createImageData(N,N);for(k=0;k<N*N;k++){var hv=65535*(Hd[k]-mn)/(mx-mn),o=k*4;im.data[o]=hv>>8;im.data[o+1]=hv&255;im.data[o+2]=clamp(128+200*Ad[k],0,255);im.data[o+3]=255}
+    x.putImageData(im,0,0);return c2}
+  /* smoky nebula clouds: domain-warped noise, shaped into a soft irregular puff and coloured from deep maroon through crimson to a hot pink core */
+  function smokeTex(seed){var N=256,c=cv(N,N),x=c.getContext("2d"),im=x.createImageData(N,N),nf=vnoise(seed),r=rndS(seed+7),ox=r()*50,oy=r()*50;
+    var ramp=[[0,[40,2,10]],[.3,[110,6,24]],[.6,[200,16,44]],[.85,[255,60,80]],[1,[255,150,150]]];
+    for(var j=0;j<N;j++)for(var i=0;i<N;i++){var u=i/N*4+ox,v=j/N*4+oy,qx=fbm(nf,u,v,256,4),qy=fbm(nf,u+5.2,v+1.3,256,4),d=fbm(nf,u+2.2*qx,v+2.2*qy,256,5);
+      var rx=(i/N-.5)*2,ry=(j/N-.5)*2,rr=Math.hypot(rx,ry)+.35*(qx-.5),m=1-sstep(.25,1,rr),den=clamp((d-.38)*2.4,0,1)*m;den=Math.pow(den,1.25);
+      var k2=0;while(k2<ramp.length-2&&den>ramp[k2+1][0])k2++;var a0=ramp[k2],a1=ramp[k2+1],f=clamp((den-a0[0])/(a1[0]-a0[0]),0,1),o=(j*N+i)*4;
+      for(var q=0;q<3;q++)im.data[o+q]=a0[1][q]+(a1[1][q]-a0[1][q])*f;im.data[o+3]=255*Math.min(1,den*1.3)}
+    x.putImageData(im,0,0);return c}
+  function panelTex(){var c=cv(512,256),x=c.getContext("2d");x.fillStyle="#C8CCD2";x.fillRect(0,0,512,256);
+    for(var i=0;i<16;i++)for(var j=0;j<8;j++){var g=x.createLinearGradient(0,j*32,0,j*32+30);g.addColorStop(0,"#1C2F5E");g.addColorStop(1,"#0D1A3A");x.fillStyle=g;x.fillRect(i*32+1.5,j*32+1.5,29,29);x.fillStyle="rgba(120,150,210,.25)";x.fillRect(i*32+1.5,j*32+14,29,1)}
+    x.fillStyle="#9AA0A8";x.fillRect(0,0,512,4);x.fillRect(0,252,512,4);x.fillRect(254,0,4,256);return c}
+  function nebTex(){var c=cv(256,256),x=c.getContext("2d"),r=rndS(41);for(var i=0;i<26;i++){var px=70+r()*116,py=70+r()*116,rad=Math.min(20+r()*60,px-6,250-px,py-6,250-py),g=x.createRadialGradient(px,py,0,px,py,rad);g.addColorStop(0,"rgba(190,20,40,.22)");g.addColorStop(1,"rgba(90,0,20,0)");x.fillStyle=g;x.fillRect(0,0,256,256)}return c}
+  var CLOUDS=[11,23,37,59].map(function(sd){return tex(cloudTex(sd))}),CLOUD=CLOUDS[0],DOT=tex(dotTex());
+
+  /* --- extras in the road scene: lift-off dust, the glow of the exhaust on the road, and a cloud deck above the stop */
+  var dust=[];for(var di=0;di<20;di++){var dsp=new T.Sprite(new T.SpriteMaterial({map:CLOUD,color:0x8C9097,transparent:true,opacity:0,depthWrite:false}));dsp.visible=false;scene.add(dsp);dust.push(dsp)}
+  var rGlowM=new T.MeshBasicMaterial({map:GLOW,color:0xFF7A40,transparent:true,opacity:0,blending:T.AdditiveBlending,depthWrite:false}),rGlow=new T.Mesh(new T.CircleGeometry(1,40),rGlowM);rGlow.rotation.x=-Math.PI/2;rGlow.visible=false;scene.add(rGlow);
+  /* --- one cloud deck shared by both worlds, laid out around the point where the ascent hands over to the cosmos. In the frame of the
+     hand-over both scenes show the same clouds in the same places relative to the bus and camera, so the cut is invisible. */
+  var deck=new T.Group(),deckM=[];deck.visible=false;scene.add(deck);
+  (function(){var r=rndS(19),i,a,rr;function puff(x,y,z,sz,op){var m=new T.SpriteMaterial({map:CLOUDS[Math.floor(r()*4)],transparent:true,opacity:op,depthWrite:false,fog:false});m.userData.op=op;var sp=new T.Sprite(m);sp.position.set(x,y,z);sp.scale.set(sz,sz*.5,1);deck.add(sp);deckM.push(m)}
+    for(i=0;i<22;i++){a=r()*6.283;rr=Math.sqrt(r())*260;puff(Math.cos(a)*rr,-150-r()*50,Math.sin(a)*rr,260+r()*120,1)}
+    for(i=0;i<16;i++){a=r()*6.283;rr=r()*120;puff(Math.cos(a)*rr,-75-r()*55,Math.sin(a)*rr,180+r()*100,.97)}
+    for(i=0;i<74;i++){a=r()*6.283;rr=100+640*Math.sqrt(r());puff(Math.cos(a)*rr,-55-r()*125,Math.sin(a)*rr,140+r()*160,.95)}
+    for(i=0;i<9;i++){a=r()*6.283;rr=18+r()*46;puff(Math.cos(a)*rr,-36+r()*30,Math.sin(a)*rr,26+r()*26,.62)}
+    for(i=0;i<34;i++){a=r()*6.283;rr=24+r()*250;puff(Math.cos(a)*rr,30+r()*500,Math.sin(a)*rr,40+r()*90,.78)}})();
+
+  /* --- the cosmos: one scene for sky, orbit, deep space, the Vodafone Galaxy and the stage */
+  var COS=new T.Scene();COS.background=new T.Color(0x8EC5F2);COS.fog=new T.Fog(0x16000A,1e5,1e6);
+  var cHemi=new T.HemisphereLight(0xFFFFFF,0xCDD3DA,.78);COS.add(cHemi);
+  var cSun=new T.DirectionalLight(0xFFF4E8,1.1);COS.add(cSun);COS.add(cSun.target);
+  var tunL=new T.PointLight(0xFF1A1A,0,70,2);var Y1=new T.Vector3(0,1,0);COS.add(tunL);
+  var ER=2600,EC=new T.Vector3(0,-430-ER,-300);
+  var earth=new T.Mesh(new T.SphereGeometry(ER,96,64),new T.MeshStandardMaterial({map:tex(earthTex()),roughness:.92,metalness:0}));earth.position.copy(EC);earth.rotation.z=.3;COS.add(earth);
+  var eClouds=new T.Mesh(new T.SphereGeometry(ER*1.006,96,64),new T.MeshStandardMaterial({map:tex(earthCloudTex()),transparent:true,depthWrite:false,roughness:1}));eClouds.position.copy(EC);COS.add(eClouds);
+  var atmM=new T.ShaderMaterial({uniforms:{uO:{value:1}},vertexShader:"varying vec3 vN;varying vec3 vV;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vV=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}",
+    fragmentShader:"uniform float uO;varying vec3 vN;varying vec3 vV;void main(){float a=pow(clamp(.62-dot(vN,vV),0.0,2.0),3.0)*.55*uO;gl_FragColor=vec4(.38,.68,1.0,clamp(a,0.0,1.0));}",side:T.BackSide,transparent:true,blending:T.AdditiveBlending,depthWrite:false});
+  var atm=new T.Mesh(new T.SphereGeometry(ER*1.045,96,64),atmM);atm.position.copy(EC);COS.add(atm);
+  function starField(n,r,size,seed){var g=new T.BufferGeometry(),p=new Float32Array(n*3),c=new Float32Array(n*3),R2=rndS(seed);
+    for(var i=0;i<n;i++){var u=R2()*2-1,th=R2()*Math.PI*2,s=Math.sqrt(1-u*u),w=R2(),b=.45+.55*Math.pow(R2(),2);p[i*3]=s*Math.cos(th)*r;p[i*3+1]=u*r;p[i*3+2]=s*Math.sin(th)*r;c.set(w<.12?[.72*b,.84*b,b]:w<.22?[b,.84*b,.66*b]:[b,b,b],i*3)}
+    g.setAttribute("position",new T.BufferAttribute(p,3));g.setAttribute("color",new T.BufferAttribute(c,3));
+    var pts=new T.Points(g,new T.PointsMaterial({size:size,sizeAttenuation:false,vertexColors:true,map:DOT,transparent:true,opacity:0,depthWrite:false,fog:false}));pts.frustumCulled=false;return pts}
+  var starsFar=starField(4200,5200,2.4,3),starsNear=starField(700,1500,3.4,7),starsBright=starField(90,5000,6,13);starsNear.position.set(0,1100,-1300);COS.add(starsFar);COS.add(starsNear);COS.add(starsBright);
+  /* the Moon is lit the way regolith scatters light (Lommel-Seeliger, so the disc stays bright to the limb), with crater relief from the
+     height map that throws long shadows near the terminator, and a faint earthshine on the night side */
+  var MM=moonMaps(),moonA=tex(MM[0]),moonH=new T.CanvasTexture(MM[1]),moonD=new T.CanvasTexture(MM[2]);moonA.anisotropy=moonH.anisotropy=moonD.anisotropy=4;moonD.wrapS=moonD.wrapT=T.RepeatWrapping;
+  var moonM=new T.ShaderMaterial({uniforms:{map:{value:moonA},hmap:{value:moonH},dmap:{value:moonD},uL:{value:new T.Vector3(.85,.25,.45).normalize()},uO:{value:1},uB:{value:3.2},uTx:{value:new T.Vector2(1/MOONW,1/MOONH)}},
+    vertexShader:"varying vec2 vUv;varying vec3 vG;varying vec3 vE;varying vec3 vNN;varying vec3 vV;void main(){vUv=uv;vec3 n=normalize(normal);vec3 e=normalize(cross(vec3(0.0,1.0,0.0),n)+vec3(1e-5));mat3 m=mat3(modelMatrix);vG=m*n;vE=m*e;vNN=m*cross(n,e);vec4 w=modelMatrix*vec4(position,1.0);vV=normalize(cameraPosition-w.xyz);gl_Position=projectionMatrix*viewMatrix*w;}",
+    fragmentShader:"uniform sampler2D map;uniform sampler2D hmap;uniform sampler2D dmap;uniform vec3 uL;uniform float uO;uniform float uB;uniform vec2 uTx;varying vec2 vUv;varying vec3 vG;varying vec3 vE;varying vec3 vNN;varying vec3 vV;"+
+      "float hgt(sampler2D t,vec2 p){vec4 c=texture2D(t,p);return c.r+c.g/255.0;}void main(){vec3 G=normalize(vG);vec3 e=normalize(vE);vec3 nn=normalize(vNN);"+
+      "float hx=hgt(hmap,vUv+vec2(uTx.x,0.0))-hgt(hmap,vUv-vec2(uTx.x,0.0));float hy=hgt(hmap,vUv+vec2(0.0,uTx.y))-hgt(hmap,vUv-vec2(0.0,uTx.y));"+
+      "vec2 du=vUv*vec2(24.0,12.0);float dx=hgt(dmap,du+vec2(1.0/256.0,0.0))-hgt(dmap,du-vec2(1.0/256.0,0.0));float dy=hgt(dmap,du+vec2(0.0,1.0/256.0))-hgt(dmap,du-vec2(0.0,1.0/256.0));hx+=.55*dx;hy+=.55*dy;"+
+      "vec3 N=normalize(G-uB*(hx*e+hy*nn));vec3 V=normalize(vV);"+
+      "float mu0=max(dot(N,uL),0.0),mu=max(dot(G,V),0.05);float ls=2.0*mu0/(mu0+mu);float lit=mix(ls,mu0*1.6,.25)*smoothstep(-.02,.06,dot(G,uL));"+
+      "vec3 a=texture2D(map,vUv).rgb*(.72+.5*(texture2D(dmap,vUv*vec2(24.0,12.0)).b-.5));a=a*a;vec3 col=a*(lit*1.15+.012)+vec3(.004,.006,.01)*(1.0-smoothstep(-.1,.1,dot(G,uL)));gl_FragColor=vec4(sqrt(col)*uO,1.0);}"});
+  var moon=new T.Mesh(new T.SphereGeometry(150,64,48),moonM);moon.position.set(-270,1185,-1320);COS.add(moon);
+  var SAT={tp:.6,fwd:90,side:30,up:10,dz:.75,dx:.66,gap:210,vel:-12,sc:4.5};
+  var sats=[];(function(){var gold=envTag(new T.MeshStandardMaterial({map:tex(foilTex()),color:0xFFFFFF,roughness:.32,metalness:.85}),1.2,ENV_SPACE),pan=envTag(new T.MeshStandardMaterial({map:tex(panelTex()),roughness:.28,metalness:.5,side:T.DoubleSide}),1,ENV_SPACE),
+      wh=envTag(std(0xE9EBEE,{roughness:.35,metalness:.2}),.8,ENV_SPACE),blk=envTag(std(0x1E2024,{roughness:.5,metalness:.5}),.6,ENV_SPACE);
+    var dishG=new T.LatheGeometry([0,.1,.2,.3,.4,.5,.6,.7].map(function(r){return new T.Vector2(r*1.25,r*r*.55)}),28);
+    [0,1,2,3,4,5].map(function(k){return[1,0,k]}).forEach(function(o,i){var g=new T.Group(),wings=[];g.scale.setScalar(o[0]*SAT.sc);g.visible=false;COS.add(g);
+      var core=new T.Mesh(new T.BoxGeometry(1.3,1.3,1.9),gold);g.add(core);var top=new T.Mesh(new T.BoxGeometry(1.34,.08,1.94),wh);top.position.y=.69;g.add(top);
+      [-1,1].forEach(function(s){var yoke=new T.Mesh(new T.CylinderGeometry(.045,.045,1.3,8),wh);yoke.rotation.z=Math.PI/2;yoke.position.x=s*1.3;g.add(yoke);
+        var jt=new T.Mesh(new T.CylinderGeometry(.09,.09,.14,10),blk);jt.position.x=s*.72;jt.rotation.z=Math.PI/2;g.add(jt);
+        var wing=new T.Group();wing.position.x=s*1.95;g.add(wing);wings.push(wing);
+        for(var k=0;k<3;k++){var pn=new T.Mesh(new T.BoxGeometry(1.5,.03,1.25),pan);pn.position.x=s*(.8+k*1.56);wing.add(pn)}});
+      var d=new T.Mesh(dishG,wh);d.material=wh;d.rotation.x=Math.PI/2;d.position.z=.98;d.position.y=.15;g.add(d);
+      [0,1,2].forEach(function(k){var a=k/3*Math.PI*2,st=new T.Mesh(new T.CylinderGeometry(.015,.015,.75,5),blk);st.position.set(Math.cos(a)*.5,.15+Math.sin(a)*.5,1.22);st.lookAt(0,.15,1.43);st.rotateX(Math.PI/2);g.add(st)});
+      var feed=new T.Mesh(new T.CylinderGeometry(.05,.07,.14,10),blk);feed.rotation.x=Math.PI/2;feed.position.set(0,.15,1.43);g.add(feed);
+      var ant=new T.Mesh(new T.CylinderGeometry(.018,.018,1.4,6),wh);ant.position.set(-.4,1.35,-.5);g.add(ant);var ant2=ant.clone();ant2.position.set(.45,-1.2,.3);g.add(ant2);
+      sats.push({g:g,r:i,shell:o[1],slot:o[2],wings:wings})})})();
+
+  /* the Vodafone speech mark, traced from the supplied neon tunnel photograph (outermost ring, tube centre line) and kept as one
+     closed curve, anticlockwise from the tail tip (the ring shapes need this winding). Units: half the mark's width; the origin is the
+     photo's vanishing point, i.e. the tunnel axis. MC is the centre of the round bowl, used to centre the mark on the stage. */
+  var MARK=[[0.502,1.414],[0.443,1.411],[0.375,1.404],[0.288,1.391],[0.193,1.371],[0.1,1.346],[0.008,1.316],[-0.082,1.28],[-0.17,1.24],[-0.254,1.194],[-0.336,1.144],[-0.415,1.088],[-0.49,1.028],[-0.562,0.964],[-0.63,0.895],[-0.694,0.823],[-0.753,0.747],[-0.807,0.668],[-0.856,0.586],[-0.899,0.5],[-0.937,0.412],[-0.968,0.321],[-0.994,0.229],[-1.014,0.135],[-1.027,0.04],[-1.035,-0.056],[-1.037,-0.152],[-1.032,-0.248],[-1.021,-0.343],[-1.004,-0.436],[-0.979,-0.528],[-0.948,-0.617],[-0.909,-0.703],[-0.862,-0.785],[-0.809,-0.863],[-0.75,-0.936],[-0.684,-1.003],[-0.613,-1.065],[-0.537,-1.121],[-0.456,-1.169],[-0.372,-1.21],[-0.284,-1.242],[-0.194,-1.266],[-0.103,-1.28],[-0.01,-1.284],[0.085,-1.28],[0.178,-1.268],[0.268,-1.248],[0.355,-1.217],[0.44,-1.177],[0.521,-1.13],[0.597,-1.075],[0.666,-1.014],[0.728,-0.946],[0.789,-0.868],[0.839,-0.794],[0.878,-0.711],[0.911,-0.622],[0.937,-0.531],[0.954,-0.439],[0.962,-0.346],[0.961,-0.253],[0.952,-0.159],[0.935,-0.066],[0.91,0.024],[0.876,0.111],[0.834,0.194],[0.783,0.273],[0.726,0.345],[0.661,0.411],[0.589,0.469],[0.511,0.52],[0.429,0.564],[0.342,0.599],[0.252,0.628],[0.164,0.647],[0.115,0.656],[0.102,0.689],[0.101,0.762],[0.106,0.837],[0.121,0.924],[0.146,1.006],[0.179,1.081],[0.227,1.157],[0.273,1.212],[0.328,1.265],[0.392,1.312],[0.467,1.355],[0.519,1.384],[0.525,1.405]],MC=[-.035,-.263];
+  function markCurve(s,cen){var ox=cen?MC[0]:0,oy=cen?MC[1]:0;return new T.CatmullRomCurve3(MARK.map(function(p){return new T.Vector3((p[0]-ox)*s,(p[1]-oy)*s,0)}),true,"centripetal")}
+  /* one tunnel ring, rebuilt from the photo: a thin neon tube with a pink-white core, wrapped in two soft crimson glows whose
+     brightness falls off towards the tube's silhouette (so the glow has no hard edge), and nothing else */
+  var ringCurve=markCurve(22),neonGeo=new T.TubeGeometry(ringCurve,340,.3,6,true),haloGeo=new T.TubeGeometry(ringCurve,220,.85,6,true),glowGeo=new T.TubeGeometry(ringCurve,170,2.1,6,true);
+  function glowMat(hex,op){var c=new T.Color(hex);return new T.ShaderMaterial({uniforms:{uC:{value:new T.Vector3(c.r,c.g,c.b)},uOp:{value:0},uK:{value:op}},transparent:true,depthWrite:false,blending:T.AdditiveBlending,
+    vertexShader:"varying vec3 vN;varying vec3 vV;void main(){vec4 mv=modelViewMatrix*vec4(position,1.0);vN=normalize(normalMatrix*normal);vV=-mv.xyz;gl_Position=projectionMatrix*mv;}",
+    fragmentShader:"uniform vec3 uC;uniform float uOp;uniform float uK;varying vec3 vN;varying vec3 vV;void main(){float f=abs(dot(normalize(vN),normalize(vV)));gl_FragColor=vec4(uC,pow(f,2.2)*uOp*uK);}"})}
+  var neonM=new T.MeshBasicMaterial({color:0x000000}),haloM=glowMat(0xFF2246,.45),glowM=glowMat(0xC80A30,.28);
+  var NEON=new T.Color(0xFF8E9C),TY=1252.2,TZ0=-2316,TL=5165,TZ1=TZ0-TL,TSP=60,TN=24,rings=[],DZ=(TZ0-5741)-(-2575);
+  /* the tunnel's centre line: straight at both ends, two gentle S-bends in the middle */
+  function tunC(z,out){var sd=TZ0-z;if(sd<=0||sd>=TL){out[0]=0;out[1]=0;return out}var e=sstep(0,700,sd)*sstep(0,700,TL-sd);out[0]=30*Math.sin(sd/420)*e;out[1]=14*Math.sin(sd/650+1.3)*e-14*Math.sin(1.3)*e;return out}
+  for(var ri=0;ri<TN;ri++){var rg2=new T.Group(),nm2=new T.Mesh(neonGeo,neonM),hm=new T.Mesh(haloGeo,haloM),gm=new T.Mesh(glowGeo,glowM);rg2.add(nm2);rg2.add(gm);rg2.add(hm);rg2.position.set(0,TY,TZ0-ri*TSP);COS.add(rg2);rings.push(rg2)}
+  var farM=new T.MeshBasicMaterial({color:0xFF3030,transparent:true,opacity:0,blending:T.AdditiveBlending,depthWrite:false,fog:false}),farMarks=[];
+  [[0,1300,-6200,240,0],[0,1300,-6700,170,0],[0,1300,-7100,120,0],[0,1300,-7400,82,0]].forEach(function(f){var z2=f[2]+DZ,k=(z2+700)/(f[2]+700),m=new T.Mesh(new T.TubeGeometry(markCurve(f[3]*k),220,f[3]*k*.012,6,true),farM);m.position.set(f[0],f[1],z2);COS.add(m);farMarks.push(m)});
+  var SMOKE=[41,57,73].map(function(sd){var t=tex(smokeTex(sd));return t});
+  var nebM=new T.SpriteMaterial({map:SMOKE[0],transparent:true,opacity:0,depthWrite:false,fog:false,blending:T.AdditiveBlending}),nebs=[];
+  /* red stardust round the tunnel: smoke clouds on a wide cylinder about its centre line, from before the mouth to past the stage */
+  var smokes=[];(function(){var r=rndS(88),N=54,tc=[0,0];for(var i=0;i<N;i++){var z=TZ0+900-(i+r()*.8)*(TL+1700)/N,a=r()*Math.PI*2,rad=75+Math.pow(r(),1.4)*460;tunC(z,tc);
+      var m=new T.SpriteMaterial({map:SMOKE[i%3],transparent:true,opacity:0,depthWrite:false,fog:false,blending:T.AdditiveBlending,rotation:r()*Math.PI*2});m.color.setHSL(.985+r()*.03,1,.42+r()*.12);
+      var sp=new T.Sprite(m);sp.position.set(tc[0]+Math.cos(a)*rad,TY+tc[1]+Math.sin(a)*rad*.75,z);sp.scale.setScalar(320+r()*820);sp.userData.op=.45+r()*.4;sp.visible=false;COS.add(sp);smokes.push(sp)}})();
+  (function(){var r=rndS(51);for(var i=0;i<12;i++){var s=new T.Sprite(i%3?new T.SpriteMaterial({map:SMOKE[i%3],transparent:true,opacity:0,depthWrite:false,fog:false,blending:T.AdditiveBlending,rotation:r()*6}):nebM);s.position.set((r()-.5)*3400*1.8,1250+(r()-.5)*1800*1.8,-3800-r()*3000+DZ);s.scale.setScalar((1400+r()*2200)*1.8);COS.add(s);nebs.push(s)}})();
+  /* streaks that sell speed, laid out along the direction of travel */
+  var NSK=110,skPos=new Float32Array(NSK*6),skG=new T.BufferGeometry();skG.setAttribute("position",new T.BufferAttribute(skPos,3));
+  var skM=new T.LineBasicMaterial({color:0xFFD6D6,transparent:true,opacity:0,blending:T.AdditiveBlending,depthWrite:false,fog:false}),streaks=new T.LineSegments(skG,skM);streaks.frustumCulled=false;COS.add(streaks);
+  var skSeed=[];(function(){var r=rndS(77);for(var i=0;i<NSK;i++){var a=r()*Math.PI*2,rad=7+r()*30;skSeed.push([Math.cos(a)*rad,Math.sin(a)*rad,r()])}})();
+  var sD=new T.Vector3(),sE1=new T.Vector3(),sE2=new T.Vector3(),sUp=new T.Vector3();
+  function updStreaks(p,v,op,col){var sp=v.length();if(op<=.01||sp<1){skM.opacity=0;return}skM.opacity=op;skM.color.setHex(col).convertSRGBToLinear();
+    sD.copy(v).divideScalar(sp);sUp.set(Math.abs(sD.y)<.9?0:1,Math.abs(sD.y)<.9?1:0,0);sE1.crossVectors(sD,sUp).normalize();sE2.crossVectors(sD,sE1);
+    var span=360,travel=p.dot(sD),Ls=clamp(sp*.05,2,26);
+    for(var i=0;i<NSK;i++){var s=skSeed[i],c=((s[2]*span-travel)%span+span)%span-span*.3;
+      var x=p.x+sE1.x*s[0]+sE2.x*s[1]+sD.x*c,y=p.y+sE1.y*s[0]+sE2.y*s[1]+sD.y*c,z=p.z+sE1.z*s[0]+sE2.z*s[1]+sD.z*c;
+      skPos[i*6]=x;skPos[i*6+1]=y;skPos[i*6+2]=z;skPos[i*6+3]=x-sD.x*Ls;skPos[i*6+4]=y-sD.y*Ls;skPos[i*6+5]=z-sD.z*Ls}
+    skG.attributes.position.needsUpdate=true}
+  /* --- the workshop stage: the speech mark as a red platform (the supplied sketch), framed by a giant neon mark with the title screen inside it */
+  var SY=1230,SZ=TZ0-5741,stageG=new T.Group();stageG.position.set(0,SY,SZ);COS.add(stageG);
+  var platShape=new T.Shape(markCurve(13,1).getSpacedPoints(160).map(function(v){return new T.Vector2(v.x,v.y)}));
+  var platM=envTag(new T.MeshPhysicalMaterial({color:0xE60000,roughness:.4,metalness:0,clearcoat:1,clearcoatRoughness:.18,emissive:new T.Color(0x2A0000)}),.9,ENV_NEON);
+  var plat=new T.Mesh(new T.ExtrudeGeometry(platShape,{depth:1.8,bevelEnabled:true,bevelThickness:.25,bevelSize:.25,bevelSegments:3,curveSegments:4}),platM);plat.rotation.x=-Math.PI/2;plat.position.y=-2.05;stageG.add(plat);
+  var cshC=cv(128,256),cshX=cshC.getContext("2d"),cg=cshX.createRadialGradient(64,128,4,64,128,64);cg.addColorStop(0,"rgba(0,0,0,.85)");cg.addColorStop(.6,"rgba(0,0,0,.45)");cg.addColorStop(1,"rgba(0,0,0,0)");cshX.setTransform(1,0,0,2,0,-128);cshX.fillStyle=cg;cshX.fillRect(0,0,128,256);
+  var cshM=new T.MeshBasicMaterial({map:tex(cshC),transparent:true,opacity:0,depthWrite:false}),csh=new T.Mesh(new T.PlaneGeometry(4.4,13),cshM);csh.rotation.x=-Math.PI/2;csh.position.y=.035;csh.renderOrder=1;stageG.add(csh);
+  var edge=new T.Mesh(new T.TubeGeometry(markCurve(13.12,1),220,.07,6,true),new T.MeshBasicMaterial({color:0xFFD9D9}));edge.rotation.x=-Math.PI/2;edge.position.y=.02;stageG.add(edge);
+  var pGlowM=new T.SpriteMaterial({map:GLOW,color:0xFF2A2A,transparent:true,opacity:0,blending:T.AdditiveBlending,depthWrite:false}),pGlow=new T.Sprite(pGlowM);pGlow.position.y=-4;pGlow.scale.set(60,22,1);stageG.add(pGlow);
+  var frameM=new T.MeshBasicMaterial({color:0xFF4848}),frame=new T.Mesh(new T.TubeGeometry(markCurve(26,1),300,.42,8,true),frameM);frame.position.set(0,24,-40);stageG.add(frame);
+  var frameH=new T.Mesh(new T.TubeGeometry(markCurve(26,1),220,1.8,8,true),new T.MeshBasicMaterial({color:0xE60000,transparent:true,opacity:.22,blending:T.AdditiveBlending,depthWrite:false}));frameH.position.copy(frame.position);stageG.add(frameH);
+  var endGlowM=new T.SpriteMaterial({map:GLOW,color:0xFFC0B0,transparent:true,opacity:0,blending:T.AdditiveBlending,depthWrite:false,fog:false}),endGlow=new T.Sprite(endGlowM);endGlow.position.set(0,22,-44);endGlow.scale.setScalar(90);stageG.add(endGlow);
+  var scrC=cv(1600,800),scrX=scrC.getContext("2d"),scrT=tex(scrC),scrM=new T.MeshBasicMaterial({map:scrT,transparent:true,opacity:0,depthWrite:false}),scr=new T.Mesh(new T.PlaneGeometry(34,17),scrM);scr.position.set(0,22,-39);stageG.add(scr);
+  var spots=[[-16,28,16],[16,28,16],[0,32,-12]].map(function(p){var sl=new T.SpotLight(0xFFF0E6,0,110,.4,.55,1.2);sl.position.set(p[0],SY+p[1],SZ+p[2]);sl.target.position.set(0,SY+1.5,SZ);COS.add(sl);COS.add(sl.target);return sl});
+  var beamM=new T.MeshBasicMaterial({color:0xFFE7DC,transparent:true,opacity:0,blending:T.AdditiveBlending,depthWrite:false,side:T.DoubleSide});
+  [[-16,28,16],[16,28,16]].forEach(function(p){var len=Math.hypot(p[0],p[1]-1,p[2]),cg=new T.CylinderGeometry(.4,7,len,24,1,true);cg.translate(0,-len/2,0);var m=new T.Mesh(cg,beamM);m.position.set(p[0],p[1],p[2]);m.quaternion.setFromUnitVectors(new T.Vector3(0,-1,0),new T.Vector3(-p[0],1-p[1],-p[2]).normalize());stageG.add(m)});
+  var logoImg=null;
+  function drawScreen(ws,k){var x=scrX;x.clearRect(0,0,1600,800);
+    x.fillStyle="rgba(16,0,6,.86)";x.beginPath();x.moveTo(60,0);x.lineTo(1540,0);x.quadraticCurveTo(1600,0,1600,60);x.lineTo(1600,740);x.quadraticCurveTo(1600,800,1540,800);x.lineTo(60,800);x.quadraticCurveTo(0,800,0,740);x.lineTo(0,60);x.quadraticCurveTo(0,0,60,0);x.fill();
+    x.strokeStyle="rgba(255,70,70,.85)";x.lineWidth=6;x.stroke();
+    var lx=90;if(logoImg&&logoImg.complete&&logoImg.naturalWidth){var lh=96,lw=lh*logoImg.naturalWidth/logoImg.naturalHeight;x.drawImage(logoImg,lx,70,lw,lh)}
+    x.fillStyle="#FF5A4F";x.font="800 46px "+FONT;x.fillText(("Workshop "+ws.n+" · "+ws.min+" min · "+ws.exps.length+" live experiments").toUpperCase(),lx,250);
+    var fs=132;x.font="800 "+fs+"px "+FONT;while(x.measureText(ws.title).width>1420&&fs>70){fs-=4;x.font="800 "+fs+"px "+FONT}
+    x.fillStyle="#FFFFFF";x.fillText(ws.title,lx,250+fs*1.15);
+    x.fillStyle="rgba(255,255,255,.74)";x.font="600 50px "+FONT;x.fillText(ws.tag,lx,250+fs*1.15+92);
+    x.fillStyle="rgba(255,255,255,.5)";x.font="600 38px "+FONT;x.fillText("From roadmap stop "+(k+1)+" · "+ST[k].title,lx,720);scrT.needsUpdate=true}
+
+  /* --- height above the road on the ground phases. The ascent ends at the hand-over point inside the cloud deck. */
+  var HA=300,HCUT=3.1+HA,VCUT=HA*2.3/PD.ASCENDING;
+  function hovH(t){var L=PT.LIFTING_OFF;if(t<L)return 0;return 3.1*sstep(L,L+1.1,t)+.3*sstep(PT.POWERING_ENGINES+.2,PT.ASCENDING,t)*(1-sstep(PT.ASCENDING+.2,PT.FLYING_THROUGH_CLOUDS,t))}
+  function mainH(t){var h=hovH(t);return t<PT.ASCENDING?h:h+HA*Math.pow(prog("ASCENDING",t),2.3)}
+  function mainVy(t){if(t<PT.ASCENDING)return 0;return HA*2.3*Math.pow(prog("ASCENDING",t),1.3)/PD.ASCENDING}
+  function climbPitch(vy,sp){return sp>1?-.09*(vy/sp)*sstep(0,60,sp):0}
+
+  /* --- hovering is never still: a thrust-balanced vehicle drifts, rolls and bobs on several unrelated frequencies, takes a few gusts,
+     and lifts one end slightly before the other. The same kind of motion, bigger, comes back while the thrusters set the bus down. */
+  var GH=[[.65,.5,.22],[1.45,-.35,.18],[2.0,.6,.25],[2.8,-.45,.2]],GR=[[.9,.6,.2],[1.75,-.5,.22],[2.6,.4,.18],[3.1,-.3,.2]],GL=[[.7,.5,.25],[1.5,-.4,.2],[2.1,.3,.2]];
+  function hoverPose(t){var L=PT.LIFTING_OFF,A=PT.ARRIVING_AT_STAGE;HV.env=0;HV.y=HV.roll=HV.pitch=HV.yaw=HV.x=HV.z=0;if(JR.reduce)return;
+    if(t<PT.FLYING_THROUGH_CLOUDS){var e=sstep(L+.1,L+.55,t)*(1-sstep(PT.ASCENDING+.4,PT.FLYING_THROUGH_CLOUDS-.3,t)),tl=t-L;HV.env=e;
+      HV.y=e*(.12*nzf(t*1.6,1)+.07*gusts(tl,GH));HV.roll=e*(.022*nzf(t*1.4,2)+.025*gusts(tl,GR));HV.pitch=e*.016*nzf(t*1.3,3);HV.yaw=e*.01*nzf(t*.9,4);
+      HV.x=e*(.22*nzf(t*.8,5)+.12*gusts(tl,GR));HV.z=e*.15*nzf(t*.7,6);
+      HV.pitch-=.022*Math.sin(Math.PI*sstep(L,L+.9,t));HV.roll+=.012*Math.sin(Math.PI*sstep(L+.1,L+1,t));
+      var vb=sstep(PT.POWERING_ENGINES,PT.POWERING_ENGINES+.4,t)*(1-sstep(PT.ASCENDING+.3,PT.FLYING_THROUGH_CLOUDS-.3,t));HV.roll+=vb*.004*Math.sin(t*61);HV.y+=vb*.012*Math.sin(t*47);return}
+    if(t>A&&t<PT.REVEALING_WORKSHOP_OUTLINE){var u=(t-A)/PD.ARRIVING_AT_STAGE,le=3.2*u*(1-u)*(1-u),ta=t-A;
+      HV.y=le*(.3*nzf(t*1.6,7)+.25*gusts(ta,GL));HV.roll=le*(.035*nzf(t*1.3,8)+.02*gusts(ta,GR));HV.pitch=le*.022*nzf(t*1.1,9);HV.yaw=le*.012*nzf(t*.8,10);HV.x=le*.3*nzf(t*.9,11);HV.z=le*.2*nzf(t*.75,12)}}
+  /* the descent onto the stage, as height above the platform over the landing phase: a quick drop, a held hover check, then a slow final metre */
+  var LYK=[[0,9,-6],[.42,3.3,-2.4],[.62,2.9,-1.6],[1,0,0]];
+  function landY(u){var i=0;while(i<LYK.length-2&&u>=LYK[i+1][0])i++;var a=LYK[i],b=LYK[i+1],D=b[0]-a[0],s=clamp((u-a[0])/D,0,1),s2=s*s,s3=s2*s;
+    return(2*s3-3*s2+1)*a[1]+(s3-2*s2+s)*D*a[2]+(-2*s3+3*s2)*b[1]+(s3-s2)*D*b[2]}
+
+  /* --- the path through the cosmos: Hermite segments that share velocities. It starts exactly where, and as fast as, the ascent ends.
+     The bus cruises into the galaxy, coasts while the rear engine unfolds, and the rear engine lights at the tunnel mouth. */
+  var CK=null;function buildCK(){var c0=PT.FLYING_THROUGH_CLOUDS;function tt(id){return PT[id]-c0}var S=tt("TRAVERSING_SPIRAL");
+    CK=[[0,[0,-60,0],[0,VCUT,0]],[tt("PASSING_SATELLITES"),[0,560,0],[0,200,0]],[tt("ENTERING_DEEP_SPACE"),[0,900,-140],[0,150,-160]],[tt("APPROACHING_VODAFONE_GALAXY"),[0,1250,-1000],[0,0,-420]],
+      [tt("DEPLOYING_REAR_THRUSTER"),[0,1250,-1836],[0,0,-330]],[S,[0,1250,TZ0],[0,0,-280]],[S+1.5,[0,1250,TZ0-735],[0,0,-700]],[S+6.5,[0,1250,TZ0-4235],[0,0,-700]],
+      [tt("APPROACHING_WORKSHOP_STAGE"),[0,1250,TZ0-5135],[0,0,-500]],[tt("ARRIVING_AT_STAGE"),[0,SY+9,SZ+6],[0,-2,-5]],[tt("REVEALING_WORKSHOP_OUTLINE"),[0,SY,SZ],[0,0,0]]]}
+  var cP=new T.Vector3(),cV=new T.Vector3(),cA=0,tq1=[0,0],tq2=[0,0],tq3=[0,0];
+  function pathAt(tc){if(!CK)buildCK();cA=0;if(tc>=CK[CK.length-1][0]){var e=CK[CK.length-1];cP.fromArray(e[1]);cV.set(0,0,0);return}
+    var i=0;while(i<CK.length-2&&tc>=CK[i+1][0])i++;var a=CK[i],b=CK[i+1],D=b[0]-a[0],u=clamp((Math.max(tc,0)-a[0])/D,0,1),u2=u*u,u3=u2*u;
+    var h00=2*u3-3*u2+1,h10=u3-2*u2+u,h01=-2*u3+3*u2,h11=u3-u2,d00=6*u2-6*u,d10=3*u2-4*u+1,d01=-6*u2+6*u,d11=3*u2-2*u;
+    for(var k=0;k<3;k++){cP.setComponent(k,h00*a[1][k]+h10*D*a[2][k]+h01*b[1][k]+h11*D*b[2][k]);cV.setComponent(k,(d00*a[1][k]+d01*b[1][k])/D+d10*a[2][k]+d11*b[2][k])}
+    /* inside the tunnel the path follows its curved centre line */
+    var z=cP.z;if(z<TZ0&&z>TZ1){tunC(z,tq1);tunC(z+2,tq2);tunC(z-2,tq3);cP.x+=tq1[0];cP.y+=tq1[1];var vz=cV.z;
+      cV.x+=(tq2[0]-tq3[0])/4*vz;cV.y+=(tq2[1]-tq3[1])/4*vz;cA=(tq2[0]-2*tq1[0]+tq3[0])/4*vz*vz}}
+  function headingOf(v){return -v.z>1?Math.PI-Math.atan2(v.x,-v.z):Math.PI}
+
+  /* --- one camera path for the whole journey. Each key is an offset and a look point in the bus's heading frame (+Z is the direction
+     of travel), so the same numbers hold on the road and in the cosmos. A monotone cubic runs through the keys: the camera keeps
+     moving through each key instead of stopping, and never overshoots. The camera does not move for the mechanisms: it settles into
+     one low three-quarter view before the thrusters unfold and drifts slowly while the bus lifts, so the bus moves in a steady frame.
+     On the ground the camera stays at road height and tilts to follow; on the stage it holds the platform's height while the bus comes down. */
+  var CAM=null,FINAL={o:[19,9.5,-24.5],l:[-1.5,10,16],f:52};
+  function buildCam(){var c0=JR.c0,K=[
+    [0,c0.o,c0.l,c0.f],
+    [PT.DEPLOYING_CORNER_THRUSTERS+.5,[-8.2,1.6,-11.3],[0,1.1,.2],50],
+    [PT.ASCENDING,[-9.4,1.3,-12.8],[0,1.8,0],50],
+    [PT.FLYING_THROUGH_CLOUDS,[-15,15,-21],[0,-4,0],60],
+    [PT.PASSING_SATELLITES,[-15,6,-18],[0,2,0],58],
+    [PT.ENTERING_DEEP_SPACE,[-24,15,-28],[0,-2,6],56],
+    [PT.APPROACHING_VODAFONE_GALAXY,[-9,5,-30],[0,2.5,40],52],
+    [PT.DEPLOYING_REAR_THRUSTER,[-6.5,5.5,-28],[0,3,110],53],
+    [PT.TRAVERSING_SPIRAL,[-3.2,4.4,-21],[0,2.8,80],58],
+    [PT.TRAVERSING_SPIRAL+1.4,[-2.2,6.2,-17.5],[0,3.4,60],63],
+    [PT.APPROACHING_WORKSHOP_STAGE-.4,[-2,6,-18],[0,3.4,60],61],
+    [PT.ARRIVING_AT_STAGE,[13,6.5,-24],[-1,6.5,16],54],
+    [PT.REVEALING_WORKSHOP_OUTLINE,FINAL.o,FINAL.l,FINAL.f]];
+    var n=K.length,ts=K.map(function(k){return k[0]}),ch=[];
+    for(var c=0;c<7;c++){var v=K.map(function(k){return c<3?k[1][c]:c<6?k[2][c-3]:k[3]}),d=[],m=[],i;
+      for(i=0;i<n-1;i++)d.push((v[i+1]-v[i])/(ts[i+1]-ts[i]));
+      m[0]=0;m[n-1]=0;for(i=1;i<n-1;i++){if(d[i-1]*d[i]<=0){m[i]=0}else{var w1=2*(ts[i+1]-ts[i])+(ts[i]-ts[i-1]),w2=(ts[i+1]-ts[i])+2*(ts[i]-ts[i-1]);m[i]=(w1+w2)/(w1/d[i-1]+w2/d[i])}}
+      ch.push({v:v,m:m})}
+    CAM={ts:ts,ch:ch,n:n}}
+  var CV=[0,0,0,0,0,0,0];
+  function camKeys(t){if(!CAM)buildCam();var ts=CAM.ts,n=CAM.n,i=0;if(t>=ts[n-1]){for(var c=0;c<7;c++)CV[c]=CAM.ch[c].v[n-1];return CV}
+    if(t<=0){for(c=0;c<7;c++)CV[c]=CAM.ch[c].v[0];return CV}
+    while(i<n-2&&t>=ts[i+1])i++;var h=ts[i+1]-ts[i],u=(t-ts[i])/h,u2=u*u,u3=u2*u,h00=2*u3-3*u2+1,h10=u3-2*u2+u,h01=-2*u3+3*u2,h11=u3-u2;
+    for(c=0;c<7;c++){var C=CAM.ch[c];CV[c]=h00*C.v[i]+h10*h*C.m[i]+h01*C.v[i+1]+h11*h*C.m[i+1]}return CV}
+  /* a slow orbit once the outline is up, and a low-frequency rumble while the engines are at full thrust */
+  function rumble(t){if(JR.reduce)return 0;return .6*sstep(PT.POWERING_ENGINES+.3,PT.ASCENDING,t)*(1-sstep(PT.ASCENDING+.5,PT.FLYING_THROUGH_CLOUDS-.15,t))+.4*sstep(PT.TRAVERSING_SPIRAL+.05,PT.TRAVERSING_SPIRAL+.6,t)*(1-sstep(PT.TRAVERSING_SPIRAL+6,PT.APPROACHING_WORKSHOP_STAGE,t))}
+  function camAt(t,yaw,bp,outP,outL){var v=camKeys(t),ox=v[0],oz=v[2];
+    var d=JR.reduce?0:Math.max(0,t-PT.REVEALING_WORKSHOP_OUTLINE),dr=.06*Math.sin(d*.3)*sstep(0,3,d),cr=Math.cos(dr),sr=Math.sin(dr);ox=v[0]*cr-v[2]*sr;oz=v[0]*sr+v[2]*cr;
+    var c=Math.cos(yaw),s=Math.sin(yaw);outP.set(bp.x+ox*c+oz*s,bp.y+v[1],bp.z-ox*s+oz*c);outL.set(bp.x+v[3]*c+v[5]*s,bp.y+v[4],bp.z-v[3]*s+v[5]*c);
+    var r=rumble(t);if(r){outL.x+=r*(.1*Math.sin(t*14)+.05*Math.sin(t*23+1));outL.y+=r*(.09*Math.sin(t*17+2)+.05*Math.sin(t*37));outP.y+=r*.03*Math.sin(t*19+.5)}
+    return v[6]}
+  /* on tall screens (a phone held upright) the view widens so the shot keeps the width it was framed with */
+  function fitFov(f,a){var A0=1.3;if(a>=A0)return f;return Math.min(74,2*Math.atan(Math.tan(f*Math.PI/360)*A0/a)*180/Math.PI)}
+  /* JR.frame is the on-screen window (in canvas pixels) the shot is composed for. While the scene grows to the full page or shrinks back,
+     the canvas keeps one size and the camera renders a frustum extended around that window, so nothing is stretched or re-allocated. */
+  function placeCam(t,yaw,bp,dyP,dyL){var fr=JR.frame,a=fr?fr.w/fr.h:W/H;camera.fov=fitFov(camAt(t,yaw,bp,camera.position,cam.l),a);camera.position.y+=dyP||0;cam.l.y+=dyL||0;camera.aspect=a;
+    if(fr)camera.setViewOffset(fr.w,fr.h,-fr.x,-fr.y,W,H);else if(camera.view)camera.view.enabled=false;camera.lookAt(cam.l);camera.updateProjectionMatrix()}
+
+  /* --- a handful of satellites evenly spaced on one circular orbit round the Earth's centre, like a constellation in the reference images.
+     The orbit passes close in front of the camera as the bus climbs and curves away round the planet, so the nearest satellite is large
+     and the rest recede along the arc. Each points its dish at the ground and turns its solar wings to the Sun. */
+  var satDone=false,sP=new T.Vector3(),sL=new T.Vector3(),sDir=new T.Vector3(),sRt=new T.Vector3(),sUp2=new T.Vector3(),sR=new T.Vector3(),sXa=new T.Vector3(),sYa=new T.Vector3(),sZa=new T.Vector3(),sLs=new T.Vector3(),sM=new T.Matrix4(),sQ=new T.Quaternion();
+  var ORB={u:new T.Vector3(),v:new T.Vector3(),n:new T.Vector3(),Ro:1,ts:0,step:0,w:0};
+  /* a train of satellites on one orbit round the Earth's centre, already there when the bus clears the clouds. The bus climbs right
+     past the first one; the rest follow it along the orbit, each one farther away, receding towards the horizon */
+  function placeSats(){satDone=true;var ts=PT.PASSING_SATELLITES+SAT.tp;pathAt(ts-PT.FLYING_THROUGH_CLOUDS);var bp=cP.clone();camAt(ts,Math.PI,bp.clone(),sP,sL);
+    sDir.subVectors(sL,sP);sDir.y=0;sDir.normalize();sRt.crossVectors(sDir,Y1).normalize();
+    var A=bp.clone().addScaledVector(sDir,SAT.fwd).addScaledVector(sRt,SAT.side).addScaledVector(Y1,SAT.up),d=sDir.clone().multiplyScalar(SAT.dz).addScaledVector(sRt,SAT.dx);
+    ORB.Ro=A.distanceTo(EC);ORB.u.subVectors(A,EC).divideScalar(ORB.Ro);ORB.v.copy(d).addScaledVector(ORB.u,-d.dot(ORB.u)).normalize();ORB.n.crossVectors(ORB.u,ORB.v);
+    ORB.ts=ts;ORB.step=SAT.gap/ORB.Ro;ORB.w=SAT.vel/ORB.Ro}
+  function updSats(t){var on=t>=PT.FLYING_THROUGH_CLOUDS&&t<PT.APPROACHING_VODAFONE_GALAXY;
+    sats.forEach(function(s,i){s.g.visible=on;if(!on)return;var th=i*ORB.step+ORB.w*(t-ORB.ts),c=Math.cos(th),sn=Math.sin(th);sR.copy(ORB.u).multiplyScalar(c).addScaledVector(ORB.v,sn);s.g.position.copy(EC).addScaledVector(sR,ORB.Ro);
+      sZa.copy(sR).negate();sXa.copy(ORB.n);sYa.crossVectors(sZa,sXa);sM.makeBasis(sXa,sYa,sZa);s.g.quaternion.setFromRotationMatrix(sM);
+      sLs.copy(sunB).applyQuaternion(sQ.copy(s.g.quaternion).invert());var phi=Math.atan2(sLs.z,sLs.y);s.wings.forEach(function(w){w.rotation.x=phi})})}
+
+  var JR={on:false,cos:false,reduce:false,P0:new T.Vector3(),R0:new T.Euler(0,0,0,"YXZ"),base:new T.Vector3(),frame:null,c0:{o:[0,0,0],l:[0,0,0],f:52},veil:0,sunL:new T.Vector3(40,80,28)};
+  var SKY=new T.Color(0xA9D2F3),BGC=new T.Color(BG),tmpC=new T.Color(),sunA=new T.Vector3(),sunB=new T.Vector3(300,200,150).normalize();
+  var COSBG=[[0,SKY],[0,SKY]];
+  function buildCosBG(){COSBG=[[PT.FLYING_THROUGH_CLOUDS,SKY.clone()],[PT.FLYING_THROUGH_CLOUDS+1.2,new T.Color(0x93C3F0)],[PT.PASSING_SATELLITES,new T.Color(0x3C78C2)],[PT.PASSING_SATELLITES+1.4,new T.Color(0x0B1C40)],[PT.ENTERING_DEEP_SPACE+.4,new T.Color(0x02030A)],
+    [PT.ENTERING_DEEP_SPACE+2,new T.Color(0x030208)],[PT.APPROACHING_VODAFONE_GALAXY+1.6,new T.Color(0x1A030A)],[PT.TRAVERSING_SPIRAL,new T.Color(0x14000A)],[PT.ARRIVING_AT_STAGE,new T.Color(0x1E040C)]]}
+  function deckIn(cos){if(cos){COS.add(deck);deck.position.set(0,-60,0);deck.rotation.set(0,Math.PI,0)}else{scene.add(deck);deck.position.set(JR.P0.x,JR.P0.y+HCUT,JR.P0.z);deck.rotation.set(0,JR.R0.y,0)}}
+  function setCosMode(on){if(on===JR.cos)return;JR.cos=on;if(on){COS.add(bus);busShadow.visible=false}else{scene.add(bus);busShadow.visible=true}deckIn(on)}
+  /* reflections follow the sky: daylight, then dark space with the Earth's glow, then the red of the galaxy */
+  function envFor(t){if(t<PT.FLYING_THROUGH_CLOUDS){setEnv(ENV_DAY,1);return}
+    var a=PT.PASSING_SATELLITES+.4,b=PT.PASSING_SATELLITES+1.4,c=PT.APPROACHING_VODAFONE_GALAXY+.6,d=PT.APPROACHING_VODAFONE_GALAXY+1.6;
+    if(t<(a+b)/2)setEnv(JR.envC||ENV_DAY,lerp(1,.25,sstep(a,(a+b)/2,t)));else if(t<(c+d)/2)setEnv(ENV_SPACE,lerp(.25,1,sstep((a+b)/2,b,t))*lerp(1,.4,sstep(c,(c+d)/2,t)));else setEnv(ENV_NEON,lerp(.4,1,sstep((c+d)/2,d,t)))}
+  function setDroop(d){wheelRig.forEach(function(w){w.wg.position.y=w.wg.userData.y0-d})}
+  var tcR=[0,0],tcR2=[0,0],rgT=new T.Vector3(),ZN=new T.Vector3(0,0,-1);
+  function journeyFrame(t){hoverPose(t);applyEngines(t);envFor(t);
+    if(t<PT.FLYING_THROUGH_CLOUDS){setCosMode(false);
+      var h=mainH(t),vy=mainVy(t),pp=prog("PREPARING_FOR_LIFTOFF",t),pc=prog("DEPLOYING_CORNER_THRUSTERS",t),yw=JR.R0.y,cy=Math.cos(yw),sy=Math.sin(yw);
+      JR.base.set(JR.P0.x,JR.P0.y+h,JR.P0.z);
+      bus.position.set(JR.base.x+HV.x*cy+HV.z*sy,JR.base.y+HV.y,JR.base.z-HV.x*sy+HV.z*cy);bus.rotation.set(JR.R0.x+climbPitch(vy,vy)+HV.pitch,yw+HV.yaw,JR.R0.z+HV.roll,"YXZ");
+      body.position.y=-.06*sstep(0,1,pp)*(1-sstep(.75,1,pc));body.rotation.z=0;
+      var ha=Math.max(0,h+HV.y);setDroop(.07*sstep(.05,.6,ha));
+      busShadow.position.y=.09-ha;busShadow.material.opacity=.22/(1+ha*.45);busShadow.scale.set(1+ha*.05,1+ha*.02,1);busShadow.visible=ha<60;
+      var alt=prog("ASCENDING",t);tmpC.copy(BGC).lerp(SKY,sstep(0,.85,alt));scene.background.copy(tmpC);scene.fog.color.copy(tmpC);scene.fog.near=150;scene.fog.far=620+h*1.6;
+      var pw=Math.max(ES.dc[0]>.97?ES.ic:0,ES.dm>.97?ES.im:0),fall=1/(1+ha*.25);
+      rGlow.visible=pw>0&&h<80;rGlow.position.set(JR.P0.x,JR.P0.y+.08,JR.P0.z);rGlow.scale.setScalar(4+h*.6);rGlowM.opacity=Math.min(1,pw)*.8*fall;
+      var dp=Math.min(1,pw)*fall*(JR.reduce?0:1);dust.forEach(function(d,i){var f=((t*.55+i*.37)%1+1)%1,a=i/dust.length*Math.PI*2+i;d.visible=dp>.01;d.position.set(JR.P0.x+Math.cos(a)*(2.5+11*f),JR.P0.y+.6+f*1.4,JR.P0.z+Math.sin(a)*(2.5+11*f));var sz=2+5*f;d.scale.set(sz,sz*.55,1);d.material.opacity=dp*(1-f)*.55});
+      deck.visible=true;deckM.forEach(function(m){m.opacity=m.userData.op});gates.forEach(function(G){G.g.visible=h<240});
+      sun.position.set(bus.position.x+40,bus.position.y+80,bus.position.z+28);sun.target.position.copy(bus.position);
+      /* the camera stays at road height until the climb, then rises with the bus into the clouds */
+      var follow=sstep(PT.ASCENDING,PT.FLYING_THROUGH_CLOUDS-.2,t);placeCam(t,yw,JR.base,-hovH(t)*(1-follow),0);JR.veil=0;
+      renderer.render(scene,camera);return}
+    setCosMode(true);var tc=t-PT.FLYING_THROUGH_CLOUDS,A=PT.ARRIVING_AT_STAGE,TD=PT.REVEALING_WORKSHOP_OUTLINE;pathAt(tc);JR.base.copy(cP);
+    if(t>A)JR.base.y=SY+landY(Math.min(1,(t-A)/PD.ARRIVING_AT_STAGE));
+    var yw2=headingOf(cV),cy2=Math.cos(yw2),sy2=Math.sin(yw2),sp=cV.length(),blend=1-sstep(0,1.5,tc),bank=clamp(.0007*cA,-.12,.12);
+    bus.position.set(JR.base.x+HV.x*cy2+HV.z*sy2,JR.base.y+HV.y,JR.base.z-HV.x*sy2+HV.z*cy2);
+    bus.rotation.set(climbPitch(cV.y,sp)+JR.R0.x*blend+HV.pitch,yw2+HV.yaw,JR.R0.z*blend+bank+HV.roll,"YXZ");
+    var td=t-TD;body.position.y=td>0?-.05*(8*td)*Math.exp(1-8*td):0;body.rotation.z=0;
+    var hs=bus.position.y-SY,nearStage=t>PT.APPROACHING_WORKSHOP_STAGE;setDroop(nearStage?.07*sstep(0,.8,hs):.07);
+    cshM.opacity=nearStage?.6*(1-sstep(0,9,hs))*sstep(-40,-6,bus.position.z-SZ)*1:0;
+    kfc(COSBG,t,COS.background);
+    var fogOn=sstep(PT.APPROACHING_VODAFONE_GALAXY,PT.APPROACHING_VODAFONE_GALAXY+PD.APPROACHING_VODAFONE_GALAXY,t),hz=sstep(PT.FLYING_THROUGH_CLOUDS+.2,PT.PASSING_SATELLITES+.8,t);COS.fog.color.copy(COS.background);
+    if(t<PT.ENTERING_DEEP_SPACE){COS.fog.near=150*Math.pow(400,hz);COS.fog.far=700*Math.pow(140,hz)}else{COS.fog.near=lerp(6e4,200,fogOn);COS.fog.far=lerp(1e5,1250,fogOn)}
+    atmM.uniforms.uO.value=sstep(.15,.9,hz);
+    cHemi.intensity=kf([[PT.FLYING_THROUGH_CLOUDS,.78],[PT.PASSING_SATELLITES+1,.45],[PT.APPROACHING_VODAFONE_GALAXY+1,.5]],t);cHemi.color.setHex(t>PT.APPROACHING_VODAFONE_GALAXY+1?0xFFB0B0:0xFFFFFF);
+    cSun.intensity=kf([[PT.FLYING_THROUGH_CLOUDS,.95],[PT.FLYING_THROUGH_CLOUDS+1.5,1.15],[PT.APPROACHING_VODAFONE_GALAXY,1],[PT.TRAVERSING_SPIRAL,.35]],t);
+    sunA.set(-JR.sunL.x,JR.sunL.y,-JR.sunL.z).normalize().lerp(sunB,sstep(PT.FLYING_THROUGH_CLOUDS+.6,PT.PASSING_SATELLITES+1,t)).normalize();cSun.position.copy(bus.position).addScaledVector(sunA,350);cSun.target.position.copy(bus.position);
+    var cl=1-sstep(PT.PASSING_SATELLITES+.2,PT.ENTERING_DEEP_SPACE-.4,t);deck.visible=cl>0;deckM.forEach(function(m){m.opacity=m.userData.op*cl});
+    var so=kf([[PT.PASSING_SATELLITES,0],[PT.PASSING_SATELLITES+1.6,1]],t);starsFar.material.opacity=so;starsNear.material.opacity=so*.9;starsBright.material.opacity=so;starsFar.position.copy(camera.position);starsBright.position.copy(camera.position);starsFar.visible=starsNear.visible=starsBright.visible=so>0;
+    var ev=t<PT.TRAVERSING_SPIRAL;earth.visible=eClouds.visible=atm.visible=ev;eClouds.rotation.y=t*.004;
+    if(!satDone){placeSats();pathAt(tc)}updSats(t);
+    var mo=sstep(PT.PASSING_SATELLITES+.9,PT.ENTERING_DEEP_SPACE,t);moonM.uniforms.uO.value=mo;moon.visible=mo>0&&t<PT.TRAVERSING_SPIRAL;moon.rotation.y=t*.02;
+    var gl=kf([[PT.ENTERING_DEEP_SPACE+1.2,0],[PT.APPROACHING_VODAFONE_GALAXY+1.4,.85],[PT.TRAVERSING_SPIRAL+1,.25]],t);farM.opacity=gl;var nop=kf([[PT.ENTERING_DEEP_SPACE+.8,0],[PT.APPROACHING_VODAFONE_GALAXY+.6,.42],[PT.ARRIVING_AT_STAGE,.3]],t);nebs.forEach(function(n){n.material.opacity=nop;n.visible=nop>0});
+    var smo=kf([[PT.ENTERING_DEEP_SPACE+1.4,0],[PT.APPROACHING_VODAFONE_GALAXY+1.2,1]],t);smokes.forEach(function(sp){var d=sp.position.distanceTo(camera.position),o=smo*sp.userData.op*sstep(60,260,d)*(1-sstep(1600,2600,d));sp.visible=o>.004;sp.material.opacity=o});
+    farMarks.forEach(function(m){m.visible=gl>0});
+    /* the tunnel rings stay upright and sit on the curved centre line; each faces straight down the camera's line of sight (the bends are only a few
+       degrees, so this matches the tunnel's direction), which keeps every speech mark a true circle on screen instead of foreshortened on one side.
+       Rings behind the bus are recycled ahead of it, inside the fog */
+    var lit=kf([[PT.ENTERING_DEEP_SPACE+1.2,0],[PT.APPROACHING_VODAFONE_GALAXY+1.4,1]],t);neonM.color.copy(NEON).multiplyScalar(lit);haloM.uniforms.uOp.value=lit;glowM.uniforms.uOp.value=lit;
+    var bz=JR.base.z,near=1e9;camera.getWorldDirection(rgT);rings.forEach(function(r,j){var z0=TZ0-j*TSP,kk=Math.max(0,Math.ceil((z0-(bz+40))/(TN*TSP))),z=z0-kk*TN*TSP;r.visible=z>=TZ1&&lit>0;if(!r.visible)return;
+      tunC(z,tcR);r.position.set(tcR[0],TY+tcR[1],z);r.quaternion.setFromUnitVectors(ZN,rgT);near=Math.min(near,Math.abs(z-bz))});
+    var prox=Math.exp(-Math.pow(near/9,2));
+    tunL.position.set(bus.position.x,bus.position.y+7,bus.position.z-6);tunL.intensity=kf([[PT.APPROACHING_VODAFONE_GALAXY+1,0],[PT.DEPLOYING_REAR_THRUSTER,1.4],[PT.TRAVERSING_SPIRAL+1,2.4],[PT.APPROACHING_WORKSHOP_STAGE+1,0]],t)*(1+.6*prox);
+    var stg=kf([[PT.APPROACHING_WORKSHOP_STAGE-1.5,0],[PT.APPROACHING_WORKSHOP_STAGE+.6,1]],t);stageG.visible=t>PT.APPROACHING_VODAFONE_GALAXY;
+    endGlowM.opacity=kf([[PT.APPROACHING_WORKSHOP_STAGE-2.5,0],[PT.APPROACHING_WORKSHOP_STAGE,.75],[PT.ARRIVING_AT_STAGE+1,.2]],t);pGlowM.opacity=.45*stg;
+    var spt=kf([[PT.APPROACHING_WORKSHOP_STAGE+.6,0],[PT.ARRIVING_AT_STAGE+.9,2.3]],t);spots.forEach(function(s){s.intensity=spt});beamM.opacity=.07*spt/2.3;
+    scrM.opacity=kf([[PT.ARRIVING_AT_STAGE+.3,0],[PT.REVEALING_WORKSHOP_OUTLINE+.4,1]],t);
+    var stk=JR.reduce?0:Math.max(kf([[PT.ENTERING_DEEP_SPACE,0],[PT.ENTERING_DEEP_SPACE+.8,.18],[PT.APPROACHING_VODAFONE_GALAXY+.6,0]],t),kf([[PT.TRAVERSING_SPIRAL+.3,0],[PT.TRAVERSING_SPIRAL+1.5,.6],[PT.APPROACHING_WORKSHOP_STAGE+.4,0]],t));
+    updStreaks(bus.position,cV,stk,t>PT.TRAVERSING_SPIRAL?0xFF9C9C:0xDDE6FF);
+    /* while the bus comes down, the camera holds the platform's height so the descent reads against a steady frame */
+    var land=sstep(PT.APPROACHING_WORKSHOP_STAGE+1.2,A,t),dl=-(JR.base.y-SY)*land;placeCam(t,yw2,JR.base,dl,dl);JR.veil=0;
+    renderer.render(COS,camera)}
+  var journey={
+    begin:function(k,ws,reduce){if(!CK){buildCK();buildCosBG()}JR.reduce=!!reduce;
+      JR.P0.copy(bus.position);JR.R0.copy(bus.rotation);bus.updateMatrixWorld(true);
+      /* the roadmap camera, expressed in the bus's heading frame, is the first key of the camera path */
+      var yw=JR.R0.y,cy=Math.cos(-yw),sy=Math.sin(-yw);function hf(v){var x=v.x-bus.position.x,y=v.y-bus.position.y,z=v.z-bus.position.z;return[x*cy+z*sy,y,-x*sy+z*cy]}
+      JR.c0={o:hf(camera.position),l:hf(cam.l),f:camera.fov};CAM=null;satDone=false;if(!JR.cos)deckIn(false);
+      JR.sunL.set(40,80,28).applyAxisAngle(Y1,-yw);
+      if(PMG&&JR.envYaw!==yw){JR.envYaw=yw;try{if(JR.envC)JR.envC.dispose();JR.envC=PMG.fromScene(envScene("day",Math.PI-yw),.015).texture}catch(e){JR.envC=null}}
+      drawScreen(ws,k);if(!logoImg&&typeof LOGO_SRC==="string"){logoImg=new Image();logoImg.onload=function(){if(JR.on)drawScreen(ws,k)};logoImg.src=LOGO_SRC}
+      mechVisible(true);stops.forEach(function(sp){sp.lab.visible=false;sp.beamOp=sp.beam.material.opacity;sp.beam.material.opacity=0});JR.on=true},
+    end:function(){JR.on=false;stops.forEach(function(sp){sp.lab.visible=true;if(sp.beamOp!==undefined)sp.beam.material.opacity=sp.beamOp});setCosMode(false);scene.background.copy(BGC);scene.fog.color.copy(BGC);busShadow.position.y=.09;busShadow.material.opacity=.22;busShadow.scale.set(1,1,1);body.position.y=0;
+      deck.visible=false;setDroop(0);gates.forEach(function(G){G.g.visible=true});rGlow.visible=false;dust.forEach(function(d){d.visible=false});JR.veil=0},
+    veil:function(){return JR.veil},
+    /* landing back on the road after "Return to roadmap": the wheel-hub thrusters lower the bus onto its wheels, cut out and retract */
+    landing:function(u){var h=4.2*(1-sstep(0,.8,u))+(JR.reduce?0:.06*nzf(u*7,3)*(1-sstep(.45,.8,u)));bus.position.y+=h;busShadow.position.y=.09-h;var d=1-sstep(.7,1,u);setDroop(.07*sstep(.05,.6,h));
+      pods.forEach(function(p,i){setPod(p,d,0,0);power(p.eng,d>.97?.6*(1-sstep(.5,.75,u)):0,u*3+i)});engL.intensity=4*(1-sstep(.5,.75,u));rearL.intensity=0;setMid(0);setRear(0);power(mid.eng,0,0);power(rear.eng,0,0)},
+    frame:function(F){JR.frame=F},redraw:function(t){if(JR.on)journeyFrame(t)},
+    mechReset:mechReset,mechVisible:mechVisible};
+  mechReset();
+  /* colour management: every material was authored as an sRGB hex value; the renderer now lights in linear space, tone maps with ACES
+     and writes sRGB, so colours are converted once here. Unlit materials (signs, labels, neon, glows) skip tone mapping and keep their exact brand colour. */
+  NEON.convertSRGBToLinear();coreOff.convertSRGBToLinear();coreHot.convertSRGBToLinear();
+  function linearize(root){root.traverse(function(o){var ms=o.material?(Array.isArray(o.material)?o.material:[o.material]):[];ms.forEach(function(m){if(!m||m.userData.lin||m.isShaderMaterial)return;m.userData.lin=true;
+    if(m.color)m.color.convertSRGBToLinear();if(m.emissive)m.emissive.convertSRGBToLinear();if(m.isMeshBasicMaterial||m.isSpriteMaterial||m.isPointsMaterial||m.isLineBasicMaterial)m.toneMapped=false;m.needsUpdate=true})})}
+  linearize(scene);linearize(COS);setEnv(ENV_DAY,1);
+  /* compile the cosmos programs once up front so the hand-over inside the clouds does not stutter */
+  try{mechVisible(true);COS.add(bus);renderer.compile(COS,camera);scene.add(bus);renderer.compile(scene,camera);mechVisible(false)}catch(e){scene.add(bus)}
+
   var flashLevel=0,last={x:0,z:0};
   var api={
     resize:function(w,h){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();computeOverview(w/h)},
      fitRoute:fitRoute,
     setDestination:function(t){setLed(t)},
-    lights:function(active,doneMax){stops.forEach(function(sp,j){var on=j===active||active===99,done=j<=doneMax;sp.disc.color.setHex(on||done?0xE60000:0xBFC5CC);sp.beam.material.opacity=on?(active===99?.3:.16):0;sp.edge.color.setHex(on?0xE60000:0xD5D9DF);sp.edge.emissive.setHex(on?0x660000:0x000000)})},
+    lights:function(active,doneMax){stops.forEach(function(sp,j){var on=j===active||active===99,done=j<=doneMax;sp.disc.color.setHex(on||done?0xE60000:0xBFC5CC).convertSRGBToLinear();sp.beam.material.opacity=on?(active===99?.3:.16):0;sp.edge.color.setHex(on?0xE60000:0xD5D9DF).convertSRGBToLinear();sp.edge.emissive.setHex(on?0x660000:0x000000).convertSRGBToLinear()})},
     setLogo:function(canvasImg){var t=tex(canvasImg);buildLogoGates(t);
       badgeM.map=t;badgeM.needsUpdate=true;badge.visible=true;
       var dm=dMark.material;dm.map=t;dm.needsUpdate=true;var a=canvasImg.width/canvasImg.height;dMark.scale.set(a>=1?1.4:1.4*a,a>=1?1.4/a:1.4,1)},
@@ -985,7 +1811,9 @@ function init3D(){
     signWorld:function(k){var sp=stops[k];sp.face.getWorldPosition(sp.sw);return sp.sw},
     destWorld:function(){return dLab.getWorldPosition(new T.Vector3())},
     project:project,
+    journey:journey,_cam:camera,_bus:bus,_deck:function(){return deck},_info:function(){return renderer.info},_frame:function(t){journeyFrame(t)},
     update:function(dt,now){
+      if(JR.on){journeyFrame(jRenderT());return 0}
       /* bus pose */
       var p=at(S.s),hb=S.hb,lane=1.75*hb,yaw=p.yaw+Math.PI*(1-hb)/2;
       bus.position.set(p.x+p.lx*lane,p.y+.05,p.z+p.lz*lane);
@@ -997,6 +1825,7 @@ function init3D(){
       body.position.y=S.anim&&!REDUCE?Math.sin(S.odo*.9)*.012:0;
       wheels.forEach(function(w){w.rotation.x=S.odo/.53});
       brakeM.emissiveIntensity=(S.acc<-4||!S.anim)?1.7:.35;
+      if(J.state==="RETURNING")journey.landing(clamp(J.rt/RET_DUR,0,1));
       /* stops face the camera; the logo gateways open as the bus approaches */
       var camS=S.s-rig.back*(hb>=0?1:-1);
       stops.forEach(function(sp){var g=sp.g;tmp.copy(camera.position);var wy=Math.atan2(tmp.x-(g.position.x),tmp.z-(g.position.z));sp.rd.rotation.y=wy-g.rotation.y});
@@ -1049,7 +1878,11 @@ function toggleFs(){try{var r=isFs()?fsExit.call(document):fsReq.call(fsRoot);if
 function fsChanged(){$("bFull").setAttribute("aria-label",isFs()?"Exit full screen":"Full screen");setTimeout(measure,60)}
 document.addEventListener("fullscreenchange",fsChanged);document.addEventListener("webkitfullscreenchange",fsChanged);
 $("bFull").addEventListener("click",toggleFs);
+jPause.addEventListener("click",togglePause);if(jFs)jFs.addEventListener("click",toggleFs);jSkip.addEventListener("click",skipToStage);jRet.addEventListener("click",returnToRoadmap);fab.addEventListener("click",function(){launchWorkshop(S.at)});
 document.addEventListener("keydown",function(e){var tg=e.target,tag=tg&&tg.tagName;if(tag==="INPUT"||tag==="TEXTAREA"||e.metaKey||e.ctrlKey||e.altKey)return;var onBtn=tag==="BUTTON"||tag==="SUMMARY";
+  if(jBusy()){if(e.key==="Escape"){e.preventDefault();returnToRoadmap()}else if((e.key===" "&&!onBtn)||e.key==="p"||e.key==="P"||e.key==="k"||e.key==="K"){e.preventDefault();togglePause()}else if(e.key==="s"||e.key==="S"){e.preventDefault();skipToStage()}
+    else if(["ArrowRight","ArrowLeft","PageDown","PageUp","Home"].indexOf(e.key)>=0){e.preventDefault();nudge()}else if((e.key==="f"||e.key==="F")&&fsOk)toggleFs();return}
+  if((e.key==="w"||e.key==="W")&&wsOf(S.at)&&!S.anim){e.preventDefault();launchWorkshop(S.at);return}
   if(e.key==="ArrowRight"||e.key==="PageDown"||(e.key===" "&&!onBtn)){e.preventDefault();userAct();next()}
   else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();userAct();prev()}
   else if(e.key==="Home"){e.preventDefault();userAct();restart()}
@@ -1070,6 +1903,7 @@ function frame(now){var dt=Math.min(.05,(now-last)/1000);last=now;
   if(S.anim){var A=S.anim,t=clamp((now-A.t0)/A.dur,0,1);S.s=A.from+(A.to-A.from)*trap(t,A.a);if(t>=1){S.s=A.to;arrive(A.k)}}
   var ds=S.s-prevS,v=dt>0?Math.abs(ds)/dt:0;S.acc=lerp(S.acc,dt>0?(v-S.v)/dt:0,.2);S.v=v;S.odo+=Math.abs(ds);
   S.hb+=(S.heading-S.hb)*Math.min(1,dt*(REDUCE?60:4.2));
+  jTick(jdt(now));
   if(R){var fl=R.update(dt,now);flash.style.opacity=fl.toFixed(3);
     var showPins=S.ov>.6;pins.classList.toggle("show",showPins);
     if(showPins!==pinsShown){pinsShown=showPins;pins.setAttribute("aria-hidden",showPins?"false":"true");pinEls.concat([endPin]).forEach(function(b){b.tabIndex=showPins?0:-1})}
@@ -1091,7 +1925,7 @@ function boot3D(){if(R)return;try{R=init3D()}catch(err){if(window.console)consol
 var glc=$("gl");
 function stopAt(x,y){if(!R||S.ov>.6)return -1;var best=-1,bd=52;for(var k=0;k<NST;k++){var w=R.stopWorld(k),q=R.project(w.x,w.y,w.z);if(q.ok){var d=Math.hypot(q.x-x,q.y-y);if(d<bd){bd=d;best=k}}
     var sw=R.signWorld(k),c=R.project(sw.x,sw.y,sw.z),e=R.project(sw.x,sw.y+1.8,sw.z);if(c.ok&&e.ok){var hh=Math.abs(c.y-e.y)*1.33,hw=hh*4;if(Math.abs(x-c.x)<hw&&Math.abs(y-c.y)<hh){best=k;bd=0}}}return best}
-glc.addEventListener("click",function(e){var r=glc.getBoundingClientRect(),k=stopAt(e.clientX-r.left,e.clientY-r.top);if(k>=0){userAct();travelTo(k)}});
+glc.addEventListener("click",function(e){if(jBusy())return;var r=glc.getBoundingClientRect(),k=stopAt(e.clientX-r.left,e.clientY-r.top);if(k>=0){userAct();travelTo(k)}});
 glc.addEventListener("mousemove",function(e){var r=glc.getBoundingClientRect();glc.classList.toggle("pointing",stopAt(e.clientX-r.left,e.clientY-r.top)>=0)});
 if(window.ResizeObserver)new ResizeObserver(function(){measure()}).observe(stage);
 window.addEventListener("resize",measure);
@@ -1104,7 +1938,7 @@ requestAnimationFrame(frame);
 var introMs=REDUCE?500:2200;
 setTimeout(function(){dismissIntro();
   setTimeout(function(){if(S.at===-1&&!S.anim){S.mode="follow";setTimeout(function(){if(S.at===-1&&!S.anim)travelTo(0)},REDUCE?0:1500)}},REDUCE?0:1500)},introMs);
-window.__journey={freeze:function(s){S.anim={from:s,to:s,t0:performance.now(),dur:1e9,k:1,a:.2};S.s=s;S.mode="follow"},S:S,travelTo:travelTo,ST:ST,S_GATE:S_GATE,stopS:stopS,R:function(){return R}};
+window.__journey={J:J,PT:PT,launch:launchWorkshop,ret:returnToRoadmap,skip:skipToStage,pause:togglePause,seek:function(t){J.t=t},freeze:function(s){S.anim={from:s,to:s,t0:performance.now(),dur:1e9,k:1,a:.2};S.s=s;S.mode="follow"},S:S,travelTo:travelTo,ST:ST,S_GATE:S_GATE,stopS:stopS,R:function(){return R}};
 })();
 </script>
 </body>
