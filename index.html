@@ -386,6 +386,14 @@ button.cdot:hover{border-color:var(--red)}
 .wc-t{position:relative;z-index:1;min-width:0}
 .wk{margin:0;font-size:12.5px;font-weight:800;color:#FF8A80;letter-spacing:.03em;text-transform:uppercase}
 .wt{margin:3px 0 0;font-size:21px;font-weight:800;line-height:1.12;letter-spacing:-.02em}
+.wtalk{position:relative;z-index:1;grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;text-decoration:none;font-weight:700;font-size:14.5px}
+.wtalk small{font-weight:600;font-size:12px;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.06em}
+.wtalk span{flex:1;min-width:0}
+.wtalk svg{width:16px;height:16px;flex:none}
+.wtalk:hover{background:rgba(255,255,255,.16)}
+.wtalk:focus-visible{outline:3px solid #fff}
+.wtalk2{display:inline-flex;align-items:center;text-decoration:none;color:var(--ink)}
+@media (max-width:440px){.wtalk{flex-wrap:wrap}.wtalk small{flex-basis:100%}}
 .wd{margin:4px 0 0;font-size:14px;color:rgba(255,255,255,.72);line-height:1.35}
 .wlaunch,.fab{position:relative;z-index:1;display:inline-flex;align-items:center;gap:9px;height:46px;padding:0 20px;border-radius:999px;border:0;background:var(--red);color:#fff;font-weight:800;font-size:15px;cursor:pointer;white-space:nowrap;box-shadow:0 10px 24px -8px rgba(230,0,0,.85);transition:transform .2s,background .2s}
 .wlaunch:hover,.fab:hover{background:#FF1F1F;transform:translateY(-1px)}
@@ -876,7 +884,7 @@ function updateButtons(){var cur=S.anim?S.anim.k:S.at,lk=jBusy();$("bPrev").disa
    Only Stop 1 has its workshop wired in for now; add an entry here and a ws key on the stop to switch on the others. */
 var WS_BASE="workshops/";
 var WS={
- s1:{n:1,file:"session-1-how-ai-behaves.html",title:"How AI really behaves",tag:"Every word an LLM writes is one weighted roll of the dice.",min:45,
+ s1:{n:1,file:"session-1-how-ai-behaves.html",talk:{file:"from-rules-to-probabilities.html",title:"From rules to probabilities",kind:"Opening talk · 26 slides"},title:"How AI really behaves",tag:"Every word an LLM writes is one weighted roll of the dice.",min:45,
   agenda:[["0:00","Today’s story",2],["0:02","The mindset shift",3],["0:04","Act 1 · It guesses",4],["0:11","Act 2 · It can’t see itself",6],["0:20","Act 3 · Loaded dice",10],["0:26","Act 4 · Recognition wins",13],["0:36","Act 5 · Quiet failure",17],["0:41","Finale · Scoreboard and habits",20]],
   exps:[["The table that never ends","Act 1 · It guesses",5],["Count it, then push back","Act 2 · Its story is not its process",8],["Ask for a random number. Get a favourite.","Act 3 · Loaded dice",12],["A bridge puzzle with nothing to solve","Act 4 · The familiar pattern wins",16]],
   take:[["One reply is one roll","Ask twice before you trust it"],["Exact work in code","Counting, maths, dates, IDs"],["Explanations are stories","And pushback isn’t evidence"],["Measure rates","Many samples, test properties"],["Change one detail","Catches recall dressed as reasoning"],["Check, feed back, retry","The start of a harness"]]}
@@ -928,12 +936,13 @@ function workshopHTML(k,noFlight){var ws=wsOf(k),n=0;function i(){return 'style=
   if(ws.exps&&ws.exps.length)h+='<h3 class="p-h rv" '+i()+'>Live experiments</h3><ol class="xps">'+ws.exps.map(function(x,j){return '<li class="rv" '+i()+'><i>'+(j+1)+'</i>'+a(x[2],'<b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span>')+'</li>'}).join("")+'</ol>';
   if(ws.take&&ws.take.length)h+='<h3 class="p-h rv" '+i()+'>What you take back to your desk</h3><ul class="hls">'+ws.take.map(function(x){return '<li class="rv" '+i()+'><div><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div></li>'}).join("")+'</ul>';
   h+='<div class="wact rv" '+i()+'><a class="go" href="'+esc(wsHref(ws,1))+'" target="_blank" rel="noopener"><span>Open the workshop</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>'+
-    '<button type="button" class="btn2" data-ret>Return to roadmap</button>'+(noFlight?'':'<button type="button" class="btn2" data-again>Fly again</button>')+'</div>';
+    (ws.talk?'<a class="btn2 wtalk2" href="'+esc(WS_BASE+ws.talk.file)+'" target="_blank" rel="noopener">Open the talk: '+esc(ws.talk.title)+'</a>':'')+'<button type="button" class="btn2" data-ret>Return to roadmap</button>'+(noFlight?'':'<button type="button" class="btn2" data-again>Fly again</button>')+'</div>';
   h+='<p class="src rv" '+i()+'>Outline from the workshop deck '+esc(ws.file)+': its agenda slide, experiment slides and take-aways. Each item opens the deck at that slide.</p>';
   return h}
 function wsCardHTML(k,attr){var ws=wsOf(k);if(!ws)return "";
   return '<div class="wcard rv" '+attr+'><div class="wc-t"><p class="wk">Workshop '+ws.n+' · '+ws.min+' min · '+ws.exps.length+' live experiments</p><p class="wt">'+esc(ws.title)+'</p><p class="wd">Ride the bus to the workshop stage to see its outline.</p></div>'+
-    '<button type="button" class="wlaunch" data-launch="'+k+'" aria-label="Launch workshop '+ws.n+': '+esc(ws.title)+'">Launch workshop'+ROCKET+'</button></div>'}
+    '<button type="button" class="wlaunch" data-launch="'+k+'" aria-label="Launch workshop '+ws.n+': '+esc(ws.title)+'">Launch workshop'+ROCKET+'</button>'+
+    (ws.talk?'<a class="wtalk" href="'+esc(WS_BASE+ws.talk.file)+'" target="_blank" rel="noopener"><small>'+esc(ws.talk.kind)+'</small><span>'+esc(ws.talk.title)+'</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>':'')+'</div>'}
 var ROCKET='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 15c-1.5 1.3-2 4-2 6 2 0 4.7-.5 6-2"/><path d="M12 15l-3-3a19 19 0 0 1 8-9c2 0 4 2 4 4a19 19 0 0 1-9 8z"/><path d="M9 12H5l2-4h4M12 15v4l4-2v-4"/></svg>';
 
 var jcap=$("jcap"),jcapT=$("jcapT"),jcapB=$("jcapB"),jPause=$("jPause"),jSkip=$("jSkip"),jRet=$("jRet"),fab=$("fab"),veil=$("veil"),appEl=document.querySelector(".app");
