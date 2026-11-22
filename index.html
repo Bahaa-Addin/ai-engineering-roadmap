@@ -466,9 +466,9 @@ html.jfull .stage-ph{display:block;height:50vh;min-height:320px}
 .stage.full .jctl{bottom:max(12px,env(safe-area-inset-bottom,0px))}
 
 /* stepping into the workshop: the portal and the dimmed world behind it */
-.ptl{position:fixed;left:0;top:0;z-index:71;display:none;transform-origin:0 0;pointer-events:none;will-change:transform}
+.ptl{position:fixed;left:0;top:0;z-index:59;display:none;transform-origin:0 0;pointer-events:none;will-change:transform}
 .ptl.on{display:block}
-.ptl.live{pointer-events:auto}
+.ptl.live{pointer-events:auto;z-index:71}
 .ptl.rm{opacity:0;transition:opacity .45s ease}
 .ptl .pv{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;background:#fff;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-composite:source-in;mask-composite:intersect}
 .ptl .pv iframe{position:absolute;left:0;top:0;display:block;width:100%;height:100%;border:0;background:#fff}
@@ -476,6 +476,7 @@ html.jfull .stage-ph{display:block;height:50vh;min-height:320px}
 .ptl .prim{position:absolute;left:0;top:0;opacity:0;border:1.5px solid rgba(255,255,255,.8);pointer-events:none;box-sizing:border-box}
 .pdim{position:fixed;inset:0;z-index:70;display:none;opacity:0;pointer-events:none;background:radial-gradient(ellipse at 50% 42%,rgba(10,0,4,.3) 0%,rgba(10,0,4,.92) 100%)}
 .stage.immersing .jcap,.stage.immersing .jctl{opacity:0;pointer-events:none}
+.stage.holey{background:transparent!important}
 </style>
 <script>
 /* three.js r128: cdnjs first, jsDelivr as a fallback */
@@ -1029,9 +1030,9 @@ function jTick(dt){fullStep(performance.now());
   veil.style.opacity=R.journey.veil().toFixed(3)}
 
 /* ================================================================== stepping into the workshop
-   When the bus has landed, the camera comes round to face the stage sign square on, centred in the view, and the live workshop deck
-   fades into the sign. The sign then grows to fill the view while the world around it flips over tile by tile, in a wave running
-   outward from the sign, onto the workshop's paper white. Every frame is a pure function of the journey clock, so pause, Back (which
+   When the bus has landed, the camera comes round to face the stage sign square on, centred in the view, and the sign becomes a window
+   onto the live workshop deck behind the scene. Then the world around the sign flips over tile by tile, in a wave running outward from
+   the sign, and each tile's back is the piece of the deck beneath it, so the flip assembles the presentation. Every frame is a pure function of the journey clock, so pause, Back (which
    plays it in reverse) and reduced motion (a cross-fade) all fall out of the same code. The deck is loaded at liftoff; the browser URL
    becomes the deck's own, so a reload or a shared link opens the deck directly. */
 var PTL=null;
@@ -1043,51 +1044,22 @@ function ptlMake(ws){if(PTL&&PTL.ws===ws)return;if(PTL){PTL.el.remove();PTL.dim.
   var fr=el.querySelector("iframe");PTL={ws:ws,el:el,pv:el.firstChild,rim:el.lastChild,fr:fr,dim:dim,loaded:false,ready:false,shown:false,final:false};
   fr.addEventListener("load",function(){PTL.loaded=true;try{PTL.ready=!!(fr.contentWindow.LAB&&fr.contentDocument.querySelector(".slide"))}catch(e){PTL.ready=false}});
   fr.src=wsHref(ws,1)}
-function ptlHide(){if(!PTL)return;PTL.shown=false;PTL.final=false;PTL.el.className="ptl";PTL.el.style.opacity="";PTL.dim.style.display="none";stage.classList.remove("immersing")}
-/* the projective transform that carries the four corners s onto the four corners d, as a CSS matrix3d */
-function homog(s,d){var A=[],i,j,k;for(i=0;i<4;i++){var x=s[i][0],y=s[i][1],u=d[i][0],v=d[i][1];A.push([x,y,1,0,0,0,-u*x,-u*y,u]);A.push([0,0,0,x,y,1,-v*x,-v*y,v])}
-  for(i=0;i<8;i++){var p=i;for(j=i+1;j<8;j++)if(Math.abs(A[j][i])>Math.abs(A[p][i]))p=j;var tmp=A[i];A[i]=A[p];A[p]=tmp;
-    for(j=0;j<8;j++)if(j!==i){var f=A[j][i]/A[i][i];for(k=i;k<9;k++)A[j][k]-=f*A[i][k]}}
-  var h=A.map(function(r,i){return r[8]/r[i]});
-  return "matrix3d("+[h[0],h[3],0,h[6],h[1],h[4],0,h[7],0,0,1,0,h[2],h[5],0,1].map(function(n){return +n.toFixed(9)}).join(",")+")"}
+function ptlHide(){if(!PTL)return;PTL.shown=false;PTL.final=false;PTL.el.className="ptl";PTL.el.style.opacity="";PTL.dim.style.display="none";stage.classList.remove("immersing","holey")}
 function px(n){return n.toFixed(2)+"px"}
 function portalSync(t){if(!PTL)return;
-  var on=J.immerse&&jActive()&&(J.reduce?J.inWs:t>=PT.OPENING_PORTAL||J.inWs);
+  /* the deck waits behind the scene; the 3D scene's tile pass (flipTiles) decides where it shows through */
+  var on=J.immerse&&jActive()&&(J.reduce?J.inWs:t>=PT.OPENING_PORTAL+.55*PD.OPENING_PORTAL||J.inWs);
   if(!on){if(PTL.shown)ptlHide();return}
   if(PTL.final)return;
-  var W=window.innerWidth,H=window.innerHeight,el=PTL.el,pv=PTL.pv,rim=PTL.rim;
-  if(!PTL.shown){PTL.shown=true;el.classList.add("on");PTL.dim.style.display="block";
+  var W=window.innerWidth,H=window.innerHeight,el=PTL.el,pv=PTL.pv;
+  if(!PTL.shown){PTL.shown=true;el.classList.add("on");stage.classList.add("holey");
     /* the deck replays its opening slide as the window opens, so the slide builds while the viewer steps through */
-    if(!J.inWs&&J.dir===0)try{PTL.fr.contentWindow.postMessage({lab:"replay"},location.origin)}catch(e){}}
+    if(!J.inWs&&J.dir===0)try{PTL.fr.contentWindow.postMessage({lab:"replay"},location.origin)}catch(e){}
+    el.style.transform="none";pv.style.webkitMaskImage=pv.style.maskImage=pv.style.clipPath="none";pv.style.opacity="1";PTL.rim.style.opacity="0";PTL.dim.style.display="none"}
   el.style.width=W+"px";el.style.height=H+"px";
-  if(J.reduce){el.classList.add("rm");el.style.transform="none";pv.style.webkitMaskImage=pv.style.maskImage=pv.style.clipPath="none";rim.style.opacity="0";requestAnimationFrame(function(){el.style.opacity="1"});PTL.final=true;return}
-  var a=clamp((t-PT.OPENING_PORTAL)/PD.OPENING_PORTAL,0,1),b=clamp((t-PT.ENTERING_WORKSHOP)/PD.ENTERING_WORKSHOP,0,1),e=b*b*b*(b*(b*6-15)+10);
-  if(J.inWs)a=e=1;
-  /* the camera spends the first part of the opening coming round to face the sign; the workshop then fades into the sign */
-  var aa=clamp((a-.6)/.4,0,1);
-  /* where the window opens: the stage's title screen, or (if the stage is out of view) a centred card of the same 2:1 shape */
-  var q=R&&R.journey.portalQuad();
-  if(!q){var qw=Math.min(W*.5,H*.8),qh=qw/2,qx=(W-qw)/2,qy=H*.3-qh/2;q=[[qx,qy],[qx+qw,qy],[qx+qw,qy+qh],[qx,qy+qh]]}
-  /* the sign looks onto the middle of the workshop at its 2:1 shape and grows to fill the view, while the world around it flips over,
-     tile by tile, into the workshop's paper white (flipTiles in the 3D scene). Past the deck's edges the world is paper white too, so
-     no edge of the deck is ever seen */
-  var cw=Math.min(W*.72,H*1.44),ch=cw/2,cx=(W-cw)/2,cy=(H-ch)/2,rx=lerp(cx,0,e),ry=lerp(cy,0,e),rw=lerp(cw,W,e),rh=lerp(ch,H,e);
-  var full=[[0,0],[W,0],[W,H],[0,H]],src=[[rx,ry],[rx+rw,ry],[rx+rw,ry+rh],[rx,ry+rh]],dst=q.map(function(p,i){return[lerp(p[0],full[i][0],e),lerp(p[1],full[i][1],e)]});
-  el.style.transform=e>=1?"none":homog(src,dst);
-  /* the rim: a crisp rounded edge on the screen, then a wide feather that runs out past the edges of the view */
-  var m=Math.min(W,H),g=e*e*.15*m,f=1+Math.pow(e,.7)*.08*m,r0=.0375*rw,bl=rx-g,br=rx+rw+g,bt=ry-g,bb=ry+rh+g;
-  pv.style.left=px(-W);pv.style.top=px(-H);pv.style.width=px(3*W);pv.style.height=px(3*H);PTL.fr.style.left=px(W);PTL.fr.style.top=px(H);PTL.fr.style.width=px(W);PTL.fr.style.height=px(H);
-  if(e>=1){pv.style.webkitMaskImage=pv.style.maskImage=pv.style.clipPath="none"}
-  else{bl+=W;br+=W;bt+=H;bb+=H;var gx="linear-gradient(to right,transparent "+px(bl-f/2)+",#000 "+px(bl+f/2)+",#000 "+px(br-f/2)+",transparent "+px(br+f/2)+")",gy="linear-gradient(to bottom,transparent "+px(bt-f/2)+",#000 "+px(bt+f/2)+",#000 "+px(bb-f/2)+",transparent "+px(bb+f/2)+")";
-    pv.style.webkitMaskImage=pv.style.maskImage=gx+","+gy;
-    pv.style.clipPath="inset("+px(bt-f/2)+" "+px(3*W-br-f/2)+" "+px(3*H-bb-f/2)+" "+px(bl-f/2)+" round "+px(r0+f)+")";bl-=W;br-=W;bt-=H;bb-=H}
-  pv.style.opacity=(1-Math.pow(1-sstep(0,.6,aa),2)).toFixed(3);
-  var ro=sstep(.15,.7,aa)*(1-sstep(0,.6,e));rim.style.opacity=ro.toFixed(3);
-  if(ro>0){rim.style.left=px(bl);rim.style.top=px(bt);rim.style.width=px(br-bl);rim.style.height=px(bb-bt);rim.style.borderRadius=px(r0+f*.5);
-    rim.style.boxShadow="0 0 "+px(14+f*.8)+" "+px(1+f*.12)+" rgba(255,236,230,.6),0 0 "+px(46+f)+" rgba(255,60,60,.5),inset 0 0 "+px(22+f*.6)+" rgba(255,255,255,.6)"}
-  PTL.dim.style.opacity="0";
-  stage.classList.toggle("immersing",b>0||J.inWs);
-  if(J.inWs&&e>=1){PTL.final=true;PTL.dim.style.display="none";pv.style.left=pv.style.top="0";pv.style.width=pv.style.height="100%";PTL.fr.style.left=PTL.fr.style.top="0";PTL.fr.style.width="100%";PTL.fr.style.height="100%"}}
+  if(J.reduce){el.classList.add("rm");requestAnimationFrame(function(){el.style.opacity="1"});PTL.final=true;return}
+  stage.classList.toggle("immersing",t>=PT.ENTERING_WORKSHOP||J.inWs);
+  if(J.inWs)PTL.final=true}
 var wsSync=0,wsTitle="";
 function enterWorkshop(){var ws=wsOf(J.k);J.inWs=true;J.dir=0;PTL.final=false;portalSync(PT.WORKSHOP_READY);
   PTL.el.classList.add("live");PTL.el.removeAttribute("aria-hidden");jPause.hidden=true;jSkip.hidden=true;
@@ -1109,7 +1081,7 @@ var R=null;
 function init3D(){
   var T=window.THREE;if(!T)return null;
   var canvas=$("gl"),renderer;
-  try{renderer=new T.WebGLRenderer({canvas:canvas,antialias:true,powerPreference:"high-performance"})}catch(e){return null}
+  try{renderer=new T.WebGLRenderer({canvas:canvas,antialias:true,alpha:true,powerPreference:"high-performance"})}catch(e){return null}
   if(!renderer.getContext())return null;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.outputEncoding=T.sRGBEncoding;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
@@ -1872,41 +1844,49 @@ function init3D(){
     var stg=kf([[PT.APPROACHING_WORKSHOP_STAGE-1.5,0],[PT.APPROACHING_WORKSHOP_STAGE+.6,1]],t);stageG.visible=t>PT.APPROACHING_VODAFONE_GALAXY;
     endGlowM.opacity=kf([[PT.APPROACHING_WORKSHOP_STAGE-2.5,0],[PT.APPROACHING_WORKSHOP_STAGE,.75],[PT.ARRIVING_AT_STAGE+1,.2]],t);pGlowM.opacity=.45*stg;
     var spt=kf([[PT.APPROACHING_WORKSHOP_STAGE+.6,0],[PT.ARRIVING_AT_STAGE+.9,2.3]],t);spots.forEach(function(s){s.intensity=spt});beamM.opacity=.07*spt/2.3;
-    scrM.opacity=kf([[PT.ARRIVING_AT_STAGE+.3,0],[PT.REVEALING_WORKSHOP_OUTLINE+.4,1]],t)*(J.immerse&&!JR.reduce?1-sstep(PT.OPENING_PORTAL+.84*PD.OPENING_PORTAL,PT.OPENING_PORTAL+.96*PD.OPENING_PORTAL,t):1);
+    scrM.opacity=kf([[PT.ARRIVING_AT_STAGE+.3,0],[PT.REVEALING_WORKSHOP_OUTLINE+.4,1]],t);
     var stk=JR.reduce?0:Math.max(kf([[PT.ENTERING_DEEP_SPACE,0],[PT.ENTERING_DEEP_SPACE+.8,.18],[PT.APPROACHING_VODAFONE_GALAXY+.6,0]],t),kf([[PT.TRAVERSING_SPIRAL+.3,0],[PT.TRAVERSING_SPIRAL+1.5,.6],[PT.APPROACHING_WORKSHOP_STAGE+.4,0]],t));
     updStreaks(bus.position,cV,stk,t>PT.TRAVERSING_SPIRAL?0xFF9C9C:0xDDE6FF);
     /* while the bus comes down, the camera holds the platform's height so the descent reads against a steady frame */
     var land=sstep(PT.APPROACHING_WORKSHOP_STAGE+1.2,A,t),dl=-(JR.base.y-SY)*land;placeCam(t,yw2,JR.base,dl,dl);JR.veil=0;
     var fc=J.immerse&&!JR.reduce?sstep(PT.OPENING_PORTAL,PT.OPENING_PORTAL+.72*PD.OPENING_PORTAL,t):0;if(fc>0)frontCam(fc);
     renderer.render(COS,camera);
-    var fp=J.immerse&&!JR.reduce?clamp((t-PT.ENTERING_WORKSHOP)/PD.ENTERING_WORKSHOP,0,1):0;if(fp>0)flipTiles(fp)}
+    var hA=J.immerse&&!JR.reduce&&PTL&&PTL.ready?sstep(PT.OPENING_PORTAL+.6*PD.OPENING_PORTAL,PT.OPENING_PORTAL+.9*PD.OPENING_PORTAL,t):0;
+    if(hA>0)flipTiles(clamp((t-PT.ENTERING_WORKSHOP)/PD.ENTERING_WORKSHOP,0,1),hA)}
   /* --- stepping into the workshop, part 1: the camera comes round to face the stage sign square on, with the sign centred in the view */
   var fcS=new T.Vector3(),fcN=new T.Vector3(),fcP=new T.Vector3(),fcL=new T.Vector3(),fcQ=new T.Quaternion();
   function frontCam(f){scr.updateMatrixWorld(true);fcS.setFromMatrixPosition(scr.matrixWorld);fcN.set(0,0,1).applyQuaternion(scr.getWorldQuaternion(fcQ)).normalize();
     if(fcN.dot(fcP.copy(camera.position).sub(fcS))<0)fcN.negate();
     var th=Math.tan(camera.fov*Math.PI/360),d=Math.max(17/(.6*th*camera.aspect),8.5/(.62*th));
     fcP.copy(fcS).addScaledVector(fcN,d);camera.position.lerp(fcP,f);fcL.copy(cam.l).lerp(fcS,f);camera.up.set(0,1,0);camera.lookAt(fcL);camera.updateProjectionMatrix()}
-  /* --- part 2: the world around the sign flips over tile by tile, in a wave that runs outward from the sign, and every tile lands on its
-     white back: the workshop's paper. The frame just drawn is copied into a texture that the tiles carry on their fronts, so the cosmos
-     stays live until each tile turns. Each tile tips away from the sign and lifts towards the viewer as it turns, then settles. */
+  /* --- part 2: the live workshop deck sits behind the scene (the canvas is transparent where the deck should show). First the sign
+     turns into a window onto it: the deck shows through the sign at its own size and place. Then the world around the sign flips over
+     tile by tile, in a wave running outward from the sign's edge, and each tile's back is the piece of the deck that lies under it, so
+     the flip itself assembles the presentation. The frame just drawn is copied into a texture that the tiles carry on their fronts,
+     so the cosmos stays live until each tile turns. Each tile tips away from the sign and lifts towards the viewer as it turns. */
   var FL=null,flBuf=new T.Vector2();
   function flipBuild(){var sc=new T.Scene(),fcam=new T.PerspectiveCamera(30,1,1,1e5),g=new T.InstancedBufferGeometry(),pl=new T.PlaneGeometry(1,1);
     g.index=pl.index;g.attributes.position=pl.attributes.position;
-    var mat=new T.ShaderMaterial({side:T.DoubleSide,toneMapped:false,uniforms:{tFb:{value:null},uO:{value:new T.Vector2()},uV:{value:new T.Vector2(1,1)},uR:{value:0},uW:{value:200},uTs:{value:48},uBack:{value:new T.Color(1,1,1)}},
-      vertexShader:"attribute vec2 aC;uniform vec2 uO,uV;uniform float uR,uW,uTs;varying vec2 vUv;varying float vA;void main(){vec2 d=aC-uO;float dist=length(d);float a=clamp((uR-dist)/uW,0.,1.);a=a*a*(3.-2.*a);float ang=a*3.14159265;vec2 dir=dist>.001?d/dist:vec2(1.,0.);vec3 ax=normalize(vec3(-dir.y,-dir.x,0.));vec3 p=vec3(position.xy*uTs,0.);float c=cos(ang),s=sin(ang);vec3 pr=p*c+cross(ax,p)*s+ax*dot(ax,p)*(1.-c);pr.z+=s*uTs*.75;vec3 w=vec3(aC.x-uV.x*.5+pr.x,uV.y*.5-aC.y+pr.y,pr.z);vUv=vec2((aC.x+p.x)/uV.x,1.-(aC.y-p.y)/uV.y);vA=ang;gl_Position=projectionMatrix*modelViewMatrix*vec4(w,1.);}",
-      fragmentShader:"uniform sampler2D tFb;uniform vec3 uBack;varying vec2 vUv;varying float vA;void main(){float s=sin(vA);if(gl_FrontFacing){vec3 col=texture2D(tFb,vUv).rgb*(1.-.5*s);gl_FragColor=vec4(col,1.);}else{float l=.8+.2*abs(cos(vA));gl_FragColor=vec4(uBack*l,1.);}}"});
-    var m=new T.Mesh(g,mat);m.frustumCulled=false;sc.add(m);sc.background=new T.Color(0x1A0407);FL={sc:sc,cam:fcam,g:g,mat:mat,tex:null,w:0,h:0,cols:0,rows:0,vw:0,vh:0}}
-  function flipTiles(p){if(!FL)flipBuild();var W2=renderer.domElement.clientWidth||W,H2=renderer.domElement.clientHeight||H;renderer.getDrawingBufferSize(flBuf);
-    if(!FL.tex||FL.w!==flBuf.x||FL.h!==flBuf.y){if(FL.tex)FL.tex.dispose();FL.w=flBuf.x;FL.h=flBuf.y;FL.tex=new T.DataTexture(new Uint8Array(FL.w*FL.h*3),FL.w,FL.h,T.RGBFormat);FL.tex.minFilter=FL.tex.magFilter=T.LinearFilter;FL.tex.generateMipmaps=false;FL.mat.uniforms.tFb.value=FL.tex}
+    var mat=new T.ShaderMaterial({side:T.DoubleSide,toneMapped:false,transparent:true,depthWrite:true,blending:T.CustomBlending,blendSrc:T.OneFactor,blendDst:T.OneMinusSrcAlphaFactor,blendSrcAlpha:T.OneFactor,blendDstAlpha:T.OneMinusSrcAlphaFactor,
+      uniforms:{tFb:{value:null},uV:{value:new T.Vector2(1,1)},uR:{value:0},uW:{value:200},uTs:{value:48},uHole:{value:new T.Vector4(0,0,1,1)},uRad:{value:10},uHA:{value:0},uGl:{value:1}},
+      vertexShader:"attribute vec2 aC;uniform vec2 uV;uniform vec4 uHole;uniform float uR,uW,uTs;varying vec2 vUv;varying float vA,vIn;void main(){vec2 c=(uHole.xy+uHole.zw)*.5,hh=(uHole.zw-uHole.xy)*.5;vec2 q0=abs(aC-c)-hh;vec2 q=max(q0,0.);float dist=length(q);vIn=step(max(q0.x,q0.y),-uTs*.75);float a=clamp((uR-dist)/uW,0.,1.);a=a*a*(3.-2.*a);float ang=a*3.14159265;vec2 dv=aC-clamp(aC,uHole.xy,uHole.zw);if(length(dv)<.001)dv=aC-c;vec2 dir=normalize(dv+vec2(1e-4,0.));vec3 ax=normalize(vec3(dir.y,dir.x,0.));vec3 p=vec3(position.xy*uTs,0.);float co=cos(ang),s=sin(ang);vec3 pr=p*co+cross(ax,p)*s+ax*dot(ax,p)*(1.-co);pr.z+=s*uTs*.75;vec3 w=vec3(aC.x-uV.x*.5+pr.x,uV.y*.5-aC.y+pr.y,pr.z);vUv=vec2((aC.x+p.x)/uV.x,1.-(aC.y-p.y)/uV.y);vA=ang;gl_Position=projectionMatrix*modelViewMatrix*vec4(w,1.);}",
+      fragmentShader:"uniform sampler2D tFb;uniform vec2 uV;uniform vec4 uHole;uniform float uRad,uHA,uGl;varying vec2 vUv;varying float vA,vIn;void main(){float s=sin(vA);if(gl_FrontFacing){vec2 sp=vec2(vUv.x*uV.x,(1.-vUv.y)*uV.y);vec2 c=(uHole.xy+uHole.zw)*.5,hh=(uHole.zw-uHole.xy)*.5-uRad;vec2 q=abs(sp-c)-hh;float sd=length(max(q,0.))+min(max(q.x,q.y),0.)-uRad;float ins=1.-smoothstep(-1.,1.,sd);float al=1.-uHA*ins;vec3 col=texture2D(tFb,vUv).rgb*(1.-.5*s);col+=vec3(1.,.82,.78)*uHA*uGl*.55*exp(-max(sd,0.)/16.)*(1.-ins);gl_FragColor=vec4(col*al,al);}else{gl_FragColor=vec4(0.,0.,0.,.42*s*(1.-vIn*uHA));}}"});
+    var m=new T.Mesh(g,mat);m.frustumCulled=false;sc.add(m);FL={sc:sc,cam:fcam,g:g,mat:mat,tex:null,w:0,h:0,vw:0,vh:0}}
+  function flipTiles(p,hA){if(!FL)flipBuild();var W2=renderer.domElement.clientWidth||W,H2=renderer.domElement.clientHeight||H;renderer.getDrawingBufferSize(flBuf);
+    if(!FL.tex||FL.w!==flBuf.x||FL.h!==flBuf.y){if(FL.tex)FL.tex.dispose();FL.w=flBuf.x;FL.h=flBuf.y;FL.tex=new T.DataTexture(new Uint8Array(FL.w*FL.h*4),FL.w,FL.h,T.RGBAFormat);FL.tex.minFilter=FL.tex.magFilter=T.LinearFilter;FL.tex.generateMipmaps=false;FL.mat.uniforms.tFb.value=FL.tex}
     if(FL.vw!==W2||FL.vh!==H2){FL.vw=W2;FL.vh=H2;var ts=Math.max(26,Math.min(W2,H2)/18),cols=Math.ceil(W2/ts),rows=Math.ceil(H2/ts),ac=new Float32Array(cols*rows*2),k=0;
       for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){ac[k++]=(c+.5)*W2/cols;ac[k++]=(r+.5)*H2/rows}
       FL.g.setAttribute("aC",new T.InstancedBufferAttribute(ac,2));FL.g.instanceCount=cols*rows;FL.mat.uniforms.uTs.value=Math.max(W2/cols,H2/rows)*1.003;
       FL.cam.aspect=W2/H2;FL.cam.position.set(0,0,(H2/2)/Math.tan(15*Math.PI/180));FL.cam.near=10;FL.cam.far=FL.cam.position.z*3;FL.cam.lookAt(0,0,0);FL.cam.updateProjectionMatrix();FL.mat.uniforms.uV.value.set(W2,H2)}
     renderer.copyFramebufferToTexture(new T.Vector2(0,0),FL.tex);
-    var q=journey.portalQuad(),ox=W2/2,oy=H2/2;if(q){var rr=renderer.domElement.getBoundingClientRect();ox=(q[0][0]+q[1][0]+q[2][0]+q[3][0])/4-rr.left;oy=(q[0][1]+q[1][1]+q[2][1]+q[3][1])/4-rr.top}
-    var far=Math.hypot(Math.max(ox,W2-ox),Math.max(oy,H2-oy)),wd=Math.max(W2,H2)*.11,u=Math.min(1,p/.64);
-    FL.mat.uniforms.uO.value.set(ox,oy);FL.mat.uniforms.uW.value=wd;FL.mat.uniforms.uR.value=(far+wd)*(u*u*(3-2*u))*.98+wd*.02;
-    renderer.render(FL.sc,FL.cam)}
+    /* the window: the sign's face, a little inside its red frame */
+    var q=journey.portalQuad(),rr=renderer.domElement.getBoundingClientRect(),x0=W2*.25,y0=H2*.3,x1=W2*.75,y1=H2*.55;
+    if(q){x0=Math.min(q[0][0],q[3][0])-rr.left;x1=Math.max(q[1][0],q[2][0])-rr.left;y0=Math.min(q[0][1],q[1][1])-rr.top;y1=Math.max(q[2][1],q[3][1])-rr.top}
+    var ins=(x1-x0)*.012;x0+=ins;x1-=ins;y0+=ins;y1-=ins;FL.mat.uniforms.uHole.value.set(x0,y0,x1,y1);FL.mat.uniforms.uRad.value=(x1-x0)*.032;
+    var far=Math.max(Math.hypot(Math.max(x0,0),Math.max(y0,0)),Math.hypot(Math.max(W2-x1,0),Math.max(y0,0)),Math.hypot(Math.max(x0,0),Math.max(H2-y1,0)),Math.hypot(Math.max(W2-x1,0),Math.max(H2-y1,0))),
+      wd=Math.max(W2,H2)*.12,u=Math.min(1,p/.94);
+    FL.mat.uniforms.uW.value=wd;FL.mat.uniforms.uR.value=(far+wd*1.05)*(u*u*(3-2*u));FL.mat.uniforms.uHA.value=hA;FL.mat.uniforms.uGl.value=1-sstep(0,.35,p);
+    renderer.setClearColor(0x000000,0);renderer.render(FL.sc,FL.cam)}
   var journey={
     begin:function(k,ws,reduce){if(!CK){buildCK();buildCosBG()}JR.reduce=!!reduce;
       JR.P0.copy(bus.position);JR.R0.copy(bus.rotation);bus.updateMatrixWorld(true);
