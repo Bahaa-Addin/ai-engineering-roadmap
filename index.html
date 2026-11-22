@@ -465,18 +465,14 @@ html.jfull .stage-ph{display:block;height:50vh;min-height:320px}
 .stage.full .jcap{top:max(12px,env(safe-area-inset-top,0px))}
 .stage.full .jctl{bottom:max(12px,env(safe-area-inset-bottom,0px))}
 
-/* stepping into the workshop: the portal and the dimmed world behind it */
-.ptl{position:fixed;left:0;top:0;z-index:59;display:none;transform-origin:0 0;pointer-events:none;will-change:transform}
-.ptl.on{display:block}
-.ptl.live{pointer-events:auto;z-index:71}
-.ptl.rm{opacity:0;transition:opacity .45s ease}
-.ptl .pv{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;background:#fff;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-composite:source-in;mask-composite:intersect}
+/* stepping into the workshop: the deck, laid out full size and hidden until every tile has flipped */
+.ptl{position:fixed;left:0;top:0;z-index:71;visibility:hidden;opacity:0;pointer-events:none}
+.ptl.on{visibility:visible;opacity:1;transition:opacity .3s ease}
+.ptl.live{pointer-events:auto;width:100vw!important;height:100vh!important}
+.ptl .pv{position:absolute;inset:0;background:#fff}
 .ptl .pv iframe{position:absolute;left:0;top:0;display:block;width:100%;height:100%;border:0;background:#fff}
-.ptl.live{width:100vw!important;height:100vh!important}
-.ptl .prim{position:absolute;left:0;top:0;opacity:0;border:1.5px solid rgba(255,255,255,.8);pointer-events:none;box-sizing:border-box}
-.pdim{position:fixed;inset:0;z-index:70;display:none;opacity:0;pointer-events:none;background:radial-gradient(ellipse at 50% 42%,rgba(10,0,4,.3) 0%,rgba(10,0,4,.92) 100%)}
+.ptl .prim,.pdim{display:none}
 .stage.immersing .jcap,.stage.immersing .jctl{opacity:0;pointer-events:none}
-.stage.holey{background:transparent!important}
 </style>
 <script>
 /* three.js r128: cdnjs first, jsDelivr as a fallback */
@@ -926,7 +922,7 @@ var PHASES=[
  ["ARRIVING_AT_STAGE",3.0,"Landing on the stage",4],
  ["REVEALING_WORKSHOP_OUTLINE",1.4,"Workshop outline",4],
  ["OPENING_PORTAL",2.6,"Facing the workshop",4],
- ["ENTERING_WORKSHOP",3.0,"Entering the workshop",4],
+ ["ENTERING_WORKSHOP",3.6,"Entering the workshop",4],
  ["WORKSHOP_READY",Infinity,"Workshop ready",4]];
 var BEATS=[["Liftoff","Four thrusters, then the main engine"],["Into space","Clouds, satellites, the Moon"],["The Vodafone Galaxy","The rear engine unfolds"],["The infinite spiral","Mirrored Vodafone forms"],["The workshop stage","Step through into the workshop"]];
 var PT={},PD={},PIX={};(function(){var acc=0;PHASES.forEach(function(p,i){PT[p[0]]=acc;PD[p[0]]=p[1];PIX[p[0]]=i;acc+=p[1]})})();
@@ -992,7 +988,7 @@ function launchWorkshop(k){if(jBusy())return;if(S.anim||S.at!==k)return;var ws=w
   J.token++;J.k=k;J.t=0;J.phase=-1;J.paused=false;J.reduce=REDUCE;J.rt=0;
   if(finale.classList.contains("show")){finale.classList.remove("show");S.finaleShown=false}
   if(!R){J.state="WORKSHOP_READY";showPanel(workshopHTML(k,true),true);lockNav(true);return}
-  J.immerse=true;J.inWs=false;J.dir=0;J.wait=0;J.hold=false;ptlMake(ws);
+  J.immerse=true;J.inWs=false;J.dir=0;J.wait=0;J.hold=false;J.plain=false;ptlMake(ws);PTL.shot=null;PTL.shotFail=false;
   J.state=PHASES[0][0];R.journey.begin(k,ws,J.reduce);stage.classList.add("journey");setFull(true);if(jFs){jFs.hidden=!fsOk;fsLab()}
   showPanel(jHudHTML(k),true);setPauseUi();jSkip.hidden=false;jPause.hidden=false;jRet.textContent="Return to roadmap";lockNav(true);
   $("gl").setAttribute("aria-label","The bus prepares to lift off from stop "+(k+1)+" on its way to workshop "+ws.n);jcap.focus&&jPause.focus({preventScroll:true})}
@@ -1009,7 +1005,7 @@ function onPhase(i){var p=PHASES[i],ws=wsOf(J.k),tok=J.token;J.state=p[0];
 function setPauseUi(){jPause.textContent=J.paused?"Resume":"Pause";jPause.setAttribute("aria-pressed",J.paused?"true":"false");jcap.classList.toggle("paused",J.paused);if(J.paused)jcapT.setAttribute("data-was",jcapT.textContent)}
 function togglePause(){if(!jActive()||J.state==="WORKSHOP_READY")return;J.paused=!J.paused;setPauseUi();$("jsr").textContent=J.paused?"Journey paused.":"Journey resumed."}
 function skipToStage(){if(!jActive())return;var to=J.reduce?RSTILLS[0][1]+RSTILLS[1][1]:PT.ARRIVING_AT_STAGE;if(J.t<to){J.t=to;J.paused=false;setPauseUi()}}
-function flyAgain(){if(!jActive()||!R)return;J.token++;J.t=0;J.immerse=true;J.dir=0;J.wait=0;J.hold=false;ptlMake(wsOf(J.k));J.phase=-1;J.paused=false;J.reduce=REDUCE;R.journey.begin(J.k,wsOf(J.k),J.reduce);setFull(true);showPanel(jHudHTML(J.k),true);setPauseUi();jPause.hidden=false;jSkip.hidden=false}
+function flyAgain(){if(!jActive()||!R)return;J.token++;J.t=0;J.immerse=true;J.dir=0;J.wait=0;J.hold=false;J.plain=false;ptlMake(wsOf(J.k));PTL.shot=null;PTL.shotFail=false;J.phase=-1;J.paused=false;J.reduce=REDUCE;R.journey.begin(J.k,wsOf(J.k),J.reduce);setFull(true);showPanel(jHudHTML(J.k),true);setPauseUi();jPause.hidden=false;jSkip.hidden=false}
 function returnToRoadmap(){if(!jActive())return;var tok=++J.token,k=J.k;if(J.inWs)leaveWs();J.immerse=false;J.dir=0;J.hold=false;ptlHide();
   if(!R){J.state="ROADMAP_IDLE";showPanel(stationHTML(k),true);lockNav(false);return}
   J.paused=true;setFull(false,function(){if(tok!==J.token)return;stage.classList.add("fading");
@@ -1024,15 +1020,20 @@ function jTick(dt){fullStep(performance.now());
   else if(!J.paused&&!J.inWs)J.t+=dt;
   /* the portal waits (briefly) for the workshop deck to finish loading; if it can't load here, the journey ends on the stage as before */
   if(J.hold){J.wait+=dt;if(PTL&&PTL.ready){J.hold=false;enterWorkshop()}else if(!PTL||PTL.loaded||J.wait>4){J.hold=false;J.immerse=false;J.phase=-1}}
-  if(J.immerse&&!J.reduce&&J.dir===0&&!J.inWs&&J.t>=PT.OPENING_PORTAL&&!(PTL&&PTL.ready)){J.wait+=dt;if(J.wait<4&&!(PTL&&PTL.loaded))J.t=PT.OPENING_PORTAL;else J.immerse=false}
+  if(J.immerse&&!J.reduce&&!J.plain&&J.dir===0&&!J.inWs&&PTL){
+    /* once the bus is down (the scene is nearly still), the deck's current slide is captured as an image for the tiles to carry */
+    if(PTL.ready&&!PTL.shot&&!PTL.shooting&&!PTL.shotFail&&J.t>=PT.REVEALING_WORKSHOP_OUTLINE&&performance.now()-PTL.loadedAt>4500)ptlShot();
+    if(J.t>=PT.OPENING_PORTAL&&!PTL.shot){J.wait+=dt;
+      if(PTL.shotFail||(PTL.loaded&&!PTL.ready)||J.wait>9){if(PTL.ready){J.plain=true;J.t=PT.WORKSHOP_READY}else J.immerse=false}
+      else J.t=PT.OPENING_PORTAL}}
   var i=jPhaseIdx();if(i!==J.phase){J.phase=i;onPhase(i)}
   if(J.reduce){var s=rStill(J.t),fade=(s.end-J.t<.26&&s.end!==Infinity)||(J.t-s.start<.06&&s.i>0);stage.classList.toggle("fading",fade)}
   veil.style.opacity=R.journey.veil().toFixed(3)}
 
 /* ================================================================== stepping into the workshop
-   When the bus has landed, the camera comes round to face the stage sign square on, centred in the view, and the sign becomes a window
-   onto the live workshop deck behind the scene. Then the world around the sign flips over tile by tile, in a wave running outward from
-   the sign, and each tile's back is the piece of the deck beneath it, so the flip assembles the presentation. Every frame is a pure function of the journey clock, so pause, Back (which
+   When the bus has landed, the camera comes round to face the stage sign square on, centred in the view, and the sign shows its piece
+   of the workshop's slide. Then the world flips over tile by tile, in a wave running outward from the sign. Each tile really carries
+   its piece of the slide on its back, so the flip assembles the presentation; the live deck takes over once every tile is down. Every frame is a pure function of the journey clock, so pause, Back (which
    plays it in reverse) and reduced motion (a cross-fade) all fall out of the same code. The deck is loaded at liftoff; the browser URL
    becomes the deck's own, so a reload or a shared link opens the deck directly. */
 var PTL=null;
@@ -1042,38 +1043,48 @@ function ptlMake(ws){if(PTL&&PTL.ws===ws)return;if(PTL){PTL.el.remove();PTL.dim.
   el.innerHTML='<div class="pv"><iframe title="'+esc("Workshop "+ws.n+": "+ws.title)+'" allow="fullscreen; clipboard-write" allowfullscreen tabindex="-1"></iframe></div><div class="prim"></div>';
   document.body.appendChild(dim);document.body.appendChild(el);
   var fr=el.querySelector("iframe");PTL={ws:ws,el:el,pv:el.firstChild,rim:el.lastChild,fr:fr,dim:dim,loaded:false,ready:false,shown:false,final:false};
-  fr.addEventListener("load",function(){PTL.loaded=true;try{PTL.ready=!!(fr.contentWindow.LAB&&fr.contentDocument.querySelector(".slide"))}catch(e){PTL.ready=false}});
+  fr.addEventListener("load",function(){PTL.loaded=true;PTL.loadedAt=performance.now();try{PTL.ready=!!(fr.contentWindow.LAB&&fr.contentDocument.querySelector(".slide"))}catch(e){PTL.ready=false}});
   fr.src=wsHref(ws,1)}
-function ptlHide(){if(!PTL)return;PTL.shown=false;PTL.final=false;PTL.el.className="ptl";PTL.el.style.opacity="";PTL.dim.style.display="none";stage.classList.remove("immersing","holey")}
+function ptlHide(){if(!PTL)return;PTL.shown=false;PTL.el.classList.remove("on","live")}
 function px(n){return n.toFixed(2)+"px"}
-function portalSync(t){if(!PTL)return;
-  /* the deck waits behind the scene; the 3D scene's tile pass (flipTiles) decides where it shows through */
-  var on=J.immerse&&jActive()&&(J.reduce?J.inWs:t>=PT.OPENING_PORTAL+.55*PD.OPENING_PORTAL||J.inWs);
-  if(!on){if(PTL.shown)ptlHide();return}
-  if(PTL.final)return;
-  var W=window.innerWidth,H=window.innerHeight,el=PTL.el,pv=PTL.pv;
-  if(!PTL.shown){PTL.shown=true;el.classList.add("on");stage.classList.add("holey");
-    /* the deck replays its opening slide as the window opens, so the slide builds while the viewer steps through */
-    if(!J.inWs&&J.dir===0)try{PTL.fr.contentWindow.postMessage({lab:"replay"},location.origin)}catch(e){}
-    el.style.transform="none";pv.style.webkitMaskImage=pv.style.maskImage=pv.style.clipPath="none";pv.style.opacity="1";PTL.rim.style.opacity="0";PTL.dim.style.display="none"}
-  el.style.width=W+"px";el.style.height=H+"px";
-  if(J.reduce){el.classList.add("rm");requestAnimationFrame(function(){el.style.opacity="1"});PTL.final=true;return}
-  stage.classList.toggle("immersing",t>=PT.ENTERING_WORKSHOP||J.inWs);
-  if(J.inWs)PTL.final=true}
+/* The deck stays laid out at full size, hidden, so its current slide can be captured as an image (html-to-image, run inside the deck's
+   own frame). The 3D scene paints that image onto the tiles: the sign shows its piece of the slide, and each tile's back carries the
+   piece that belongs where the tile lands, turning with the tile. The live deck is swapped in only once every tile is down. */
+var H2I="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js";
+function ptlShot(cb){var P=PTL,w,d,fin=false;function done(c){if(fin)return;fin=true;P.shooting=false;if(c){P.shot=c;P.shotFail=false}else P.shotFail=true;if(cb)cb(!!c)}
+  try{w=P.fr.contentWindow;d=P.fr.contentDocument;if(!d.body)throw 0}catch(e){done(null);return}
+  P.shooting=true;setTimeout(function(){done(null)},7000);
+  /* in the copy that is drawn (and only there: a body inside a foreignObject) animations are switched off, so every element keeps the
+     state it has now instead of restarting its entrance */
+  if(!d.getElementById("h2i-freeze")){var fz=d.createElement("style");fz.id="h2i-freeze";fz.textContent="foreignObject>body,foreignObject>body *,foreignObject>body *::before,foreignObject>body *::after{animation:none!important;transition:none!important}";d.body.appendChild(fz)}
+  function go(){try{var W=window.innerWidth,H=window.innerHeight;
+    w.htmlToImage.toCanvas(d.body,{width:W,height:H,pixelRatio:Math.min(window.devicePixelRatio||1,2),backgroundColor:"#fff",
+      filter:function(n){var c=n.classList;return !(c&&((c.contains("slide")&&!c.contains("on"))||c.contains("ov")||c.contains("notes")))}}).then(function(c){done(c)},function(){done(null)})}catch(e){done(null)}}
+  if(w.htmlToImage)go();else{var s=d.createElement("script");s.src=H2I;s.onload=go;s.onerror=function(){done(null)};d.head.appendChild(s)}}
+function portalSync(t){if(!PTL)return;var W=window.innerWidth,H=window.innerHeight,el=PTL.el;
+  if(PTL.vw!==W||PTL.vh!==H){PTL.vw=W;PTL.vh=H;el.style.width=W+"px";el.style.height=H+"px"}
+  var act=J.immerse&&jActive();
+  if(act&&J.inWs){if(!PTL.shown){PTL.shown=true;el.classList.add("on")}}else if(PTL.shown)ptlHide();
+  stage.classList.toggle("immersing",act&&(J.inWs||(!J.reduce&&!J.plain&&t>=PT.ENTERING_WORKSHOP)))}
 var wsSync=0,wsTitle="";
-function enterWorkshop(){var ws=wsOf(J.k);J.inWs=true;J.dir=0;PTL.final=false;portalSync(PT.WORKSHOP_READY);
+function enterWorkshop(){var ws=wsOf(J.k);J.inWs=true;J.dir=0;portalSync(PT.WORKSHOP_READY);
   PTL.el.classList.add("live");PTL.el.removeAttribute("aria-hidden");jPause.hidden=true;jSkip.hidden=true;
   wsTitle=document.title;try{document.title=PTL.fr.contentDocument.title||ws.title}catch(e){}
   if(!J.pushed){J.pushed=true;try{history.pushState({ws:ws.file},"",wsHref(ws,1))}catch(e){}}
   PTL.fr.setAttribute("tabindex","0");try{PTL.fr.contentWindow.focus()}catch(e){}PTL.fr.focus({preventScroll:true});
   clearInterval(wsSync);wsSync=setInterval(function(){try{var h=PTL.fr.contentWindow.location.hash||"#1";if(h!==location.hash)history.replaceState(history.state,"",h)}catch(e){}},500);
   $("jsr").textContent="You are in workshop "+ws.n+": "+ws.title+". Use the browser's Back button to return to the stage."}
-function leaveWs(){J.inWs=false;J.pushed=false;clearInterval(wsSync);if(wsTitle)document.title=wsTitle;if(!PTL)return;PTL.final=false;PTL.el.classList.remove("live");PTL.el.setAttribute("aria-hidden","true");PTL.fr.setAttribute("tabindex","-1");try{PTL.fr.blur()}catch(e){}}
+function leaveWs(){J.inWs=false;J.pushed=false;clearInterval(wsSync);if(wsTitle)document.title=wsTitle;if(!PTL)return;PTL.el.classList.remove("live");PTL.el.setAttribute("aria-hidden","true");PTL.fr.setAttribute("tabindex","-1");try{PTL.fr.blur()}catch(e){}}
 /* Back from the workshop plays the immersion in reverse and leaves the bus on the stage beside the outline */
-function exitWorkshop(){if(!J.inWs)return;leaveWs();
-  if(J.reduce){var el=PTL.el;el.style.opacity="0";setTimeout(function(){J.immerse=false;ptlHide();J.phase=-1;J.t+=0},420);return}
-  J.dir=-1;J.t=PT.WORKSHOP_READY-.001;J.paused=false;setPauseUi();PTL.el.focus&&jRet.focus({preventScroll:true})}
-function stepIn(){if(!PTL||!PTL.ready||!R||J.state!=="WORKSHOP_READY"||J.inWs||J.dir)return;J.token++;J.immerse=true;J.pushed=false;J.wait=0;J.paused=false;J.t=J.reduce?RSTILLS[0][1]+RSTILLS[1][1]+RSTILLS[2][1]:PT.OPENING_PORTAL;J.phase=-1;setFull(true)}
+function exitWorkshop(){if(!J.inWs||J.leaving)return;clearInterval(wsSync);
+  function plain(){leaveWs();J.immerse=false;J.dir=0;ptlHide();if(!J.reduce)J.t=PT.WORKSHOP_READY;J.phase=-1}
+  if(J.reduce||J.plain){plain();return}
+  /* the tiles need the slide the deck is on now */
+  J.leaving=true;ptlShot(function(ok){J.leaving=false;if(!J.inWs)return;if(!ok){plain();return}
+    leaveWs();J.dir=-1;J.t=PT.WORKSHOP_READY-.001;J.paused=false;setPauseUi();jRet.focus({preventScroll:true})})}
+function stepIn(){if(!PTL||!PTL.ready||!R||J.state!=="WORKSHOP_READY"||J.inWs||J.dir||PTL.shooting)return;var tok=++J.token;
+  function go(ok){if(tok!==J.token)return;J.immerse=true;J.plain=!ok;J.pushed=false;J.wait=0;J.paused=false;J.t=J.reduce||!ok?(J.reduce?RSTILLS[0][1]+RSTILLS[1][1]+RSTILLS[2][1]:PT.WORKSHOP_READY):PT.OPENING_PORTAL;J.phase=-1;if(ok&&!J.reduce)setFull(true)}
+  if(J.reduce)go(true);else ptlShot(go)}
 window.addEventListener("popstate",function(e){if(J.inWs)exitWorkshop();else if(e.state&&e.state.ws)location.reload()});
 
 /* ================================================================== the 3D scene */
@@ -1081,7 +1092,7 @@ var R=null;
 function init3D(){
   var T=window.THREE;if(!T)return null;
   var canvas=$("gl"),renderer;
-  try{renderer=new T.WebGLRenderer({canvas:canvas,antialias:true,alpha:true,powerPreference:"high-performance"})}catch(e){return null}
+  try{renderer=new T.WebGLRenderer({canvas:canvas,antialias:true,powerPreference:"high-performance"})}catch(e){return null}
   if(!renderer.getContext())return null;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.outputEncoding=T.sRGBEncoding;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
@@ -1849,9 +1860,9 @@ function init3D(){
     updStreaks(bus.position,cV,stk,t>PT.TRAVERSING_SPIRAL?0xFF9C9C:0xDDE6FF);
     /* while the bus comes down, the camera holds the platform's height so the descent reads against a steady frame */
     var land=sstep(PT.APPROACHING_WORKSHOP_STAGE+1.2,A,t),dl=-(JR.base.y-SY)*land;placeCam(t,yw2,JR.base,dl,dl);JR.veil=0;
-    var fc=J.immerse&&!JR.reduce?sstep(PT.OPENING_PORTAL,PT.OPENING_PORTAL+.72*PD.OPENING_PORTAL,t):0;if(fc>0)frontCam(fc);
+    var fc=J.immerse&&!JR.reduce&&!J.plain?sstep(PT.OPENING_PORTAL,PT.OPENING_PORTAL+.72*PD.OPENING_PORTAL,t):0;if(fc>0)frontCam(fc);
     renderer.render(COS,camera);
-    var hA=J.immerse&&!JR.reduce&&PTL&&PTL.ready?sstep(PT.OPENING_PORTAL+.6*PD.OPENING_PORTAL,PT.OPENING_PORTAL+.9*PD.OPENING_PORTAL,t):0;
+    var hA=J.immerse&&!JR.reduce&&!J.plain&&PTL&&PTL.shot?sstep(PT.OPENING_PORTAL+.6*PD.OPENING_PORTAL,PT.OPENING_PORTAL+.9*PD.OPENING_PORTAL,t):0;
     if(hA>0)flipTiles(clamp((t-PT.ENTERING_WORKSHOP)/PD.ENTERING_WORKSHOP,0,1),hA)}
   /* --- stepping into the workshop, part 1: the camera comes round to face the stage sign square on, with the sign centred in the view */
   var fcS=new T.Vector3(),fcN=new T.Vector3(),fcP=new T.Vector3(),fcL=new T.Vector3(),fcQ=new T.Quaternion();
@@ -1859,34 +1870,34 @@ function init3D(){
     if(fcN.dot(fcP.copy(camera.position).sub(fcS))<0)fcN.negate();
     var th=Math.tan(camera.fov*Math.PI/360),d=Math.max(17/(.6*th*camera.aspect),8.5/(.62*th));
     fcP.copy(fcS).addScaledVector(fcN,d);camera.position.lerp(fcP,f);fcL.copy(cam.l).lerp(fcS,f);camera.up.set(0,1,0);camera.lookAt(fcL);camera.updateProjectionMatrix()}
-  /* --- part 2: the live workshop deck sits behind the scene (the canvas is transparent where the deck should show). First the sign
-     turns into a window onto it: the deck shows through the sign at its own size and place. Then the world around the sign flips over
-     tile by tile, in a wave running outward from the sign's edge, and each tile's back is the piece of the deck that lies under it, so
-     the flip itself assembles the presentation. The frame just drawn is copied into a texture that the tiles carry on their fronts,
-     so the cosmos stays live until each tile turns. Each tile tips away from the sign and lifts towards the viewer as it turns. */
+  /* --- part 2: the tiles. The frame just drawn is copied into a texture that the tiles carry on their fronts, so the cosmos stays live
+     until each tile turns. The image of the workshop's slide is a second texture: the sign's face shows its piece of it, and the back
+     of every tile carries the piece that belongs where the tile lands (mirrored across the tile's turning axis, so it reads true once
+     the tile is over). The flip runs outward from the sign's edge; each tile tips away from the sign and lifts as it turns. */
   var FL=null,flBuf=new T.Vector2();
   function flipBuild(){var sc=new T.Scene(),fcam=new T.PerspectiveCamera(30,1,1,1e5),g=new T.InstancedBufferGeometry(),pl=new T.PlaneGeometry(1,1);
     g.index=pl.index;g.attributes.position=pl.attributes.position;
-    var mat=new T.ShaderMaterial({side:T.DoubleSide,toneMapped:false,transparent:true,depthWrite:true,blending:T.CustomBlending,blendSrc:T.OneFactor,blendDst:T.OneMinusSrcAlphaFactor,blendSrcAlpha:T.OneFactor,blendDstAlpha:T.OneMinusSrcAlphaFactor,
-      uniforms:{tFb:{value:null},uV:{value:new T.Vector2(1,1)},uR:{value:0},uW:{value:200},uTs:{value:48},uHole:{value:new T.Vector4(0,0,1,1)},uRad:{value:10},uHA:{value:0},uGl:{value:1}},
-      vertexShader:"attribute vec2 aC;uniform vec2 uV;uniform vec4 uHole;uniform float uR,uW,uTs;varying vec2 vUv;varying float vA,vIn;void main(){vec2 c=(uHole.xy+uHole.zw)*.5,hh=(uHole.zw-uHole.xy)*.5;vec2 q0=abs(aC-c)-hh;vec2 q=max(q0,0.);float dist=length(q);vIn=step(max(q0.x,q0.y),-uTs*.75);float a=clamp((uR-dist)/uW,0.,1.);a=a*a*(3.-2.*a);float ang=a*3.14159265;vec2 dv=aC-clamp(aC,uHole.xy,uHole.zw);if(length(dv)<.001)dv=aC-c;vec2 dir=normalize(dv+vec2(1e-4,0.));vec3 ax=normalize(vec3(dir.y,dir.x,0.));vec3 p=vec3(position.xy*uTs,0.);float co=cos(ang),s=sin(ang);vec3 pr=p*co+cross(ax,p)*s+ax*dot(ax,p)*(1.-co);pr.z+=s*uTs*.75;vec3 w=vec3(aC.x-uV.x*.5+pr.x,uV.y*.5-aC.y+pr.y,pr.z);vUv=vec2((aC.x+p.x)/uV.x,1.-(aC.y-p.y)/uV.y);vA=ang;gl_Position=projectionMatrix*modelViewMatrix*vec4(w,1.);}",
-      fragmentShader:"uniform sampler2D tFb;uniform vec2 uV;uniform vec4 uHole;uniform float uRad,uHA,uGl;varying vec2 vUv;varying float vA,vIn;void main(){float s=sin(vA);if(gl_FrontFacing){vec2 sp=vec2(vUv.x*uV.x,(1.-vUv.y)*uV.y);vec2 c=(uHole.xy+uHole.zw)*.5,hh=(uHole.zw-uHole.xy)*.5-uRad;vec2 q=abs(sp-c)-hh;float sd=length(max(q,0.))+min(max(q.x,q.y),0.)-uRad;float ins=1.-smoothstep(-1.,1.,sd);float al=1.-uHA*ins;vec3 col=texture2D(tFb,vUv).rgb*(1.-.5*s);col+=vec3(1.,.82,.78)*uHA*uGl*.55*exp(-max(sd,0.)/16.)*(1.-ins);gl_FragColor=vec4(col*al,al);}else{gl_FragColor=vec4(0.,0.,0.,.42*s*(1.-vIn*uHA));}}"});
-    var m=new T.Mesh(g,mat);m.frustumCulled=false;sc.add(m);FL={sc:sc,cam:fcam,g:g,mat:mat,tex:null,w:0,h:0,vw:0,vh:0}}
+    var mat=new T.ShaderMaterial({side:T.DoubleSide,toneMapped:false,
+      uniforms:{tFb:{value:null},tDk:{value:null},uV:{value:new T.Vector2(1,1)},uR:{value:0},uW:{value:200},uTs:{value:48},uHole:{value:new T.Vector4(0,0,1,1)},uRad:{value:10},uHA:{value:0},uGl:{value:1}},
+      vertexShader:"attribute vec2 aC;uniform vec2 uV;uniform vec4 uHole;uniform float uR,uW,uTs,uRad;varying vec2 vUv,vUvB;varying float vA;void main(){vec2 c=(uHole.xy+uHole.zw)*.5,hh=(uHole.zw-uHole.xy)*.5;vec2 q0=abs(aC-c)-hh;vec2 q=max(q0,0.);float dist=length(q);float jit=fract(sin(dot(aC,vec2(12.9898,78.233)))*43758.5453);float a=clamp((uR-dist-jit*uW*.45)/(uW*.6),0.,1.);a=a*a*(3.-2.*a);a*=step(-(uTs*.5+uRad),max(q0.x,q0.y));float ang=a*3.14159265;vec2 dv=aC-clamp(aC,uHole.xy,uHole.zw);if(length(dv)<.001)dv=aC-c;vec2 dir=normalize(dv+vec2(1e-4,0.));vec3 ax=abs(dir.y)>abs(dir.x)?vec3(dir.y<0.?-1.:1.,0.,0.):vec3(0.,dir.x<0.?-1.:1.,0.);float co=cos(ang),s=sin(ang);vec3 p=vec3(position.xy*uTs*(1.-.14*s),0.);vec3 pr=p*co+cross(ax,p)*s+ax*dot(ax,p)*(1.-co);pr.z+=s*uTs*.75;vec3 w=vec3(aC.x-uV.x*.5+pr.x,uV.y*.5-aC.y+pr.y,pr.z);vec3 pu=vec3(position.xy*uTs,0.);vUv=vec2((aC.x+pu.x)/uV.x,1.-(aC.y-pu.y)/uV.y);vec3 pf=2.*dot(ax,pu)*ax-pu;vUvB=vec2((aC.x+pf.x)/uV.x,1.-(aC.y-pf.y)/uV.y);vA=ang;gl_Position=projectionMatrix*modelViewMatrix*vec4(w,1.);}",
+      fragmentShader:"uniform sampler2D tFb,tDk;uniform vec2 uV;uniform vec4 uHole;uniform float uRad,uHA,uGl;varying vec2 vUv,vUvB;varying float vA;void main(){float s=sin(vA);if(gl_FrontFacing){vec2 sp=vec2(vUv.x*uV.x,(1.-vUv.y)*uV.y);vec2 c=(uHole.xy+uHole.zw)*.5,hh=(uHole.zw-uHole.xy)*.5-uRad;vec2 q=abs(sp-c)-hh;float sd=length(max(q,0.))+min(max(q.x,q.y),0.)-uRad;float ins=1.-smoothstep(-1.,1.,sd);vec3 col=mix(texture2D(tFb,vUv).rgb,texture2D(tDk,vUv).rgb,uHA*ins);col+=vec3(1.,.82,.78)*uHA*uGl*.55*exp(-max(sd,0.)/16.)*(1.-ins);gl_FragColor=vec4(col*(1.-.5*s),1.);}else{gl_FragColor=vec4(texture2D(tDk,vUvB).rgb*(1.-.4*s),1.);}}"});
+    var m=new T.Mesh(g,mat);m.frustumCulled=false;sc.add(m);sc.background=new T.Color(0x12060A);FL={sc:sc,cam:fcam,g:g,mat:mat,tex:null,dk:null,dkSrc:null,w:0,h:0,vw:0,vh:0}}
   function flipTiles(p,hA){if(!FL)flipBuild();var W2=renderer.domElement.clientWidth||W,H2=renderer.domElement.clientHeight||H;renderer.getDrawingBufferSize(flBuf);
-    if(!FL.tex||FL.w!==flBuf.x||FL.h!==flBuf.y){if(FL.tex)FL.tex.dispose();FL.w=flBuf.x;FL.h=flBuf.y;FL.tex=new T.DataTexture(new Uint8Array(FL.w*FL.h*4),FL.w,FL.h,T.RGBAFormat);FL.tex.minFilter=FL.tex.magFilter=T.LinearFilter;FL.tex.generateMipmaps=false;FL.mat.uniforms.tFb.value=FL.tex}
+    if(!FL.tex||FL.w!==flBuf.x||FL.h!==flBuf.y){if(FL.tex)FL.tex.dispose();FL.w=flBuf.x;FL.h=flBuf.y;FL.tex=new T.DataTexture(new Uint8Array(FL.w*FL.h*3),FL.w,FL.h,T.RGBFormat);FL.tex.minFilter=FL.tex.magFilter=T.LinearFilter;FL.tex.generateMipmaps=false;FL.mat.uniforms.tFb.value=FL.tex}
     if(FL.vw!==W2||FL.vh!==H2){FL.vw=W2;FL.vh=H2;var ts=Math.max(26,Math.min(W2,H2)/18),cols=Math.ceil(W2/ts),rows=Math.ceil(H2/ts),ac=new Float32Array(cols*rows*2),k=0;
       for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){ac[k++]=(c+.5)*W2/cols;ac[k++]=(r+.5)*H2/rows}
       FL.g.setAttribute("aC",new T.InstancedBufferAttribute(ac,2));FL.g.instanceCount=cols*rows;FL.mat.uniforms.uTs.value=Math.max(W2/cols,H2/rows)*1.003;
       FL.cam.aspect=W2/H2;FL.cam.position.set(0,0,(H2/2)/Math.tan(15*Math.PI/180));FL.cam.near=10;FL.cam.far=FL.cam.position.z*3;FL.cam.lookAt(0,0,0);FL.cam.updateProjectionMatrix();FL.mat.uniforms.uV.value.set(W2,H2)}
     renderer.copyFramebufferToTexture(new T.Vector2(0,0),FL.tex);
+    if(FL.dkSrc!==PTL.shot){if(FL.dk)FL.dk.dispose();FL.dkSrc=PTL.shot;FL.dk=new T.CanvasTexture(PTL.shot);FL.dk.minFilter=FL.dk.magFilter=T.LinearFilter;FL.dk.generateMipmaps=false;FL.mat.uniforms.tDk.value=FL.dk}
     /* the window: the sign's face, a little inside its red frame */
     var q=journey.portalQuad(),rr=renderer.domElement.getBoundingClientRect(),x0=W2*.25,y0=H2*.3,x1=W2*.75,y1=H2*.55;
     if(q){x0=Math.min(q[0][0],q[3][0])-rr.left;x1=Math.max(q[1][0],q[2][0])-rr.left;y0=Math.min(q[0][1],q[1][1])-rr.top;y1=Math.max(q[2][1],q[3][1])-rr.top}
     var ins=(x1-x0)*.012;x0+=ins;x1-=ins;y0+=ins;y1-=ins;FL.mat.uniforms.uHole.value.set(x0,y0,x1,y1);FL.mat.uniforms.uRad.value=(x1-x0)*.032;
     var far=Math.max(Math.hypot(Math.max(x0,0),Math.max(y0,0)),Math.hypot(Math.max(W2-x1,0),Math.max(y0,0)),Math.hypot(Math.max(x0,0),Math.max(H2-y1,0)),Math.hypot(Math.max(W2-x1,0),Math.max(H2-y1,0))),
-      wd=Math.max(W2,H2)*.12,u=Math.min(1,p/.94);
-    FL.mat.uniforms.uW.value=wd;FL.mat.uniforms.uR.value=(far+wd*1.05)*(u*u*(3-2*u));FL.mat.uniforms.uHA.value=hA;FL.mat.uniforms.uGl.value=1-sstep(0,.35,p);
-    renderer.setClearColor(0x000000,0);renderer.render(FL.sc,FL.cam)}
+      wd=Math.max(W2,H2)*.3,u=Math.min(1,p/.96);
+    FL.mat.uniforms.uW.value=wd;FL.mat.uniforms.uR.value=(far+wd*1.1)*(.25*u+.75*u*u*(3-2*u));FL.mat.uniforms.uHA.value=hA;FL.mat.uniforms.uGl.value=1-sstep(0,.35,p);
+    renderer.render(FL.sc,FL.cam)}
   var journey={
     begin:function(k,ws,reduce){if(!CK){buildCK();buildCosBG()}JR.reduce=!!reduce;
       JR.P0.copy(bus.position);JR.R0.copy(bus.rotation);bus.updateMatrixWorld(true);
@@ -2060,7 +2071,7 @@ requestAnimationFrame(frame);
 var introMs=REDUCE?500:2200;
 setTimeout(function(){dismissIntro();
   setTimeout(function(){if(S.at===-1&&!S.anim){S.mode="follow";setTimeout(function(){if(S.at===-1&&!S.anim)travelTo(0)},REDUCE?0:1500)}},REDUCE?0:1500)},introMs);
-window.__journey={J:J,PT:PT,launch:launchWorkshop,ret:returnToRoadmap,skip:skipToStage,pause:togglePause,seek:function(t){J.t=t},freeze:function(s){S.anim={from:s,to:s,t0:performance.now(),dur:1e9,k:1,a:.2};S.s=s;S.mode="follow"},S:S,travelTo:travelTo,ST:ST,S_GATE:S_GATE,stopS:stopS,R:function(){return R}};
+window.__journey={ptl:function(){return PTL},J:J,PT:PT,launch:launchWorkshop,ret:returnToRoadmap,skip:skipToStage,pause:togglePause,seek:function(t){J.t=t},freeze:function(s){S.anim={from:s,to:s,t0:performance.now(),dur:1e9,k:1,a:.2};S.s=s;S.mode="follow"},S:S,travelTo:travelTo,ST:ST,S_GATE:S_GATE,stopS:stopS,R:function(){return R}};
 })();
 </script>
 </body>
