@@ -924,8 +924,8 @@ var PHASES=[
  ["APPROACHING_WORKSHOP_STAGE",2.4,"The workshop stage",4],
  ["ARRIVING_AT_STAGE",3.0,"Landing on the stage",4],
  ["REVEALING_WORKSHOP_OUTLINE",1.4,"Workshop outline",4],
- ["OPENING_PORTAL",1.7,"The workshop opens",4],
- ["ENTERING_WORKSHOP",2.6,"Stepping into the workshop",4],
+ ["OPENING_PORTAL",.9,"The workshop opens",4],
+ ["ENTERING_WORKSHOP",3.2,"Entering the workshop",4],
  ["WORKSHOP_READY",Infinity,"Workshop ready",4]];
 var BEATS=[["Liftoff","Four thrusters, then the main engine"],["Into space","Clouds, satellites, the Moon"],["The Vodafone Galaxy","The rear engine unfolds"],["The infinite spiral","Mirrored Vodafone forms"],["The workshop stage","Step through into the workshop"]];
 var PT={},PD={},PIX={};(function(){var acc=0;PHASES.forEach(function(p,i){PT[p[0]]=acc;PD[p[0]]=p[1];PIX[p[0]]=i;acc+=p[1]})})();
@@ -1029,11 +1029,11 @@ function jTick(dt){fullStep(performance.now());
   veil.style.opacity=R.journey.veil().toFixed(3)}
 
 /* ================================================================== stepping into the workshop
-   An environment-style immersion: when the bus has landed, the stage's title screen turns into a window onto the live workshop deck.
-   The window then lets go of the screen, straightens and grows past the edges of the view while its rim melts into a wide soft edge,
-   so the workshop surrounds the viewer instead of being opened in a new tab. Every frame is a pure function of the journey clock, so
-   pause, Back (which plays it in reverse) and reduced motion (a cross-fade) all fall out of the same code. The deck is loaded into the
-   portal at liftoff; the browser URL becomes the deck's own, so a reload or a shared link opens the deck directly. */
+   An environment-style immersion: when the bus has landed, the world around it dims slightly and the workshop opens around the viewer
+   as a soft-edged bloom from the stage screen, growing past every edge of the view, so the workshop surrounds the viewer instead of
+   opening in a new tab. Every frame is a pure function of the journey clock, so pause, Back (which plays it in reverse) and reduced
+   motion (a cross-fade) all fall out of the same code. The deck is loaded at liftoff; the browser URL becomes the deck's own, so a
+   reload or a shared link opens the deck directly. */
 var PTL=null;
 function ptlMake(ws){if(PTL&&PTL.ws===ws)return;if(PTL){PTL.el.remove();PTL.dim.remove()}
   var dim=document.createElement("div");dim.className="pdim";dim.setAttribute("aria-hidden","true");
@@ -1044,48 +1044,35 @@ function ptlMake(ws){if(PTL&&PTL.ws===ws)return;if(PTL){PTL.el.remove();PTL.dim.
   fr.addEventListener("load",function(){PTL.loaded=true;try{PTL.ready=!!(fr.contentWindow.LAB&&fr.contentDocument.querySelector(".slide"))}catch(e){PTL.ready=false}});
   fr.src=wsHref(ws,1)}
 function ptlHide(){if(!PTL)return;PTL.shown=false;PTL.final=false;PTL.el.className="ptl";PTL.el.style.opacity="";PTL.dim.style.display="none";stage.classList.remove("immersing")}
-/* the projective transform that carries the four corners s onto the four corners d, as a CSS matrix3d */
-function homog(s,d){var A=[],i,j,k;for(i=0;i<4;i++){var x=s[i][0],y=s[i][1],u=d[i][0],v=d[i][1];A.push([x,y,1,0,0,0,-u*x,-u*y,u]);A.push([0,0,0,x,y,1,-v*x,-v*y,v])}
-  for(i=0;i<8;i++){var p=i;for(j=i+1;j<8;j++)if(Math.abs(A[j][i])>Math.abs(A[p][i]))p=j;var tmp=A[i];A[i]=A[p];A[p]=tmp;
-    for(j=0;j<8;j++)if(j!==i){var f=A[j][i]/A[i][i];for(k=i;k<9;k++)A[j][k]-=f*A[i][k]}}
-  var h=A.map(function(r,i){return r[8]/r[i]});
-  return "matrix3d("+[h[0],h[3],0,h[6],h[1],h[4],0,h[7],0,0,1,0,h[2],h[5],0,1].map(function(n){return +n.toFixed(9)}).join(",")+")"}
 function px(n){return n.toFixed(2)+"px"}
 function portalSync(t){if(!PTL)return;
   var on=J.immerse&&jActive()&&(J.reduce?J.inWs:t>=PT.OPENING_PORTAL||J.inWs);
   if(!on){if(PTL.shown)ptlHide();return}
   if(PTL.final)return;
-  var W=window.innerWidth,H=window.innerHeight,el=PTL.el,pv=PTL.pv,rim=PTL.rim;
+  var W=window.innerWidth,H=window.innerHeight,el=PTL.el,pv=PTL.pv;
   if(!PTL.shown){PTL.shown=true;el.classList.add("on");PTL.dim.style.display="block";
-    /* the deck replays its opening slide as the window opens, so the slide builds while the viewer steps through */
+    /* the deck replays its opening slide as the environment opens, so the slide builds while it surrounds the viewer */
     if(!J.inWs&&J.dir===0)try{PTL.fr.contentWindow.postMessage({lab:"replay"},location.origin)}catch(e){}}
-  el.style.width=W+"px";el.style.height=H+"px";
-  if(J.reduce){el.classList.add("rm");el.style.transform="none";pv.style.webkitMaskImage=pv.style.maskImage=pv.style.clipPath="none";rim.style.opacity="0";requestAnimationFrame(function(){el.style.opacity="1"});PTL.final=true;return}
-  var a=clamp((t-PT.OPENING_PORTAL)/PD.OPENING_PORTAL,0,1),b=clamp((t-PT.ENTERING_WORKSHOP)/PD.ENTERING_WORKSHOP,0,1),e=b*b*b*(b*(b*6-15)+10);
-  if(J.inWs)a=e=1;
-  /* where the window opens: the stage's title screen, or (if the stage is out of view) a centred card of the same 2:1 shape */
-  var q=R&&R.journey.portalQuad();
-  if(!q){var qw=Math.min(W*.5,H*.8),qh=qw/2,qx=(W-qw)/2,qy=H*.3-qh/2;q=[[qx,qy],[qx+qw,qy],[qx+qw,qy+qh],[qx,qy+qh]]}
-  /* the window looks onto the middle of the workshop at the screen's 2:1 shape. The workshop is a world around the viewer: the window's
-     edge runs outward across it while the world settles from the screen's angle and scale to its own, and past the deck's edges the
-     world carries on in the deck's paper colour, so no edge of the deck is ever seen */
-  var cw=Math.min(W*.72,H*1.44),ch=cw/2,cx=(W-cw)/2,cy=(H-ch)/2,rx=lerp(cx,0,e),ry=lerp(cy,0,e),rw=lerp(cw,W,e),rh=lerp(ch,H,e);
-  var full=[[0,0],[W,0],[W,H],[0,H]],src=[[rx,ry],[rx+rw,ry],[rx+rw,ry+rh],[rx,ry+rh]],dst=q.map(function(p,i){return[lerp(p[0],full[i][0],e),lerp(p[1],full[i][1],e)]});
-  el.style.transform=e>=1?"none":homog(src,dst);
-  /* the rim: a crisp rounded edge on the screen, then a wide feather that runs out past the edges of the view */
-  var m=Math.min(W,H),g=e*e*.6*m,f=1+Math.pow(e,.7)*.32*m,r0=.0375*rw,bl=rx-g,br=rx+rw+g,bt=ry-g,bb=ry+rh+g;
-  pv.style.left=px(-W);pv.style.top=px(-H);pv.style.width=px(3*W);pv.style.height=px(3*H);PTL.fr.style.left=px(W);PTL.fr.style.top=px(H);PTL.fr.style.width=px(W);PTL.fr.style.height=px(H);
-  if(e>=1){pv.style.webkitMaskImage=pv.style.maskImage=pv.style.clipPath="none"}
-  else{bl+=W;br+=W;bt+=H;bb+=H;var gx="linear-gradient(to right,transparent "+px(bl-f/2)+",#000 "+px(bl+f/2)+",#000 "+px(br-f/2)+",transparent "+px(br+f/2)+")",gy="linear-gradient(to bottom,transparent "+px(bt-f/2)+",#000 "+px(bt+f/2)+",#000 "+px(bb-f/2)+",transparent "+px(bb+f/2)+")";
-    pv.style.webkitMaskImage=pv.style.maskImage=gx+","+gy;
-    pv.style.clipPath="inset("+px(bt-f/2)+" "+px(3*W-br-f/2)+" "+px(3*H-bb-f/2)+" "+px(bl-f/2)+" round "+px(r0+f)+")";bl-=W;br-=W;bt-=H;bb-=H}
-  pv.style.opacity=(1-Math.pow(1-sstep(.08,.6,a),2)).toFixed(3);
-  var ro=sstep(.2,.65,a)*(1-sstep(0,.6,e));rim.style.opacity=ro.toFixed(3);
-  if(ro>0){rim.style.left=px(bl);rim.style.top=px(bt);rim.style.width=px(br-bl);rim.style.height=px(bb-bt);rim.style.borderRadius=px(r0+f*.5);
-    rim.style.boxShadow="0 0 "+px(14+f*.8)+" "+px(1+f*.12)+" rgba(255,236,230,.6),0 0 "+px(46+f)+" rgba(255,60,60,.5),inset 0 0 "+px(22+f*.6)+" rgba(255,255,255,.6)"}
-  PTL.dim.style.opacity=Math.min(.92,.42*sstep(0,.8,a)+.5*sstep(0,.5,e)).toFixed(3);
+  el.style.width=W+"px";el.style.height=H+"px";el.style.transform="none";PTL.rim.style.opacity="0";
+  if(J.reduce){el.classList.add("rm");pv.style.webkitMaskImage=pv.style.maskImage="none";pv.style.opacity="1";requestAnimationFrame(function(){el.style.opacity="1"});PTL.final=true;return}
+  /* Like an Environment opening around you: first the world you are in dims a little (the "passthrough"), then the new place blooms
+     open from a point in front of you, an ellipse with a very wide, soft edge that keeps growing until it has passed every edge of the
+     view. The new place itself never moves or scales: it is already there, at its own size, and the bloom only reveals it. */
+  var a=clamp((t-PT.OPENING_PORTAL)/PD.OPENING_PORTAL,0,1),b=clamp((t-PT.ENTERING_WORKSHOP)/PD.ENTERING_WORKSHOP,0,1);
+  if(J.inWs)a=b=1;
+  var e=Math.pow(b*b*(3-2*b),1.3);
+  var q=R&&R.journey.portalQuad(),ox=W/2,oy=H*.42;
+  if(q){ox=(q[0][0]+q[1][0]+q[2][0]+q[3][0])/4;oy=(q[0][1]+q[1][1]+q[2][1]+q[3][1])/4}
+  var cx=lerp(ox,W/2,e*.6),cy=lerp(oy,H/2,e*.6),AS=1.2,K=.42,
+    dx=Math.max(cx,W-cx),dy=Math.max(cy,H-cy),need=Math.sqrt(dx*dx/(AS*AS)+dy*dy),rMax=need/(1-K)*1.04,r=Math.max(.5,rMax*e);
+  if(b>=1){pv.style.webkitMaskImage=pv.style.maskImage="none"}
+  else{var g="radial-gradient(ellipse "+px(r*AS)+" "+px(r)+" at "+px(cx)+" "+px(cy)+",#000 0%,#000 "+((1-K)*100).toFixed(1)+"%,rgba(0,0,0,.84) "+((1-K*.75)*100).toFixed(1)+"%,rgba(0,0,0,.5) "+((1-K*.5)*100).toFixed(1)+"%,rgba(0,0,0,.16) "+((1-K*.25)*100).toFixed(1)+"%,transparent 100%)";
+    pv.style.webkitMaskImage=pv.style.maskImage=g}
+  pv.style.left=pv.style.top="0";pv.style.width=pv.style.height="100%";PTL.fr.style.left=PTL.fr.style.top="0";PTL.fr.style.width=PTL.fr.style.height="100%";
+  pv.style.opacity=b>0?"1":"0";
+  PTL.dim.style.opacity=Math.min(.6,.38*sstep(0,1,a)+.22*sstep(0,.6,e)).toFixed(3);
   stage.classList.toggle("immersing",b>0||J.inWs);
-  if(J.inWs&&e>=1){PTL.final=true;PTL.dim.style.display="none";pv.style.left=pv.style.top="0";pv.style.width=pv.style.height="100%";PTL.fr.style.left=PTL.fr.style.top="0";PTL.fr.style.width="100%";PTL.fr.style.height="100%"}}
+  if(J.inWs&&b>=1){PTL.final=true;PTL.dim.style.display="none"}}
 var wsSync=0,wsTitle="";
 function enterWorkshop(){var ws=wsOf(J.k);J.inWs=true;J.dir=0;PTL.final=false;portalSync(PT.WORKSHOP_READY);
   PTL.el.classList.add("live");PTL.el.removeAttribute("aria-hidden");jPause.hidden=true;jSkip.hidden=true;
@@ -1870,7 +1857,7 @@ function init3D(){
     var stg=kf([[PT.APPROACHING_WORKSHOP_STAGE-1.5,0],[PT.APPROACHING_WORKSHOP_STAGE+.6,1]],t);stageG.visible=t>PT.APPROACHING_VODAFONE_GALAXY;
     endGlowM.opacity=kf([[PT.APPROACHING_WORKSHOP_STAGE-2.5,0],[PT.APPROACHING_WORKSHOP_STAGE,.75],[PT.ARRIVING_AT_STAGE+1,.2]],t);pGlowM.opacity=.45*stg;
     var spt=kf([[PT.APPROACHING_WORKSHOP_STAGE+.6,0],[PT.ARRIVING_AT_STAGE+.9,2.3]],t);spots.forEach(function(s){s.intensity=spt});beamM.opacity=.07*spt/2.3;
-    scrM.opacity=kf([[PT.ARRIVING_AT_STAGE+.3,0],[PT.REVEALING_WORKSHOP_OUTLINE+.4,1]],t)*(J.immerse&&!JR.reduce?1-sstep(PT.OPENING_PORTAL+.55*PD.OPENING_PORTAL,PT.OPENING_PORTAL+.85*PD.OPENING_PORTAL,t):1);
+    scrM.opacity=kf([[PT.ARRIVING_AT_STAGE+.3,0],[PT.REVEALING_WORKSHOP_OUTLINE+.4,1]],t)*(J.immerse&&!JR.reduce?1-sstep(PT.ENTERING_WORKSHOP+.1*PD.ENTERING_WORKSHOP,PT.ENTERING_WORKSHOP+.45*PD.ENTERING_WORKSHOP,t):1);
     var stk=JR.reduce?0:Math.max(kf([[PT.ENTERING_DEEP_SPACE,0],[PT.ENTERING_DEEP_SPACE+.8,.18],[PT.APPROACHING_VODAFONE_GALAXY+.6,0]],t),kf([[PT.TRAVERSING_SPIRAL+.3,0],[PT.TRAVERSING_SPIRAL+1.5,.6],[PT.APPROACHING_WORKSHOP_STAGE+.4,0]],t));
     updStreaks(bus.position,cV,stk,t>PT.TRAVERSING_SPIRAL?0xFF9C9C:0xDDE6FF);
     /* while the bus comes down, the camera holds the platform's height so the descent reads against a steady frame */
