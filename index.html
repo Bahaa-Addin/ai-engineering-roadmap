@@ -921,7 +921,7 @@ var PHASES=[
  ["APPROACHING_WORKSHOP_STAGE",1.9,"The workshop stage",4],
  ["ARRIVING_AT_STAGE",2.3,"Landing on the stage",4],
  ["REVEALING_WORKSHOP_OUTLINE",0.4,"Workshop outline",4],
- ["OPENING_PORTAL",1.4,"Facing the workshop",4],
+ ["OPENING_PORTAL",.67,"Facing the workshop",4],
  ["ENTERING_WORKSHOP",2.1,"Entering the workshop",4],
  ["WORKSHOP_READY",Infinity,"Workshop ready",4]];
 var BEATS=[["Liftoff","Four thrusters, then the main engine"],["Into space","Clouds, satellites, the Moon"],["The Vodafone Galaxy","The rear engine unfolds"],["The infinite spiral","Mirrored Vodafone forms"],["The workshop stage","Step through into the workshop"]];
@@ -1881,11 +1881,12 @@ function init3D(){
     updStreaks(bus.position,cV,stk,t>PT.TRAVERSING_SPIRAL?0xFF9C9C:0xDDE6FF);
     /* while the bus comes down, the camera holds the platform's height so the descent reads against a steady frame */
     var land=sstep(PT.APPROACHING_WORKSHOP_STAGE+1.2,A,t),dl=-(JR.base.y-SY)*land;placeCam(t,yw2,JR.base,dl,dl);JR.veil=0;
-    var fc=J.immerse&&!JR.reduce&&!J.plain?sstep(PT.OPENING_PORTAL,PT.OPENING_PORTAL+.72*PD.OPENING_PORTAL,t):0;if(fc>0)frontCam(fc);
+    var fc=J.immerse&&!JR.reduce&&!J.plain?sstep(PT.OPENING_PORTAL,PT.OPENING_PORTAL+1.0,t):0;if(fc>0)frontCam(fc);
     renderer.render(COS,camera);
-    var hA=J.immerse&&!JR.reduce&&!J.plain&&PTL&&PTL.shot?sstep(PT.OPENING_PORTAL+.6*PD.OPENING_PORTAL,PT.OPENING_PORTAL+.9*PD.OPENING_PORTAL,t):0;
+    var hA=J.immerse&&!JR.reduce&&!J.plain&&PTL&&PTL.shot?sstep(PT.OPENING_PORTAL+.3,PT.ENTERING_WORKSHOP-.02,t):0;
     if(hA>0)flipTiles(clamp((t-PT.ENTERING_WORKSHOP)/PD.ENTERING_WORKSHOP,0,1),hA)}
-  /* --- stepping into the workshop, part 1: the camera comes round to face the stage sign square on, with the sign centred in the view */
+  /* --- stepping into the workshop, part 1: the camera comes round to face the stage sign square on, with the sign centred in the view.
+     The turn takes 1 s; the flip starts two-thirds of the way through it, and the turn finishes under the flip's first, slow tiles. */
   var fcS=new T.Vector3(),fcN=new T.Vector3(),fcP=new T.Vector3(),fcL=new T.Vector3(),fcQ=new T.Quaternion();
   function frontCam(f){scr.updateMatrixWorld(true);fcS.setFromMatrixPosition(scr.matrixWorld);fcN.set(0,0,1).applyQuaternion(scr.getWorldQuaternion(fcQ)).normalize();
     if(fcN.dot(fcP.copy(camera.position).sub(fcS))<0)fcN.negate();
