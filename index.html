@@ -1043,7 +1043,9 @@ function ptlMake(ws){if(PTL&&PTL.ws===ws)return;if(PTL){PTL.el.remove();PTL.dim.
   el.innerHTML='<div class="pv"><iframe title="'+esc("Workshop "+ws.n+": "+ws.title)+'" allow="fullscreen; clipboard-write" allowfullscreen tabindex="-1"></iframe></div><div class="prim"></div>';
   document.body.appendChild(dim);document.body.appendChild(el);
   var fr=el.querySelector("iframe");PTL={ws:ws,el:el,pv:el.firstChild,rim:el.lastChild,fr:fr,dim:dim,loaded:false,ready:false,shown:false,final:false};
-  fr.addEventListener("load",function(){PTL.loaded=true;PTL.loadedAt=performance.now();try{PTL.ready=!!(fr.contentWindow.LAB&&fr.contentDocument.querySelector(".slide"))}catch(e){PTL.ready=false}});
+  fr.addEventListener("load",function(){PTL.loaded=true;PTL.loadedAt=performance.now();try{PTL.ready=!!(fr.contentWindow.LAB&&fr.contentDocument.querySelector(".slide"))}catch(e){PTL.ready=false}
+    /* gather the deck's fonts early so the first capture does not wait on them */
+    if(PTL.ready)try{ptlFonts(fr.contentWindow,fr.contentDocument)}catch(e){}});
   fr.src=wsHref(ws,1)}
 function ptlHide(){if(!PTL)return;PTL.shown=false;PTL.el.classList.remove("on","live")}
 function px(n){return n.toFixed(2)+"px"}
@@ -1053,14 +1055,33 @@ function px(n){return n.toFixed(2)+"px"}
 var H2I="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js";
 function ptlShot(cb){var P=PTL,w,d,fin=false;function done(c){if(fin)return;fin=true;P.shooting=false;if(c){P.shot=c;P.shotFail=false}else P.shotFail=true;if(cb)cb(!!c)}
   try{w=P.fr.contentWindow;d=P.fr.contentDocument;if(!d.body)throw 0}catch(e){done(null);return}
-  P.shooting=true;setTimeout(function(){done(null)},7000);
+  P.shooting=true;setTimeout(function(){done(null)},9000);
   /* in the copy that is drawn (and only there: a body inside a foreignObject) animations are switched off, so every element keeps the
      state it has now instead of restarting its entrance */
   if(!d.getElementById("h2i-freeze")){var fz=d.createElement("style");fz.id="h2i-freeze";fz.textContent="foreignObject>body,foreignObject>body *,foreignObject>body *::before,foreignObject>body *::after{animation:none!important;transition:none!important}";d.body.appendChild(fz)}
-  function go(){try{var W=window.innerWidth,H=window.innerHeight;
-    w.htmlToImage.toCanvas(d.body,{width:W,height:H,pixelRatio:Math.min(window.devicePixelRatio||1,2),backgroundColor:"#fff",
+  function go(){ptlFonts(w,d).then(shoot,function(){shoot("")})}
+  function shoot(css){try{var W=window.innerWidth,H=window.innerHeight;
+    w.htmlToImage.toCanvas(d.body,{width:W,height:H,pixelRatio:Math.min(window.devicePixelRatio||1,2),backgroundColor:"#fff",fontEmbedCSS:css,
       filter:function(n){var c=n.classList;return !(c&&((c.contains("slide")&&!c.contains("on"))||c.contains("ov")||c.contains("notes")))}}).then(function(c){done(c)},function(){done(null)})}catch(e){done(null)}}
   if(w.htmlToImage)go();else{var s=d.createElement("script");s.src=H2I;s.onload=go;s.onerror=function(){done(null)};d.head.appendChild(s)}}
+/* The captured image cannot reach the deck's web fonts on its own, so the tiles would show fallback fonts and the text would change
+   when the live deck takes over. The deck's @font-face rules are gathered here (its own sheets, plus the Google Fonts sheet fetched
+   directly, latin subsets only), each font file is inlined as a data URL, and the result is handed to html-to-image. Cached per deck. */
+var FONTCSS={};
+function ptlFonts(w,d){var key=d.URL.split("#")[0];if(FONTCSS[key])return FONTCSS[key];
+  function inline(css,base){var urls=[],re=/url\(\s*["']?([^"')]+)["']?\s*\)/g,m;while((m=re.exec(css)))if(!/^data:/.test(m[1]))urls.push(m[1]);
+    return Promise.all(urls.map(function(u){var abs=new URL(u,base).href;return fetch(abs).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){return new Promise(function(ok){var f=new FileReader();f.onload=function(){ok([u,f.result])};f.onerror=function(){ok([u,null])};f.readAsDataURL(b)})},function(){return [u,null]})}))
+      .then(function(pairs){pairs.forEach(function(p){if(p[1])css=css.split(p[0]).join(p[1])});return css})}
+  var jobs=[];
+  [].forEach.call(d.styleSheets,function(sh){var rules;try{rules=sh.cssRules}catch(e){rules=null}
+    if(rules){var t="";[].forEach.call(rules,function(r){if(r.type===5)t+=r.cssText+"\n"});if(t)jobs.push(inline(t,sh.href||d.baseURI))}
+    else if(sh.href)jobs.push(fetch(sh.href).then(function(r){return r.text()}).then(function(t){
+      /* keep only the latin subsets the slides use */
+      var keep=t.split(/(?=\/\*\s*[\w-]+\s*\*\/)/).filter(function(b){return /^\/\*\s*latin(-ext)?\s*\*\//.test(b)||!/^\/\*/.test(b)}).join("");
+      return inline(keep,sh.href)},function(){return ""}))});
+  var ready=d.fonts&&d.fonts.ready?d.fonts.ready:Promise.resolve();
+  FONTCSS[key]=ready.then(function(){return Promise.all(jobs)}).then(function(a){return a.join("\n")});
+  FONTCSS[key].catch(function(){delete FONTCSS[key]});return FONTCSS[key]}
 function portalSync(t){if(!PTL)return;var W=window.innerWidth,H=window.innerHeight,el=PTL.el;
   if(PTL.vw!==W||PTL.vh!==H){PTL.vw=W;PTL.vh=H;el.style.width=W+"px";el.style.height=H+"px"}
   var act=J.immerse&&jActive();
