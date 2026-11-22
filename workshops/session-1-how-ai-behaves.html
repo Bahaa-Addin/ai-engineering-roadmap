@@ -6424,6 +6424,10 @@ window.LAB = window.LAB || {};
     var h = readHash();
     L.go(isNaN(h) ? 0 : h - 1, true);
     window.addEventListener("hashchange", function () { var n = readHash(); if (!isNaN(n)) L.go(n - 1, true); });
+    /* the roadmap opens this deck inside its "step into the workshop" portal; when the portal opens it asks the deck to replay the
+       current slide's entrance, so the slide builds while the viewer steps through */
+    window.addEventListener("message", function (e) { if (e.origin !== location.origin || !e.data || e.data.lab !== "replay") return;
+      var c = cur, s = slides[c]; if (!s) return; if (L.leave[s.id]) try { L.leave[s.id](); } catch (er) {} s.classList.remove("on"); cur = -1; L.go(c, true); });
   };
 })(window.LAB);
 

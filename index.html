@@ -464,6 +464,18 @@ html.jfull .stage-ph{display:block;height:50vh;min-height:320px}
 .stage.ftrans .jcap,.stage.ftrans .jctl{opacity:0;transition:none}
 .stage.full .jcap{top:max(12px,env(safe-area-inset-top,0px))}
 .stage.full .jctl{bottom:max(12px,env(safe-area-inset-bottom,0px))}
+
+/* stepping into the workshop: the portal and the dimmed world behind it */
+.ptl{position:fixed;left:0;top:0;z-index:71;display:none;transform-origin:0 0;pointer-events:none;will-change:transform}
+.ptl.on{display:block}
+.ptl.live{pointer-events:auto}
+.ptl.rm{opacity:0;transition:opacity .45s ease}
+.ptl .pv{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;background:#fff;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-composite:source-in;mask-composite:intersect}
+.ptl .pv iframe{position:absolute;left:0;top:0;display:block;width:100%;height:100%;border:0;background:#fff}
+.ptl.live{width:100vw!important;height:100vh!important}
+.ptl .prim{position:absolute;left:0;top:0;opacity:0;border:1.5px solid rgba(255,255,255,.8);pointer-events:none;box-sizing:border-box}
+.pdim{position:fixed;inset:0;z-index:70;display:none;opacity:0;pointer-events:none;background:radial-gradient(ellipse at 50% 42%,rgba(10,0,4,.3) 0%,rgba(10,0,4,.92) 100%)}
+.stage.immersing .jcap,.stage.immersing .jctl{opacity:0;pointer-events:none}
 </style>
 <script>
 /* three.js r128: cdnjs first, jsDelivr as a fallback */
@@ -833,6 +845,7 @@ function showPanel(html,reveal,after){clearTimeout(panelTimer);panel.classList.r
     [].forEach.call(panel.querySelectorAll("[data-launch]"),function(b){b.addEventListener("click",function(){launchWorkshop(+b.getAttribute("data-launch"))})});
     [].forEach.call(panel.querySelectorAll("[data-ret]"),function(b){b.addEventListener("click",returnToRoadmap)});
     [].forEach.call(panel.querySelectorAll("[data-again]"),function(b){b.addEventListener("click",flyAgain)});
+    [].forEach.call(panel.querySelectorAll("[data-enter]"),function(b){b.addEventListener("click",stepIn)});
     if(after)after();
     if(reveal){requestAnimationFrame(function(){requestAnimationFrame(function(){panel.classList.add("in");runCounters()})})}else panel.classList.add("in")},REDUCE?0:180)}
 function runCounters(){var els=panel.querySelectorAll(".count");var t0=performance.now(),delay=REDUCE?0:450,dur=REDUCE?1:1100;
@@ -911,13 +924,15 @@ var PHASES=[
  ["APPROACHING_WORKSHOP_STAGE",2.4,"The workshop stage",4],
  ["ARRIVING_AT_STAGE",3.0,"Landing on the stage",4],
  ["REVEALING_WORKSHOP_OUTLINE",1.4,"Workshop outline",4],
+ ["OPENING_PORTAL",1.7,"The workshop opens",4],
+ ["ENTERING_WORKSHOP",2.6,"Stepping into the workshop",4],
  ["WORKSHOP_READY",Infinity,"Workshop ready",4]];
-var BEATS=[["Liftoff","Four thrusters, then the main engine"],["Into space","Clouds, satellites, the Moon"],["The Vodafone Galaxy","The rear engine unfolds"],["The infinite spiral","Mirrored Vodafone forms"],["The workshop stage","The outline is revealed"]];
+var BEATS=[["Liftoff","Four thrusters, then the main engine"],["Into space","Clouds, satellites, the Moon"],["The Vodafone Galaxy","The rear engine unfolds"],["The infinite spiral","Mirrored Vodafone forms"],["The workshop stage","Step through into the workshop"]];
 var PT={},PD={},PIX={};(function(){var acc=0;PHASES.forEach(function(p,i){PT[p[0]]=acc;PD[p[0]]=p[1];PIX[p[0]]=i;acc+=p[1]})})();
 /* reduced motion: three held frames with cross-fades (departure, the galaxy, the stage) instead of camera travel */
 var RSTILLS=[["LIFTING_OFF",1.3,PT.DEPLOYING_CENTRAL_THRUSTER-.05],["APPROACHING_VODAFONE_GALAXY",1.9,PT.TRAVERSING_SPIRAL-.02],["REVEALING_WORKSHOP_OUTLINE",.4,PT.WORKSHOP_READY],["WORKSHOP_READY",Infinity,PT.WORKSHOP_READY]];
 var RET_DUR=1.3;
-var J={state:"ROADMAP_IDLE",k:-1,t:0,paused:false,token:0,reduce:false,phase:-1,rt:0};
+var J={state:"ROADMAP_IDLE",k:-1,t:0,paused:false,token:0,reduce:false,phase:-1,rt:0,immerse:false,inWs:false,dir:0,wait:0};
 function jActive(){return J.state!=="ROADMAP_IDLE"&&J.state!=="RETURNING"}
 function jBusy(){return J.state!=="ROADMAP_IDLE"}
 function rStill(t){var acc=0;for(var i=0;i<RSTILLS.length;i++){if(t<acc+RSTILLS[i][1])return{i:i,start:acc,end:acc+RSTILLS[i][1]};acc+=RSTILLS[i][1]}return{i:RSTILLS.length-1,start:acc,end:Infinity}}
@@ -927,7 +942,7 @@ function jPhaseIdx(){if(J.reduce)return PIX[RSTILLS[rStill(J.t).i][0]];var t=J.t
 function jHudHTML(k){var ws=wsOf(k),n=0;function i(){return 'style="--i:'+(n++)+'"'}
   return '<p class="kick rv" '+i()+'>Workshop '+ws.n+' · launching from stop '+(k+1)+'</p><h2 class="p-title rv" '+i()+'>'+esc(ws.title)+'</h2><p class="p-q rv" '+i()+'>'+esc(ws.tag)+'</p>'+
    '<ol class="beats rv" '+i()+'>'+BEATS.map(function(b,j){return '<li data-b="'+j+'"><i>'+(j+1)+'</i><div>'+esc(b[0])+'<small>'+esc(b[1])+'</small></div></li>'}).join("")+'</ol>'+
-   '<p class="jnote rv" '+i()+'>The outline appears when the bus lands on the workshop stage. Space pauses, S skips to the stage, Esc returns to the roadmap.</p>'}
+   '<p class="jnote rv" '+i()+'>When the bus lands, the workshop opens on the stage and you step into it. Space pauses, S skips to the stage, Esc returns to the roadmap.</p>'}
 function workshopHTML(k,noFlight){var ws=wsOf(k),n=0;function i(){return 'style="--i:'+Math.min(n++,12)+'"'}
   function a(slide,inner){return '<a href="'+esc(wsHref(ws,slide))+'" target="_blank" rel="noopener">'+inner+'</a>'}
   var h='<p class="kick rv" '+i()+'>Workshop '+ws.n+' · from stop '+(k+1)+': '+esc(ST[k].title)+'</p><h2 class="p-title rv" '+i()+'>'+esc(ws.title)+'</h2><p class="p-q rv" '+i()+'>'+esc(ws.tag)+'</p>';
@@ -936,7 +951,7 @@ function workshopHTML(k,noFlight){var ws=wsOf(k),n=0;function i(){return 'style=
   if(ws.exps&&ws.exps.length)h+='<h3 class="p-h rv" '+i()+'>Live experiments</h3><ol class="xps">'+ws.exps.map(function(x,j){return '<li class="rv" '+i()+'><i>'+(j+1)+'</i>'+a(x[2],'<b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span>')+'</li>'}).join("")+'</ol>';
   if(ws.take&&ws.take.length)h+='<h3 class="p-h rv" '+i()+'>What you take back to your desk</h3><ul class="hls">'+ws.take.map(function(x){return '<li class="rv" '+i()+'><div><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div></li>'}).join("")+'</ul>';
   h+='<div class="wact rv" '+i()+'><a class="go" href="'+esc(wsHref(ws,1))+'" target="_blank" rel="noopener"><span>Open the workshop</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>'+
-    (ws.talk?'<a class="btn2 wtalk2" href="'+esc(WS_BASE+ws.talk.file)+'" target="_blank" rel="noopener">Open the talk: '+esc(ws.talk.title)+'</a>':'')+'<button type="button" class="btn2" data-ret>Return to roadmap</button>'+(noFlight?'':'<button type="button" class="btn2" data-again>Fly again</button>')+'</div>';
+    (ws.talk?'<a class="btn2 wtalk2" href="'+esc(WS_BASE+ws.talk.file)+'" target="_blank" rel="noopener">Open the talk: '+esc(ws.talk.title)+'</a>':'')+(PTL&&PTL.ready&&R?'<button type="button" class="btn2" data-enter>Step into the workshop</button>':'')+'<button type="button" class="btn2" data-ret>Return to roadmap</button>'+(noFlight?'':'<button type="button" class="btn2" data-again>Fly again</button>')+'</div>';
   h+='<p class="src rv" '+i()+'>Outline from the workshop deck '+esc(ws.file)+': its agenda slide, experiment slides and take-aways. Each item opens the deck at that slide.</p>';
   return h}
 function wsCardHTML(k,attr){var ws=wsOf(k);if(!ws)return "";
@@ -976,6 +991,7 @@ function launchWorkshop(k){if(jBusy())return;if(S.anim||S.at!==k)return;var ws=w
   J.token++;J.k=k;J.t=0;J.phase=-1;J.paused=false;J.reduce=REDUCE;J.rt=0;
   if(finale.classList.contains("show")){finale.classList.remove("show");S.finaleShown=false}
   if(!R){J.state="WORKSHOP_READY";showPanel(workshopHTML(k,true),true);lockNav(true);return}
+  J.immerse=true;J.inWs=false;J.dir=0;J.wait=0;J.hold=false;ptlMake(ws);
   J.state=PHASES[0][0];R.journey.begin(k,ws,J.reduce);stage.classList.add("journey");setFull(true);if(jFs){jFs.hidden=!fsOk;fsLab()}
   showPanel(jHudHTML(k),true);setPauseUi();jSkip.hidden=false;jPause.hidden=false;jRet.textContent="Return to roadmap";lockNav(true);
   $("gl").setAttribute("aria-label","The bus prepares to lift off from stop "+(k+1)+" on its way to workshop "+ws.n);jcap.focus&&jPause.focus({preventScroll:true})}
@@ -985,12 +1001,15 @@ function onPhase(i){var p=PHASES[i],ws=wsOf(J.k),tok=J.token;J.state=p[0];
   if(i===0||PHASES[i-1][3]!==p[3])$("jsr").textContent="Workshop journey: "+BEATS[p[3]][0]+".";
   if(p[0]==="REVEALING_WORKSHOP_OUTLINE"||(p[0]==="WORKSHOP_READY"&&!panel.querySelector(".agenda"))){showPanel(workshopHTML(J.k),true,function(){if(tok!==J.token||fullOn)return;if(window.innerWidth<1000)panel.scrollIntoView({behavior:REDUCE?"auto":"smooth",block:"start"})});
     $("gl").setAttribute("aria-label","The bus has landed on the Vodafone workshop stage for workshop "+ws.n+": "+ws.title)}
-  if(p[0]==="WORKSHOP_READY"){setFull(false,function(){if(tok===J.token&&window.innerWidth<1000)panel.scrollIntoView({behavior:REDUCE?"auto":"smooth",block:"start"})});jPause.hidden=true;jSkip.hidden=true;$("jsr").textContent="Workshop "+ws.n+" is ready: "+ws.title+". The outline is in the panel."}}
+  if(p[0]==="WORKSHOP_READY"&&J.immerse&&PTL&&PTL.ready){enterWorkshop();return}
+  if(p[0]==="WORKSHOP_READY"&&J.immerse&&PTL&&!PTL.loaded){J.hold=true;return}
+  if(p[0]==="WORKSHOP_READY"&&PTL&&PTL.ready&&R&&!panel.querySelector("[data-enter]"))showPanel(workshopHTML(J.k),true);
+  if(p[0]==="WORKSHOP_READY"){J.immerse=false;setFull(false,function(){if(tok===J.token&&window.innerWidth<1000)panel.scrollIntoView({behavior:REDUCE?"auto":"smooth",block:"start"})});jPause.hidden=true;jSkip.hidden=true;$("jsr").textContent="Workshop "+ws.n+" is ready: "+ws.title+". The outline is in the panel."}}
 function setPauseUi(){jPause.textContent=J.paused?"Resume":"Pause";jPause.setAttribute("aria-pressed",J.paused?"true":"false");jcap.classList.toggle("paused",J.paused);if(J.paused)jcapT.setAttribute("data-was",jcapT.textContent)}
 function togglePause(){if(!jActive()||J.state==="WORKSHOP_READY")return;J.paused=!J.paused;setPauseUi();$("jsr").textContent=J.paused?"Journey paused.":"Journey resumed."}
 function skipToStage(){if(!jActive())return;var to=J.reduce?RSTILLS[0][1]+RSTILLS[1][1]:PT.ARRIVING_AT_STAGE;if(J.t<to){J.t=to;J.paused=false;setPauseUi()}}
-function flyAgain(){if(!jActive()||!R)return;J.token++;J.t=0;J.phase=-1;J.paused=false;J.reduce=REDUCE;R.journey.begin(J.k,wsOf(J.k),J.reduce);setFull(true);showPanel(jHudHTML(J.k),true);setPauseUi();jPause.hidden=false;jSkip.hidden=false}
-function returnToRoadmap(){if(!jActive())return;var tok=++J.token,k=J.k;
+function flyAgain(){if(!jActive()||!R)return;J.token++;J.t=0;J.immerse=true;J.dir=0;J.wait=0;J.hold=false;ptlMake(wsOf(J.k));J.phase=-1;J.paused=false;J.reduce=REDUCE;R.journey.begin(J.k,wsOf(J.k),J.reduce);setFull(true);showPanel(jHudHTML(J.k),true);setPauseUi();jPause.hidden=false;jSkip.hidden=false}
+function returnToRoadmap(){if(!jActive())return;var tok=++J.token,k=J.k;if(J.inWs)leaveWs();J.immerse=false;J.dir=0;J.hold=false;ptlHide();
   if(!R){J.state="ROADMAP_IDLE";showPanel(stationHTML(k),true);lockNav(false);return}
   J.paused=true;setFull(false,function(){if(tok!==J.token)return;stage.classList.add("fading");
   setTimeout(function(){if(tok!==J.token)return;R.journey.end();J.state="RETURNING";J.rt=J.reduce?RET_DUR:0;J.paused=false;stage.classList.remove("fading");stage.classList.remove("journey");veil.style.opacity="0";
@@ -1000,10 +1019,88 @@ var JL=0;function jdt(now){var d=JL?Math.min(.25,Math.max(0,(now-JL)/1000)):0;JL
 function jTick(dt){fullStep(performance.now());
   if(J.state==="RETURNING"){J.rt+=dt;if(J.rt>=RET_DUR)finishReturn();return}
   if(!jActive()||!R)return;
-  if(!J.paused)J.t+=dt;
+  if(J.dir<0){J.t-=dt*1.2;if(J.t<=PT.OPENING_PORTAL){J.dir=0;J.immerse=false;J.t=PT.WORKSHOP_READY;J.phase=-1}}
+  else if(!J.paused&&!J.inWs)J.t+=dt;
+  /* the portal waits (briefly) for the workshop deck to finish loading; if it can't load here, the journey ends on the stage as before */
+  if(J.hold){J.wait+=dt;if(PTL&&PTL.ready){J.hold=false;enterWorkshop()}else if(!PTL||PTL.loaded||J.wait>4){J.hold=false;J.immerse=false;J.phase=-1}}
+  if(J.immerse&&!J.reduce&&J.dir===0&&!J.inWs&&J.t>=PT.OPENING_PORTAL&&!(PTL&&PTL.ready)){J.wait+=dt;if(J.wait<4&&!(PTL&&PTL.loaded))J.t=PT.OPENING_PORTAL;else J.immerse=false}
   var i=jPhaseIdx();if(i!==J.phase){J.phase=i;onPhase(i)}
   if(J.reduce){var s=rStill(J.t),fade=(s.end-J.t<.26&&s.end!==Infinity)||(J.t-s.start<.06&&s.i>0);stage.classList.toggle("fading",fade)}
   veil.style.opacity=R.journey.veil().toFixed(3)}
+
+/* ================================================================== stepping into the workshop
+   An environment-style immersion: when the bus has landed, the stage's title screen turns into a window onto the live workshop deck.
+   The window then lets go of the screen, straightens and grows past the edges of the view while its rim melts into a wide soft edge,
+   so the workshop surrounds the viewer instead of being opened in a new tab. Every frame is a pure function of the journey clock, so
+   pause, Back (which plays it in reverse) and reduced motion (a cross-fade) all fall out of the same code. The deck is loaded into the
+   portal at liftoff; the browser URL becomes the deck's own, so a reload or a shared link opens the deck directly. */
+var PTL=null;
+function ptlMake(ws){if(PTL&&PTL.ws===ws)return;if(PTL){PTL.el.remove();PTL.dim.remove()}
+  var dim=document.createElement("div");dim.className="pdim";dim.setAttribute("aria-hidden","true");
+  var el=document.createElement("div");el.className="ptl";el.setAttribute("aria-hidden","true");
+  el.innerHTML='<div class="pv"><iframe title="'+esc("Workshop "+ws.n+": "+ws.title)+'" allow="fullscreen; clipboard-write" allowfullscreen tabindex="-1"></iframe></div><div class="prim"></div>';
+  document.body.appendChild(dim);document.body.appendChild(el);
+  var fr=el.querySelector("iframe");PTL={ws:ws,el:el,pv:el.firstChild,rim:el.lastChild,fr:fr,dim:dim,loaded:false,ready:false,shown:false,final:false};
+  fr.addEventListener("load",function(){PTL.loaded=true;try{PTL.ready=!!(fr.contentWindow.LAB&&fr.contentDocument.querySelector(".slide"))}catch(e){PTL.ready=false}});
+  fr.src=wsHref(ws,1)}
+function ptlHide(){if(!PTL)return;PTL.shown=false;PTL.final=false;PTL.el.className="ptl";PTL.el.style.opacity="";PTL.dim.style.display="none";stage.classList.remove("immersing")}
+/* the projective transform that carries the four corners s onto the four corners d, as a CSS matrix3d */
+function homog(s,d){var A=[],i,j,k;for(i=0;i<4;i++){var x=s[i][0],y=s[i][1],u=d[i][0],v=d[i][1];A.push([x,y,1,0,0,0,-u*x,-u*y,u]);A.push([0,0,0,x,y,1,-v*x,-v*y,v])}
+  for(i=0;i<8;i++){var p=i;for(j=i+1;j<8;j++)if(Math.abs(A[j][i])>Math.abs(A[p][i]))p=j;var tmp=A[i];A[i]=A[p];A[p]=tmp;
+    for(j=0;j<8;j++)if(j!==i){var f=A[j][i]/A[i][i];for(k=i;k<9;k++)A[j][k]-=f*A[i][k]}}
+  var h=A.map(function(r,i){return r[8]/r[i]});
+  return "matrix3d("+[h[0],h[3],0,h[6],h[1],h[4],0,h[7],0,0,1,0,h[2],h[5],0,1].map(function(n){return +n.toFixed(9)}).join(",")+")"}
+function px(n){return n.toFixed(2)+"px"}
+function portalSync(t){if(!PTL)return;
+  var on=J.immerse&&jActive()&&(J.reduce?J.inWs:t>=PT.OPENING_PORTAL||J.inWs);
+  if(!on){if(PTL.shown)ptlHide();return}
+  if(PTL.final)return;
+  var W=window.innerWidth,H=window.innerHeight,el=PTL.el,pv=PTL.pv,rim=PTL.rim;
+  if(!PTL.shown){PTL.shown=true;el.classList.add("on");PTL.dim.style.display="block";
+    /* the deck replays its opening slide as the window opens, so the slide builds while the viewer steps through */
+    if(!J.inWs&&J.dir===0)try{PTL.fr.contentWindow.postMessage({lab:"replay"},location.origin)}catch(e){}}
+  el.style.width=W+"px";el.style.height=H+"px";
+  if(J.reduce){el.classList.add("rm");el.style.transform="none";pv.style.webkitMaskImage=pv.style.maskImage=pv.style.clipPath="none";rim.style.opacity="0";requestAnimationFrame(function(){el.style.opacity="1"});PTL.final=true;return}
+  var a=clamp((t-PT.OPENING_PORTAL)/PD.OPENING_PORTAL,0,1),b=clamp((t-PT.ENTERING_WORKSHOP)/PD.ENTERING_WORKSHOP,0,1),e=b*b*b*(b*(b*6-15)+10);
+  if(J.inWs)a=e=1;
+  /* where the window opens: the stage's title screen, or (if the stage is out of view) a centred card of the same 2:1 shape */
+  var q=R&&R.journey.portalQuad();
+  if(!q){var qw=Math.min(W*.5,H*.8),qh=qw/2,qx=(W-qw)/2,qy=H*.3-qh/2;q=[[qx,qy],[qx+qw,qy],[qx+qw,qy+qh],[qx,qy+qh]]}
+  /* the window looks onto the middle of the workshop at the screen's 2:1 shape. The workshop is a world around the viewer: the window's
+     edge runs outward across it while the world settles from the screen's angle and scale to its own, and past the deck's edges the
+     world carries on in the deck's paper colour, so no edge of the deck is ever seen */
+  var cw=Math.min(W*.72,H*1.44),ch=cw/2,cx=(W-cw)/2,cy=(H-ch)/2,rx=lerp(cx,0,e),ry=lerp(cy,0,e),rw=lerp(cw,W,e),rh=lerp(ch,H,e);
+  var full=[[0,0],[W,0],[W,H],[0,H]],src=[[rx,ry],[rx+rw,ry],[rx+rw,ry+rh],[rx,ry+rh]],dst=q.map(function(p,i){return[lerp(p[0],full[i][0],e),lerp(p[1],full[i][1],e)]});
+  el.style.transform=e>=1?"none":homog(src,dst);
+  /* the rim: a crisp rounded edge on the screen, then a wide feather that runs out past the edges of the view */
+  var m=Math.min(W,H),g=e*e*.6*m,f=1+Math.pow(e,.7)*.32*m,r0=.0375*rw,bl=rx-g,br=rx+rw+g,bt=ry-g,bb=ry+rh+g;
+  pv.style.left=px(-W);pv.style.top=px(-H);pv.style.width=px(3*W);pv.style.height=px(3*H);PTL.fr.style.left=px(W);PTL.fr.style.top=px(H);PTL.fr.style.width=px(W);PTL.fr.style.height=px(H);
+  if(e>=1){pv.style.webkitMaskImage=pv.style.maskImage=pv.style.clipPath="none"}
+  else{bl+=W;br+=W;bt+=H;bb+=H;var gx="linear-gradient(to right,transparent "+px(bl-f/2)+",#000 "+px(bl+f/2)+",#000 "+px(br-f/2)+",transparent "+px(br+f/2)+")",gy="linear-gradient(to bottom,transparent "+px(bt-f/2)+",#000 "+px(bt+f/2)+",#000 "+px(bb-f/2)+",transparent "+px(bb+f/2)+")";
+    pv.style.webkitMaskImage=pv.style.maskImage=gx+","+gy;
+    pv.style.clipPath="inset("+px(bt-f/2)+" "+px(3*W-br-f/2)+" "+px(3*H-bb-f/2)+" "+px(bl-f/2)+" round "+px(r0+f)+")";bl-=W;br-=W;bt-=H;bb-=H}
+  pv.style.opacity=(1-Math.pow(1-sstep(.08,.6,a),2)).toFixed(3);
+  var ro=sstep(.2,.65,a)*(1-sstep(0,.6,e));rim.style.opacity=ro.toFixed(3);
+  if(ro>0){rim.style.left=px(bl);rim.style.top=px(bt);rim.style.width=px(br-bl);rim.style.height=px(bb-bt);rim.style.borderRadius=px(r0+f*.5);
+    rim.style.boxShadow="0 0 "+px(14+f*.8)+" "+px(1+f*.12)+" rgba(255,236,230,.6),0 0 "+px(46+f)+" rgba(255,60,60,.5),inset 0 0 "+px(22+f*.6)+" rgba(255,255,255,.6)"}
+  PTL.dim.style.opacity=Math.min(.92,.42*sstep(0,.8,a)+.5*sstep(0,.5,e)).toFixed(3);
+  stage.classList.toggle("immersing",b>0||J.inWs);
+  if(J.inWs&&e>=1){PTL.final=true;PTL.dim.style.display="none";pv.style.left=pv.style.top="0";pv.style.width=pv.style.height="100%";PTL.fr.style.left=PTL.fr.style.top="0";PTL.fr.style.width="100%";PTL.fr.style.height="100%"}}
+var wsSync=0,wsTitle="";
+function enterWorkshop(){var ws=wsOf(J.k);J.inWs=true;J.dir=0;PTL.final=false;portalSync(PT.WORKSHOP_READY);
+  PTL.el.classList.add("live");PTL.el.removeAttribute("aria-hidden");jPause.hidden=true;jSkip.hidden=true;
+  wsTitle=document.title;try{document.title=PTL.fr.contentDocument.title||ws.title}catch(e){}
+  if(!J.pushed){J.pushed=true;try{history.pushState({ws:ws.file},"",wsHref(ws,1))}catch(e){}}
+  PTL.fr.setAttribute("tabindex","0");try{PTL.fr.contentWindow.focus()}catch(e){}PTL.fr.focus({preventScroll:true});
+  clearInterval(wsSync);wsSync=setInterval(function(){try{var h=PTL.fr.contentWindow.location.hash||"#1";if(h!==location.hash)history.replaceState(history.state,"",h)}catch(e){}},500);
+  $("jsr").textContent="You are in workshop "+ws.n+": "+ws.title+". Use the browser's Back button to return to the stage."}
+function leaveWs(){J.inWs=false;J.pushed=false;clearInterval(wsSync);if(wsTitle)document.title=wsTitle;if(!PTL)return;PTL.final=false;PTL.el.classList.remove("live");PTL.el.setAttribute("aria-hidden","true");PTL.fr.setAttribute("tabindex","-1");try{PTL.fr.blur()}catch(e){}}
+/* Back from the workshop plays the immersion in reverse and leaves the bus on the stage beside the outline */
+function exitWorkshop(){if(!J.inWs)return;leaveWs();
+  if(J.reduce){var el=PTL.el;el.style.opacity="0";setTimeout(function(){J.immerse=false;ptlHide();J.phase=-1;J.t+=0},420);return}
+  J.dir=-1;J.t=PT.WORKSHOP_READY-.001;J.paused=false;setPauseUi();PTL.el.focus&&jRet.focus({preventScroll:true})}
+function stepIn(){if(!PTL||!PTL.ready||!R||J.state!=="WORKSHOP_READY"||J.inWs||J.dir)return;J.token++;J.immerse=true;J.pushed=false;J.wait=0;J.paused=false;J.t=J.reduce?RSTILLS[0][1]+RSTILLS[1][1]+RSTILLS[2][1]:PT.OPENING_PORTAL;J.phase=-1;setFull(true)}
+window.addEventListener("popstate",function(e){if(J.inWs)exitWorkshop();else if(e.state&&e.state.ws)location.reload()});
 
 /* ================================================================== the 3D scene */
 var R=null;
@@ -1773,7 +1870,7 @@ function init3D(){
     var stg=kf([[PT.APPROACHING_WORKSHOP_STAGE-1.5,0],[PT.APPROACHING_WORKSHOP_STAGE+.6,1]],t);stageG.visible=t>PT.APPROACHING_VODAFONE_GALAXY;
     endGlowM.opacity=kf([[PT.APPROACHING_WORKSHOP_STAGE-2.5,0],[PT.APPROACHING_WORKSHOP_STAGE,.75],[PT.ARRIVING_AT_STAGE+1,.2]],t);pGlowM.opacity=.45*stg;
     var spt=kf([[PT.APPROACHING_WORKSHOP_STAGE+.6,0],[PT.ARRIVING_AT_STAGE+.9,2.3]],t);spots.forEach(function(s){s.intensity=spt});beamM.opacity=.07*spt/2.3;
-    scrM.opacity=kf([[PT.ARRIVING_AT_STAGE+.3,0],[PT.REVEALING_WORKSHOP_OUTLINE+.4,1]],t);
+    scrM.opacity=kf([[PT.ARRIVING_AT_STAGE+.3,0],[PT.REVEALING_WORKSHOP_OUTLINE+.4,1]],t)*(J.immerse&&!JR.reduce?1-sstep(PT.OPENING_PORTAL+.55*PD.OPENING_PORTAL,PT.OPENING_PORTAL+.85*PD.OPENING_PORTAL,t):1);
     var stk=JR.reduce?0:Math.max(kf([[PT.ENTERING_DEEP_SPACE,0],[PT.ENTERING_DEEP_SPACE+.8,.18],[PT.APPROACHING_VODAFONE_GALAXY+.6,0]],t),kf([[PT.TRAVERSING_SPIRAL+.3,0],[PT.TRAVERSING_SPIRAL+1.5,.6],[PT.APPROACHING_WORKSHOP_STAGE+.4,0]],t));
     updStreaks(bus.position,cV,stk,t>PT.TRAVERSING_SPIRAL?0xFF9C9C:0xDDE6FF);
     /* while the bus comes down, the camera holds the platform's height so the descent reads against a steady frame */
@@ -1795,7 +1892,12 @@ function init3D(){
     /* landing back on the road after "Return to roadmap": the wheel-hub thrusters lower the bus onto its wheels, cut out and retract */
     landing:function(u){var h=4.2*(1-sstep(0,.8,u))+(JR.reduce?0:.06*nzf(u*7,3)*(1-sstep(.45,.8,u)));bus.position.y+=h;busShadow.position.y=.09-h;var d=1-sstep(.7,1,u);setDroop(.07*sstep(.05,.6,h));
       pods.forEach(function(p,i){setPod(p,d,0,0);power(p.eng,d>.97?.6*(1-sstep(.5,.75,u)):0,u*3+i)});engL.intensity=4*(1-sstep(.5,.75,u));rearL.intensity=0;setMid(0);setRear(0);power(mid.eng,0,0);power(rear.eng,0,0)},
-    frame:function(F){JR.frame=F},redraw:function(t){if(JR.on)journeyFrame(t)},
+    frame:function(F){JR.frame=F},
+    /* the stage's title screen in viewport pixels (top-left, top-right, bottom-right, bottom-left): the portal into the workshop opens on it */
+    portalQuad:function(){if(!JR.on||!stageG.visible)return null;var r=renderer.domElement.getBoundingClientRect(),out=[];scr.updateMatrixWorld(true);
+      [[-17,8.5],[17,8.5],[17,-8.5],[-17,-8.5]].forEach(function(c){var v=new T.Vector3(c[0],c[1],0).applyMatrix4(scr.matrixWorld).project(camera);out.push([r.left+(v.x+1)/2*r.width,r.top+(1-v.y)/2*r.height,v.z])});
+      return out.every(function(p){return p[2]<1&&isFinite(p[0])&&isFinite(p[1])})?out:null},
+    redraw:function(t){if(JR.on)journeyFrame(t)},
     mechReset:mechReset,mechVisible:mechVisible};
   mechReset();
   /* colour management: every material was authored as an sRGB hex value; the renderer now lights in linear space, tone maps with ACES
@@ -1822,7 +1924,7 @@ function init3D(){
     project:project,
     journey:journey,_cam:camera,_bus:bus,_deck:function(){return deck},_info:function(){return renderer.info},_frame:function(t){journeyFrame(t)},
     update:function(dt,now){
-      if(JR.on){journeyFrame(jRenderT());return 0}
+      if(JR.on){if(!J.inWs)journeyFrame(jRenderT());portalSync(jRenderT());return 0}
       /* bus pose */
       var p=at(S.s),hb=S.hb,lane=1.75*hb,yaw=p.yaw+Math.PI*(1-hb)/2;
       bus.position.set(p.x+p.lx*lane,p.y+.05,p.z+p.lz*lane);
