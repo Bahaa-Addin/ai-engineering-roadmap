@@ -884,10 +884,10 @@ function updateButtons(){var cur=S.anim?S.anim.k:S.at,lk=jBusy();$("bPrev").disa
    Only Stop 1 has its workshop wired in for now; add an entry here and a ws key on the stop to switch on the others. */
 var WS_BASE="workshops/";
 var WS={
- s1:{n:1,file:"session-1-how-ai-behaves.html",talk:{file:"from-rules-to-probabilities.html",title:"From rules to probabilities",kind:"Opening talk · 26 slides"},title:"How AI really behaves",tag:"Every word an LLM writes is one weighted roll of the dice.",min:45,
-  agenda:[["0:00","Today’s story",2],["0:02","The mindset shift",3],["0:04","Act 1 · It guesses",4],["0:11","Act 2 · It can’t see itself",6],["0:20","Act 3 · Loaded dice",10],["0:26","Act 4 · Recognition wins",13],["0:36","Act 5 · Quiet failure",17],["0:41","Finale · Scoreboard and habits",20]],
-  exps:[["The table that never ends","Act 1 · It guesses",5],["Count it, then push back","Act 2 · Its story is not its process",8],["Ask for a random number. Get a favourite.","Act 3 · Loaded dice",12],["A bridge puzzle with nothing to solve","Act 4 · The familiar pattern wins",16]],
-  take:[["One reply is one roll","Ask twice before you trust it"],["Exact work in code","Counting, maths, dates, IDs"],["Explanations are stories","And pushback isn’t evidence"],["Measure rates","Many samples, test properties"],["Change one detail","Catches recall dressed as reasoning"],["Check, feed back, retry","The start of a harness"]]}
+ s1:{n:1,file:"session-1-how-ai-behaves.html",title:"From rules to probabilities",tag:"AI changed the contract: we now shape behaviour we can only partly predict.",min:96,
+  agenda:[["0:00","Act I · The fundamental shift",1],["0:07","Act II · The reasoning paradox",7],["0:28","Act III · The reliability problem",19],["0:57","Act IV · The computational reality",37],["1:03","Act V · Deeper boundaries",41],["1:10","Act VI · The limits of testing",46],["1:17","Act VII · The engineering trade-offs",51],["1:28","Act VIII · The realisation, scoreboard and habits",61]],
+  exps:[["A bridge puzzle with nothing to solve","Act II · The familiar pattern wins",11],["Count it, then push back","Act II · Its story is not its process",17],["Ask for a random number. Get a favourite.","Act III · Loaded dice",27],["The table that never ends","Act III · It predicts, it doesn’t verify",35]],
+  take:[["Change one detail","Catches recall dressed as reasoning"],["Exact work in code","Counting, maths, dates, IDs"],["Explanations are stories","And pushback isn’t evidence"],["Measure rates","Many samples, test properties"],["One reply is one roll","Ask twice before you trust it"],["Check, feed back, retry","The start of a harness"]]}
 };
 ST[0].ws="s1";
 function wsOf(k){return k>=0&&k<NST&&ST[k].ws?WS[ST[k].ws]||null:null}
