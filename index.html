@@ -1030,7 +1030,7 @@ function jTick(dt){fullStep(performance.now());
 
 /* ================================================================== stepping into the workshop
    An environment-style immersion: when the bus has landed, the world around it dims slightly and the workshop opens around the viewer
-   as a soft-edged bloom from the stage screen, growing past every edge of the view, so the workshop surrounds the viewer instead of
+   opening at the stage screen and widening outward to the left and the right, so the workshop surrounds the viewer instead of
    opening in a new tab. Every frame is a pure function of the journey clock, so pause, Back (which plays it in reverse) and reduced
    motion (a cross-fade) all fall out of the same code. The deck is loaded at liftoff; the browser URL becomes the deck's own, so a
    reload or a shared link opens the deck directly. */
@@ -1060,13 +1060,16 @@ function portalSync(t){if(!PTL)return;
      view. The new place itself never moves or scales: it is already there, at its own size, and the bloom only reveals it. */
   var a=clamp((t-PT.OPENING_PORTAL)/PD.OPENING_PORTAL,0,1),b=clamp((t-PT.ENTERING_WORKSHOP)/PD.ENTERING_WORKSHOP,0,1);
   if(J.inWs)a=b=1;
-  var e=Math.pow(b*b*(3-2*b),1.3);
+  var e=b*b*(3-2*b);
+  /* the workshop opens at the stage screen and widens outward to the left and the right: a soft-edged opening that quickly gains its
+     full height, then spreads sideways past both edges of the view, the way an environment wraps round you */
   var q=R&&R.journey.portalQuad(),ox=W/2,oy=H*.42;
   if(q){ox=(q[0][0]+q[1][0]+q[2][0]+q[3][0])/4;oy=(q[0][1]+q[1][1]+q[2][1]+q[3][1])/4}
-  var cx=lerp(ox,W/2,e*.6),cy=lerp(oy,H/2,e*.6),AS=1.2,K=.42,
-    dx=Math.max(cx,W-cx),dy=Math.max(cy,H-cy),need=Math.sqrt(dx*dx/(AS*AS)+dy*dy),rMax=need/(1-K)*1.04,r=Math.max(.5,rMax*e);
+  var K=.45,cx=lerp(ox,W/2,e),cy=lerp(oy,H/2,e),
+    rxMax=Math.max(cx,W-cx)*1.08/(1-K),ryMax=Math.max(cy,H-cy)*1.6/(1-K),
+    rx=Math.max(.5,rxMax*e),ry=Math.max(.5,ryMax*sstep(0,.45,b)*(.35+.65*sstep(0,.45,b)));
   if(b>=1){pv.style.webkitMaskImage=pv.style.maskImage="none"}
-  else{var g="radial-gradient(ellipse "+px(r*AS)+" "+px(r)+" at "+px(cx)+" "+px(cy)+",#000 0%,#000 "+((1-K)*100).toFixed(1)+"%,rgba(0,0,0,.84) "+((1-K*.75)*100).toFixed(1)+"%,rgba(0,0,0,.5) "+((1-K*.5)*100).toFixed(1)+"%,rgba(0,0,0,.16) "+((1-K*.25)*100).toFixed(1)+"%,transparent 100%)";
+  else{var g="radial-gradient(ellipse "+px(rx)+" "+px(ry)+" at "+px(cx)+" "+px(cy)+",#000 0%,#000 "+((1-K)*100).toFixed(1)+"%,rgba(0,0,0,.84) "+((1-K*.75)*100).toFixed(1)+"%,rgba(0,0,0,.5) "+((1-K*.5)*100).toFixed(1)+"%,rgba(0,0,0,.16) "+((1-K*.25)*100).toFixed(1)+"%,transparent 100%)";
     pv.style.webkitMaskImage=pv.style.maskImage=g}
   pv.style.left=pv.style.top="0";pv.style.width=pv.style.height="100%";PTL.fr.style.left=PTL.fr.style.top="0";PTL.fr.style.width=PTL.fr.style.height="100%";
   pv.style.opacity=b>0?"1":"0";
