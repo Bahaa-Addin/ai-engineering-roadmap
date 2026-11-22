@@ -906,23 +906,23 @@ function wsHref(ws,slide){return WS_BASE+ws.file+(slide?"#"+slide:"")}
 /* ================================================================== the workshop journey: one clock, one state machine
    States follow the brief. The journey clock J.t is the only source of truth; the 3D scene, the HUD and the panel all read it. */
 var PHASES=[
- ["PREPARING_FOR_LIFTOFF",.8,"Preparing for liftoff",0],
- ["DEPLOYING_CORNER_THRUSTERS",1.5,"Corner thrusters unfolding",0],
- ["LIFTING_OFF",1.1,"Lifting off the road",0],
- ["DEPLOYING_CENTRAL_THRUSTER",1.3,"Main engine deploying",0],
- ["POWERING_ENGINES",.9,"All five engines: full power",0],
- ["ASCENDING",1.4,"Liftoff",0],
- ["FLYING_THROUGH_CLOUDS",2.6,"Through the clouds",1],
- ["PASSING_SATELLITES",2.2,"Passing the satellites",1],
- ["ENTERING_DEEP_SPACE",2.6,"Deep space, past the Moon",1],
- ["APPROACHING_VODAFONE_GALAXY",2.2,"The Vodafone Galaxy",2],
- ["DEPLOYING_REAR_THRUSTER",1.6,"Rear engine unfolding in flight",2],
- ["TRAVERSING_SPIRAL",8.0,"Through the infinite spiral",3],
- ["APPROACHING_WORKSHOP_STAGE",2.4,"The workshop stage",4],
- ["ARRIVING_AT_STAGE",3.0,"Landing on the stage",4],
- ["REVEALING_WORKSHOP_OUTLINE",1.4,"Workshop outline",4],
- ["OPENING_PORTAL",1.8,"Facing the workshop",4],
- ["ENTERING_WORKSHOP",2.5,"Entering the workshop",4],
+ ["PREPARING_FOR_LIFTOFF",0.5,"Preparing for liftoff",0],
+ ["DEPLOYING_CORNER_THRUSTERS",1.2,"Corner thrusters unfolding",0],
+ ["LIFTING_OFF",0.9,"Lifting off the road",0],
+ ["DEPLOYING_CENTRAL_THRUSTER",1.0,"Main engine deploying",0],
+ ["POWERING_ENGINES",0.5,"All five engines: full power",0],
+ ["ASCENDING",1.2,"Liftoff",0],
+ ["FLYING_THROUGH_CLOUDS",2.1,"Through the clouds",1],
+ ["PASSING_SATELLITES",1.6,"Passing the satellites",1],
+ ["ENTERING_DEEP_SPACE",1.9,"Deep space, past the Moon",1],
+ ["APPROACHING_VODAFONE_GALAXY",1.6,"The Vodafone Galaxy",2],
+ ["DEPLOYING_REAR_THRUSTER",1.1,"Rear engine unfolding in flight",2],
+ ["TRAVERSING_SPIRAL",6.4,"Through the infinite spiral",3],
+ ["APPROACHING_WORKSHOP_STAGE",1.9,"The workshop stage",4],
+ ["ARRIVING_AT_STAGE",2.3,"Landing on the stage",4],
+ ["REVEALING_WORKSHOP_OUTLINE",0.4,"Workshop outline",4],
+ ["OPENING_PORTAL",1.4,"Facing the workshop",4],
+ ["ENTERING_WORKSHOP",2.1,"Entering the workshop",4],
  ["WORKSHOP_READY",Infinity,"Workshop ready",4]];
 var BEATS=[["Liftoff","Four thrusters, then the main engine"],["Into space","Clouds, satellites, the Moon"],["The Vodafone Galaxy","The rear engine unfolds"],["The infinite spiral","Mirrored Vodafone forms"],["The workshop stage","Step through into the workshop"]];
 var PT={},PD={},PIX={};(function(){var acc=0;PHASES.forEach(function(p,i){PT[p[0]]=acc;PD[p[0]]=p[1];PIX[p[0]]=i;acc+=p[1]})})();
@@ -1022,7 +1022,7 @@ function jTick(dt){fullStep(performance.now());
   if(J.hold){J.wait+=dt;if(PTL&&PTL.ready){J.hold=false;enterWorkshop()}else if(!PTL||PTL.loaded||J.wait>4){J.hold=false;J.immerse=false;J.phase=-1}}
   if(J.immerse&&!J.reduce&&!J.plain&&J.dir===0&&!J.inWs&&PTL){
     /* once the bus is down (the scene is nearly still), the deck's current slide is captured as an image for the tiles to carry */
-    if(PTL.ready&&!PTL.shot&&!PTL.shooting&&!PTL.shotFail&&J.t>=PT.REVEALING_WORKSHOP_OUTLINE&&performance.now()-PTL.loadedAt>4500)ptlShot();
+    if(PTL.ready&&!PTL.shot&&!PTL.shooting&&!PTL.shotFail&&J.t>=PT.ARRIVING_AT_STAGE+.6&&performance.now()-PTL.loadedAt>4500)ptlShot();
     if(J.t>=PT.OPENING_PORTAL&&!PTL.shot){J.wait+=dt;
       if(PTL.shotFail||(PTL.loaded&&!PTL.ready)||J.wait>9){if(PTL.ready){J.plain=true;J.t=PT.WORKSHOP_READY}else J.immerse=false}
       else J.t=PT.OPENING_PORTAL}}
