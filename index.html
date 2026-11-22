@@ -1905,7 +1905,7 @@ function init3D(){
     var m=new T.Mesh(g,mat);m.frustumCulled=false;sc.add(m);sc.background=new T.Color(0x8A000C);FL={sc:sc,cam:fcam,g:g,mat:mat,tex:null,dk:null,dkSrc:null,w:0,h:0,vw:0,vh:0}}
   function flipTiles(p,hA){if(!FL)flipBuild();var W2=renderer.domElement.clientWidth||W,H2=renderer.domElement.clientHeight||H;renderer.getDrawingBufferSize(flBuf);
     if(!FL.tex||FL.w!==flBuf.x||FL.h!==flBuf.y){if(FL.tex)FL.tex.dispose();FL.w=flBuf.x;FL.h=flBuf.y;FL.tex=new T.DataTexture(new Uint8Array(FL.w*FL.h*3),FL.w,FL.h,T.RGBFormat);FL.tex.minFilter=FL.tex.magFilter=T.LinearFilter;FL.tex.generateMipmaps=false;FL.mat.uniforms.tFb.value=FL.tex}
-    if(FL.vw!==W2||FL.vh!==H2){FL.vw=W2;FL.vh=H2;var ts=Math.max(26,Math.min(W2,H2)/18),cols=Math.ceil(W2/ts),rows=Math.ceil(H2/ts),ac=new Float32Array(cols*rows*2),k=0;
+    if(FL.vw!==W2||FL.vh!==H2){FL.vw=W2;FL.vh=H2;var ts=Math.max(14,Math.min(W2,H2)/36),cols=Math.ceil(W2/ts),rows=Math.ceil(H2/ts),ac=new Float32Array(cols*rows*2),k=0;
       for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){ac[k++]=(c+.5)*W2/cols;ac[k++]=(r+.5)*H2/rows}
       FL.g.setAttribute("aC",new T.InstancedBufferAttribute(ac,2));FL.g.instanceCount=cols*rows;FL.mat.uniforms.uTs.value=Math.max(W2/cols,H2/rows)*1.003;
       FL.cam.aspect=W2/H2;FL.cam.position.set(0,0,(H2/2)/Math.tan(15*Math.PI/180));FL.cam.near=10;FL.cam.far=FL.cam.position.z*3;FL.cam.lookAt(0,0,0);FL.cam.updateProjectionMatrix();FL.mat.uniforms.uV.value.set(W2,H2)}
