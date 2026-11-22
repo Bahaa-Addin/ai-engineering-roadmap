@@ -1050,7 +1050,7 @@ class Component extends DCLogic {
   <p class="kick"><b>Act II · Prediction</b> · before experiment 1</p>
   <h2 class="t">Give it a famous puzzle with the hard part removed.</h2>
   <p class="pbig rv" style="--i:2">It will recognise the famous one and solve that instead.</p>
-  <p class="handoff rv" style="--i:4"><span class="hp">Prediction</span> Give it a famous puzzle with the hard part removed. It will recognise the famous one and solve that instead. <span class="hx">→ Experiment 1</span></p>
+  <p class="handoff rv" style="--i:4"><span class="hp">Next</span> We test it live on ChatGPT. <span class="hx">→ Experiment 1</span></p>
 </section>
 
 <section class="slide top-align" data-min="3.5" data-chap="Act II · The reasoning paradox" id="exp-bridge">
@@ -1339,6 +1339,19 @@ class Component extends DCLogic {
 </script>
 </section>
 
+<section class="slide pred" data-min="0.5" data-chap="Act II · The reasoning paradox" data-title="Prediction 2" id="pred-cone">
+  <p class="kick"><b>Act II · Prediction</b> · before experiment 2</p>
+  <h2 class="t">Describe a small physical world in words: a table, a cone, a ball.</h2>
+  <p class="pbig rv" style="--i:2">It will write the most likely sentence, not track the space, and change its answer when you ask again.</p>
+  <p class="handoff rv" style="--i:4"><span class="hp">Next</span> We test it live on ChatGPT. <span class="hx">→ Experiment 2</span></p>
+</section>
+
+<section class="slide top-align" data-min="4" data-chap="Act II · The reasoning paradox" id="exp-cone">
+  <p class="kick"><b>Act II · Experiment 2</b> · testing the prediction</p>
+  <h2 class="t">The table that never ends</h2>
+  <div id="m-cone"></div>
+</section>
+
 <section class="slide" data-min="1.5" data-chap="Act II · The reasoning paradox" id="tokens">
   <p class="kick">Act II · it can't see letters</p>
   <h2 class="t">It never reads your words</h2>
@@ -1376,15 +1389,15 @@ class Component extends DCLogic {
   </div>
 </section>
 
-<section class="slide pred" data-min="0.5" data-chap="Act II · The reasoning paradox" data-title="Prediction 2" id="pred-count">
-  <p class="kick"><b>Act II · Prediction</b> · before experiment 2</p>
+<section class="slide pred" data-min="0.5" data-chap="Act II · The reasoning paradox" data-title="Prediction 3" id="pred-count">
+  <p class="kick"><b>Act II · Prediction</b> · before experiment 3</p>
   <h2 class="t">Ask it to count letters, then tell it it&#x27;s wrong.</h2>
   <p class="pbig rv" style="--i:2">It can&#x27;t see the letters, and it will drop a right answer under pressure.</p>
-  <p class="handoff rv" style="--i:4"><span class="hp">Prediction</span> Ask it to count letters, then tell it it&#x27;s wrong. It can&#x27;t see the letters, and it will drop a right answer under pressure. <span class="hx">→ Experiment 2</span></p>
+  <p class="handoff rv" style="--i:4"><span class="hp">Next</span> We test it live on ChatGPT. <span class="hx">→ Experiment 3</span></p>
 </section>
 
 <section class="slide top-align" data-min="4" data-chap="Act II · The reasoning paradox" id="exp-count">
-  <p class="kick"><b>Act II · Experiment 2</b> · testing the prediction</p>
+  <p class="kick"><b>Act II · Experiment 3</b> · testing the prediction</p>
   <h2 class="t">Count it, then push back</h2>
   <div id="m-count"></div>
 </section>
@@ -1885,15 +1898,15 @@ console.log(0.1 + (0.2 + 0.3));</textarea></div>
   </div>
 </section>
 
-<section class="slide pred" data-min="0.5" data-chap="Act III · The reliability problem" data-title="Prediction 3" id="pred-random">
-  <p class="kick"><b>Act III · Prediction</b> · before experiment 3</p>
+<section class="slide pred" data-min="0.5" data-chap="Act III · The reliability problem" data-title="Prediction 4" id="pred-random">
+  <p class="kick"><b>Act III · Prediction</b> · before experiment 4</p>
   <h2 class="t">Ask a room of fresh chats for a random number.</h2>
   <p class="pbig rv" style="--i:2">Most of the room will get the same one.</p>
-  <p class="handoff rv" style="--i:4"><span class="hp">Prediction</span> Ask a room of fresh chats for a random number. Most of the room will get the same one. <span class="hx">→ Experiment 3</span></p>
+  <p class="handoff rv" style="--i:4"><span class="hp">Next</span> We test it live on ChatGPT. <span class="hx">→ Experiment 4</span></p>
 </section>
 
 <section class="slide top-align" data-min="2" data-chap="Act III · The reliability problem" id="exp-random">
-  <p class="kick"><b>Act III · Experiment 3</b> · testing the prediction</p>
+  <p class="kick"><b>Act III · Experiment 4</b> · testing the prediction</p>
   <h2 class="t">Ask for a random number. Get a favourite.</h2>
   <div id="m-random"></div>
 </section>
@@ -2316,19 +2329,6 @@ class Component extends DCLogic {
     </svg>
     <p class="rv big-line" style="--i:2">The more familiar the name, the more confidently it invents <cite data-s="W37"></cite>.</p>
   </div>
-</section>
-
-<section class="slide pred" data-min="0.5" data-chap="Act III · The reliability problem" data-title="Prediction 4" id="pred-cone">
-  <p class="kick"><b>Act III · Prediction</b> · before experiment 4</p>
-  <h2 class="t">Describe a small world it has to keep track of.</h2>
-  <p class="pbig rv" style="--i:2">It will write the most likely sentence, not the true one, and change it when you ask again.</p>
-  <p class="handoff rv" style="--i:4"><span class="hp">Prediction</span> Describe a small world it has to keep track of. It will write the most likely sentence, not the true one, and change it when you ask again. <span class="hx">→ Experiment 4</span></p>
-</section>
-
-<section class="slide top-align" data-min="4" data-chap="Act III · The reliability problem" id="exp-cone">
-  <p class="kick"><b>Act III · Experiment 4</b> · testing the prediction</p>
-  <h2 class="t">The table that never ends</h2>
-  <div id="m-cone"></div>
 </section>
 
 <section class="slide dc" data-min="1" data-chap="Act III · The reliability problem" data-title="Five ways the answer gets distorted" data-dc="S13-five-causes" id="t17">
@@ -4573,10 +4573,10 @@ class Component extends DCLogic {
   <h2 class="t">Six habits</h2>
   <div class="grid3 habits">
     <div class="card pop" style="--i:1"><span class="ic">🔍</span><h3>Change one detail</h3><span class="act">Act II</span><p class="small">Catches recall dressed as reasoning</p></div>
-    <div class="card pop" style="--i:2"><span class="ic">🧮</span><h3>Exact work in code</h3><span class="act">Act II</span><p class="small">Counting, maths, dates, IDs</p></div>
-    <div class="card pop" style="--i:3"><span class="ic">📖</span><h3>Explanations are stories</h3><span class="act">Act II</span><p class="small">And pushback isn't evidence</p></div>
-    <div class="card pop" style="--i:4"><span class="ic">📊</span><h3>Measure rates</h3><span class="act">Act III</span><p class="small">Many samples, test properties</p></div>
-    <div class="card pop" style="--i:5"><span class="ic">🎲</span><h3>One reply is one roll</h3><span class="act">Act III</span><p class="small">Ask twice before you trust it</p></div>
+    <div class="card pop" style="--i:2"><span class="ic">🎲</span><h3>One reply is one roll</h3><span class="act">Act II</span><p class="small">Ask twice before you trust it</p></div>
+    <div class="card pop" style="--i:3"><span class="ic">🧮</span><h3>Exact work in code</h3><span class="act">Act II</span><p class="small">Counting, maths, dates, IDs</p></div>
+    <div class="card pop" style="--i:4"><span class="ic">📖</span><h3>Explanations are stories</h3><span class="act">Act II</span><p class="small">And pushback isn't evidence</p></div>
+    <div class="card pop" style="--i:5"><span class="ic">📊</span><h3>Measure rates</h3><span class="act">Act III</span><p class="small">Many samples, test properties</p></div>
     <div class="card pop" style="--i:6"><span class="ic">🔁</span><h3>Check, feed back, retry</h3><span class="act">Act VI</span><p class="small">The start of a harness</p></div>
   </div>
 </section>
