@@ -988,7 +988,7 @@ function launchWorkshop(k){if(jBusy())return;if(S.anim||S.at!==k)return;var ws=w
   J.token++;J.k=k;J.t=0;J.phase=-1;J.paused=false;J.reduce=REDUCE;J.rt=0;
   if(finale.classList.contains("show")){finale.classList.remove("show");S.finaleShown=false}
   if(!R){J.state="WORKSHOP_READY";showPanel(workshopHTML(k,true),true);lockNav(true);return}
-  J.immerse=true;J.inWs=false;J.dir=0;J.wait=0;J.hold=false;J.plain=false;ptlMake(ws);PTL.shot=null;PTL.shotFail=false;
+  J.immerse=true;J.inWs=false;J.dir=0;J.wait=0;J.hold=false;J.plain=false;ptlMake(ws);if(!PTL.shot||PTL.shotH!==shotHash()){PTL.shot=null;PTL.shotFail=false}
   J.state=PHASES[0][0];R.journey.begin(k,ws,J.reduce);stage.classList.add("journey");setFull(true);if(jFs){jFs.hidden=!fsOk;fsLab()}
   showPanel(jHudHTML(k),true);setPauseUi();jSkip.hidden=false;jPause.hidden=false;jRet.textContent="Return to roadmap";lockNav(true);
   $("gl").setAttribute("aria-label","The bus prepares to lift off from stop "+(k+1)+" on its way to workshop "+ws.n);jcap.focus&&jPause.focus({preventScroll:true})}
@@ -1005,15 +1005,25 @@ function onPhase(i){var p=PHASES[i],ws=wsOf(J.k),tok=J.token;J.state=p[0];
 function setPauseUi(){jPause.textContent=J.paused?"Resume":"Pause";jPause.setAttribute("aria-pressed",J.paused?"true":"false");jcap.classList.toggle("paused",J.paused);if(J.paused)jcapT.setAttribute("data-was",jcapT.textContent)}
 function togglePause(){if(!jActive()||J.state==="WORKSHOP_READY")return;J.paused=!J.paused;setPauseUi();$("jsr").textContent=J.paused?"Journey paused.":"Journey resumed."}
 function skipToStage(){if(!jActive())return;var to=J.reduce?RSTILLS[0][1]+RSTILLS[1][1]:PT.ARRIVING_AT_STAGE;if(J.t<to){J.t=to;J.paused=false;setPauseUi()}}
-function flyAgain(){if(!jActive()||!R)return;J.token++;J.t=0;J.immerse=true;J.dir=0;J.wait=0;J.hold=false;J.plain=false;ptlMake(wsOf(J.k));PTL.shot=null;PTL.shotFail=false;J.phase=-1;J.paused=false;J.reduce=REDUCE;R.journey.begin(J.k,wsOf(J.k),J.reduce);setFull(true);showPanel(jHudHTML(J.k),true);setPauseUi();jPause.hidden=false;jSkip.hidden=false}
+function flyAgain(){if(!jActive()||!R)return;J.token++;J.t=0;J.immerse=true;J.dir=0;J.wait=0;J.hold=false;J.plain=false;ptlMake(wsOf(J.k));if(!PTL.shot||PTL.shotH!==shotHash()){PTL.shot=null;PTL.shotFail=false}J.phase=-1;J.paused=false;J.reduce=REDUCE;R.journey.begin(J.k,wsOf(J.k),J.reduce);setFull(true);showPanel(jHudHTML(J.k),true);setPauseUi();jPause.hidden=false;jSkip.hidden=false}
 function returnToRoadmap(){if(!jActive())return;var tok=++J.token,k=J.k;if(J.inWs)leaveWs();J.immerse=false;J.dir=0;J.hold=false;ptlHide();
   if(!R){J.state="ROADMAP_IDLE";showPanel(stationHTML(k),true);lockNav(false);return}
   J.paused=true;setFull(false,function(){if(tok!==J.token)return;stage.classList.add("fading");
   setTimeout(function(){if(tok!==J.token)return;R.journey.end();J.state="RETURNING";J.rt=J.reduce?RET_DUR:0;J.paused=false;stage.classList.remove("fading");stage.classList.remove("journey");veil.style.opacity="0";
     showPanel(stationHTML(k),true);$("gl").setAttribute("aria-label","The bus has stopped at stop "+(k+1)+": "+ST[k].title);$("jsr").textContent="Back on the roadmap at stop "+(k+1)+"."},REDUCE?0:260)})}
 function finishReturn(){J.state="ROADMAP_IDLE";J.phase=-1;if(R)R.journey.mechReset();lockNav(false);if(!fab.hidden)fab.focus({preventScroll:true})}
-var JL=0;function jdt(now){var d=JL?Math.min(.25,Math.max(0,(now-JL)/1000)):0;JL=now;return d}
-function jTick(dt){fullStep(performance.now());
+/* a long frame (the browser busy elsewhere) pauses the journey for that moment instead of jumping it forward */
+var JL=0;function jdt(now){var d=JL?Math.min(.07,Math.max(0,(now-JL)/1000)):0;JL=now;return d}
+/* While the roadmap sits idle, the first workshop deck is loaded out of sight and its opening slide captured, and the tile grid is
+   built, so none of that heavy work lands in the middle of the flight or the landing. */
+var PRE={t0:0,done:false};
+function prewarm(){if(PRE.done||!R||REDUCE||J.state!=="ROADMAP_IDLE")return;var now=performance.now();if(!PRE.t0)PRE.t0=now;if(now-PRE.t0<2500)return;
+  var k=-1;for(var i=0;i<ST.length;i++)if(ST[i].ws){k=i;break}if(k<0){PRE.done=true;return}
+  ptlMake(wsOf(k));if(!PTL.loaded)return;if(!PTL.ready){PRE.done=true;return}
+  if(!PTL.shot&&!PTL.shooting&&!PTL.shotFail&&now-PTL.loadedAt>4500)ptlShot();
+  if(PTL.shot||PTL.shotFail){PRE.done=true;try{R.journey.flipPrep()}catch(e){}}}
+function shotHash(){try{return PTL.fr.contentWindow.location.hash||"#1"}catch(e){return ""}}
+function jTick(dt){fullStep(performance.now());prewarm();
   if(J.state==="RETURNING"){J.rt+=dt;if(J.rt>=RET_DUR)finishReturn();return}
   if(!jActive()||!R)return;
   if(J.dir<0){J.t-=dt*2;if(J.t<=PT.OPENING_PORTAL){J.dir=0;J.immerse=false;J.t=PT.WORKSHOP_READY;J.phase=-1}}
@@ -1021,8 +1031,8 @@ function jTick(dt){fullStep(performance.now());
   /* the portal waits (briefly) for the workshop deck to finish loading; if it can't load here, the journey ends on the stage as before */
   if(J.hold){J.wait+=dt;if(PTL&&PTL.ready){J.hold=false;enterWorkshop()}else if(!PTL||PTL.loaded||J.wait>4){J.hold=false;J.immerse=false;J.phase=-1}}
   if(J.immerse&&!J.reduce&&!J.plain&&J.dir===0&&!J.inWs&&PTL){
-    /* once the bus is down (the scene is nearly still), the deck's current slide is captured as an image for the tiles to carry */
-    if(PTL.ready&&!PTL.shot&&!PTL.shooting&&!PTL.shotFail&&J.t>=PT.ARRIVING_AT_STAGE+.6&&performance.now()-PTL.loadedAt>4500)ptlShot();
+    /* the deck's current slide is captured as an image for the tiles to carry (normally done already while the roadmap was idle) */
+    if(PTL.ready&&!PTL.shot&&!PTL.shooting&&!PTL.shotFail&&performance.now()-PTL.loadedAt>4500)ptlShot();
     if(J.t>=PT.OPENING_PORTAL&&!PTL.shot){J.wait+=dt;
       if(PTL.shotFail||(PTL.loaded&&!PTL.ready)||J.wait>9){if(PTL.ready){J.plain=true;J.t=PT.WORKSHOP_READY}else J.immerse=false}
       else J.t=PT.OPENING_PORTAL}}
@@ -1053,7 +1063,7 @@ function px(n){return n.toFixed(2)+"px"}
    own frame). The 3D scene paints that image onto the tiles: the sign shows its piece of the slide, and each tile's back carries the
    piece that belongs where the tile lands, turning with the tile. The live deck is swapped in only once every tile is down. */
 var H2I="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js";
-function ptlShot(cb){var P=PTL,w,d,fin=false;function done(c){if(fin)return;fin=true;P.shooting=false;if(c){P.shot=c;P.shotFail=false}else P.shotFail=true;if(cb)cb(!!c)}
+function ptlShot(cb){var P=PTL,w,d,fin=false;function done(c){if(fin)return;fin=true;P.shooting=false;if(c){P.shot=c;P.shotH=shotHash();P.shotFail=false}else P.shotFail=true;if(cb)cb(!!c)}
   try{w=P.fr.contentWindow;d=P.fr.contentDocument;if(!d.body)throw 0}catch(e){done(null);return}
   P.shooting=true;setTimeout(function(){done(null)},9000);
   /* in the copy that is drawn (and only there: a body inside a foreignObject) animations are switched off, so every element keeps the
@@ -1883,7 +1893,7 @@ function init3D(){
     var land=sstep(PT.APPROACHING_WORKSHOP_STAGE+1.2,A,t),dl=-(JR.base.y-SY)*land;placeCam(t,yw2,JR.base,dl,dl);JR.veil=0;
     var fc=J.immerse&&!JR.reduce&&!J.plain?sstep(PT.OPENING_PORTAL,PT.OPENING_PORTAL+1.7,t):0;if(fc>0)frontCam(fc);
     renderer.render(COS,camera);
-    if(J.immerse&&!JR.reduce&&!J.plain&&t>PT.ARRIVING_AT_STAGE+1&&t<PT.OPENING_PORTAL&&(!FL||!FL.vw))flipPrep();
+    if(J.immerse&&!JR.reduce&&!J.plain&&t<PT.DEPLOYING_CORNER_THRUSTERS)flipPrep();
     var hA=J.immerse&&!JR.reduce&&!J.plain&&PTL&&PTL.shot?sstep(PT.OPENING_PORTAL+.05,PT.ENTERING_WORKSHOP,t):0;
     if(hA>0)flipTiles(clamp((t-PT.ENTERING_WORKSHOP)/PD.ENTERING_WORKSHOP,0,1),hA)}
   /* --- stepping into the workshop, part 1: the camera comes round to face the stage sign square on, with the sign centred in the view.
@@ -1926,7 +1936,7 @@ function init3D(){
       wd=Math.max(W2,H2)*.3,u=Math.min(1,p/.96);
     FL.mat.uniforms.uW.value=wd;FL.mat.uniforms.uR.value=(far+wd*1.1)*(.25*u+.75*u*u*(3-2*u));FL.mat.uniforms.uHA.value=hA;FL.mat.uniforms.uRs.value=Math.max(W2,H2)*.62;FL.mat.uniforms.uGl.value=1-sstep(0,.35,p);
     renderer.render(FL.sc,FL.cam)}
-  var journey={
+  var journey={flipPrep:flipPrep,
     begin:function(k,ws,reduce){if(!CK){buildCK();buildCosBG()}JR.reduce=!!reduce;
       JR.P0.copy(bus.position);JR.R0.copy(bus.rotation);bus.updateMatrixWorld(true);
       /* the roadmap camera, expressed in the bus's heading frame, is the first key of the camera path */
